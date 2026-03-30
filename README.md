@@ -7,6 +7,7 @@ It is based on the [OpenID4VP](https://openid.net/specs/openid-4-verifiable-pres
 ## Specifications
 
 - [PaSO Core](specs/paso-core.md)
+- [PaSO Proof: Metadata Module](specs/proof/paso-proof-metadata.md)
 
 ## Overview
 

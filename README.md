@@ -4,15 +4,21 @@ Payments and SCA for Openid, or PaSO, is a set of standards to bridge the gap be
 
 It is based on the [OpenID4VP](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html) and [OpenID4VCI](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) standards.
 
+## Specifications
+
+- [PaSO Core](specs/core/paso-core.md)
+
+## Overview
+
 The project is composed of the following standards:
 
-- **PaSO Core**: Establishes the common guideline for trust and interoperability within PaSO based on:
-    - **Roles**: Defines the roles and their purpose in PaSO.
-    - **Ecosystem**: How to communicate and detect PaSO features.
-    - **Credential Rulebooks**: How to define the rules for issuing, displaying and verifying credentials.
-    - **Transaction Data Type Rulebooks**: How to define the rules for Usage, Display and validation of Transaction Data Types.
-    - **Holder Binding Proof Standardization**: The Holder binding proof is the structure that is produced by a presentation and is ingested by the payment networks or banks to settle the transaction.
-    - **Transaction Data Processing Standardization**: OpenID4VP leaves the handling of `transaction_data` open. This ensures a deterministic, flexible, interoperable and future-compatible standard for handling transaction data. It also ensures that consent options are always easily and fully representable by a wallet.
+- **PaSO Core**: Establishes the common guideline for trust and interoperability within PaSO:
+    - **Roles**: Defines the roles participating in PaSO transactions, including the Authorizing Party.
+    - **Flows**: Describes the first-party and third-party flow types.
+    - **Credential Rulebooks**: Governance documents for credential types used with PaSO.
+    - **Transaction Data Type Rulebooks**: Governance documents defining the semantic structure of transaction data types.
+    - **Holder Binding Proof**: The proof structure produced by the Wallet and consumed by the Authorizing Party to verify the transaction.
+    - **Transaction Data Processing**: How wallets process transaction data, with a simple profile and an advanced profile supporting credential sets and versioned fallback.
 - **PaSO Proof**: Establishes modular guidelines for producing a verifiable and replayable proof package.
     - **Core Module**: Defines the requirements to ensure a secure and deterministic presentation process.
     - **Trust Module**: Defines a standardized way to handle trust automatically within the PaSO Ecosystem.

@@ -37,10 +37,10 @@ The credential metadata for a PaSO Credential **SHALL** include the following pa
 
 - **`transaction_data_types`**: **REQUIRED** (object). An object where each key is a transaction data type identifier following the `urn:paso:sca:<domain>:<suffix>:<version>` structure defined in [PaSO Core] Section 5.2, and each value is an object containing:
   - **`claims`**: **REQUIRED**. Array of claim metadata objects per Section 3.1.
-  - **`ui_labels`**: **OPTIONAL**. Object providing localised strings for the consent UI per Section 3.2.
+  - **`ui_labels`**: **REQUIRED** when the credential is issued to a Wallet that does not have a dedicated UI for the transaction data type; **OPTIONAL** otherwise. Object providing localised strings for the consent UI per Section 3.2.
   - Additional parameters **MAY** be defined and used. The Wallet **MUST** ignore any unrecognised parameters.
 
-A PaSO Credential **SHALL NOT** be accepted by the Wallet unless its credential metadata was obtained as a signed JWT from the `credential_metadata_uri` and successfully verified per Section 4.1. The signed credential metadata JWT is the sole authoritative source for the credential metadata; the Wallet **SHALL NOT** use unsigned credential metadata from the Credential Issuer Metadata endpoint for PaSO Credentials.
+A PaSO Credential **SHALL NOT** be accepted by the Wallet unless its credential metadata was obtained as a signed JWT from the `credential_metadata_uri` and successfully verified per Section 6. The signed credential metadata JWT is the sole authoritative source for the credential metadata; the Wallet **SHALL NOT** use unsigned credential metadata from the Credential Issuer Metadata endpoint for PaSO Credentials.
 
 If, during issuance, the Wallet determines that a credential is a PaSO Credential but does not hold a validly signed credential metadata JWT for it, the Wallet **SHALL** reject the issuance and inform the user.
 
@@ -190,7 +190,7 @@ A `credential_configurations_supported` entry with `credential_metadata_uri`:
       }
     ],
     "transaction_data_types": {
-      "urn:paso:sca:eu.europa.ec:payment:single:1": {
+      "urn:paso:sca:com.example.payments:payment:1": {
         "claims": [
           {
             "path": ["transaction_id"],
@@ -216,14 +216,6 @@ A `credential_configurations_supported` entry with `credential_metadata_uri`:
           {
             "path": ["payee", "id"],
             "mandatory": true
-          },
-          {
-            "path": ["execution_date"],
-            "value_type": "iso_date",
-            "display": [
-              { "locale": "en", "name": "Execution date" },
-              { "locale": "de", "name": "Ausführungsdatum" }
-            ]
           }
         ]
       }

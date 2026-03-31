@@ -10,6 +10,11 @@ It is based on the [OpenID4VP](https://openid.net/specs/openid-4-verifiable-pres
 - [PaSO Proof: Metadata Module](specs/proof/paso-proof-metadata.md)
 - [PaSO Proof: SD-JWT-VC and SVG Module](specs/proof/paso-proof-sd-jwt-vc-svg.md)
 - [PaSO Proof: Log Module](specs/proof/paso-proof-log.md)
+- [PaSO View](specs/paso-view.md)
+
+## Rulebooks
+
+- [Transaction Data Type Rulebook: Base Payment](rulebooks/transaction_data/Payment.md)
 
 ## Overview
 

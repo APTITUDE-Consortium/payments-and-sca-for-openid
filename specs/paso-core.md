@@ -19,7 +19,9 @@ This document, PaSO Core, defines:
 
 ### 1.2 Scope
 
-PaSO Core does not define metadata infrastructure (serving, signing, or discovery of credential metadata), rendering implementations, wallet integrity monitoring, transaction logging, or trust establishment. These are addressed by other PaSO specifications.
+PaSO Core does not define metadata infrastructure (serving, signing, or discovery of credential metadata), rendering implementations, transaction logging, or trust establishment. These are addressed by other PaSO specifications.
+
+The Wallet and the Attestation Provider are expected to agree on a mechanism to ensure the integrity of the Wallet environment. A common approach is a long-lived wallet unit attestation that is revoked if integrity can no longer be guaranteed.
 
 ### 1.3 Requirements Notation
 
@@ -53,6 +55,8 @@ Two common flow types are expected in the PaSO ecosystem:
 
 - **Third-party flow**: The Relying Party is distinct from the Attestation Provider and Authorizing Party. The Wallet presents the PaSO Credential to the Relying Party, which forwards the proof package to the Authorizing Party.
 
+The Relying Party **SHALL** send a signed [OID4VP] Authorization Request (Request Object per [JAR]). The Wallet **SHALL** reject unsigned PaSO presentation requests.
+
 ## 4 Credential Rulebooks
 
 ### 4.1 Purpose
@@ -63,7 +67,7 @@ A Credential Rulebook is a governance document that defines the rules for a spec
 
 A Credential Rulebook **MAY** specify:
 
-- The nature of an PaSO Credential and its applicable contexts,
+- The nature of a PaSO Credential and its applicable contexts,
 - attribute structures for the PaSO Credential,
 - display rules for the credential in the Wallet,
 - references to one or more Transaction Data Type Rulebooks,
@@ -92,8 +96,8 @@ urn:paso:sca:<domain>:<suffix>:<version>
 
 Where:
 
-- `<domain>` is an organisation identifier in reverse domain notation (e.g., `eu.europa.ec`, `com.example`),
-- `<suffix>` is one or more colon-separated segments identifying the type (e.g., `payment:single`),
+- `<domain>` is an organisation identifier in reverse domain notation (e.g., `com.example`),
+- `<suffix>` is one or more colon-separated segments identifying the type (e.g., `payment`),
 - `<version>` is a version number (e.g., `1`).
 
 The Wallet identifies PaSO transaction data entries by checking whether the `type` field starts with the prefix `urn:paso:sca:`.
@@ -123,15 +127,17 @@ All text displayed to the user **SHALL** be short and easily understandable.
 
 The Wallet **SHALL** include the following claims in every PaSO Credential presentation that involves transaction data, embedded in the format-specific proof structure that cryptographically binds the user's consent to the presentation.
 
-| Claim                       | Required | Description                                                                                                                                                                            |
-|-----------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `jti`                       | yes      | A fresh, cryptographically random value with sufficient entropy per [RFC7519] Section 4.1.7. Unique per presentation. When used for SCA, serves as the Authentication Code per [PSD2]. |
-| `response_mode`             | yes      | The `response_mode` parameter as given or defaulted in the [OID4VP] Authorization Request.                                                                                             |
-| `display_locale`            | yes      | A [RFC5646] language tag representing the locale shown to the user during consent. Enables deterministic reconstruction of which display entries were used.                            |
-| `amr`                       | yes      | Authentication Methods References. A JSON array of strings per [RFC8176]. See Section 6.2.                                                                                             |
-| `transaction_data_hash`     | yes      | Hash of the base64url-encoded `transaction_data` entry selected for the PaSO Credential.                                                                                               |
-| `transaction_data_hash_alg` | yes      | Hash algorithm identifier. Default: `sha-256`.                                                                                                                                         |
-| `wallet_instance_version`   | yes      | Version identifier of the Wallet application that authorized the transaction.                                                                                                          |
+| Claim                       | Required    | Description                                                                                                                                                                                                                                   |
+|-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `jti`                       | yes         | A fresh, cryptographically random value with sufficient entropy per [RFC7519] Section 4.1.7. Unique per presentation. When used for SCA, serves as the Authentication Code per [PSD2].                                                        |
+| `response_mode`             | yes         | The `response_mode` parameter as given or defaulted in the [OID4VP] Authorization Request.                                                                                                                                                    |
+| `display_locale`            | yes         | A [RFC5646] language tag representing the locale shown to the user during consent. Enables deterministic reconstruction of which display entries were used.                                                                                   |
+| `amr`                       | yes         | Authentication Methods References. A JSON array of strings per [RFC8176]. See Section 6.2.                                                                                                                                                    |
+| `transaction_data_hash`     | yes         | Hash of the base64url-encoded `transaction_data` entry selected for the PaSO Credential.                                                                                                                                                      |
+| `transaction_data_hash_alg` | yes         | Hash algorithm identifier. Default: `sha-256`.                                                                                                                                                                                                |
+| `metadata_integrity`        | conditional | The [W3C.SRI] integrity value of the signed credential metadata JWT (per [PaSO Proof Metadata]) used to display the transaction data during this presentation. **REQUIRED** when a signed credential metadata JWT was used; absent otherwise. |
+| `request_integrity`         | yes         | The [W3C.SRI] integrity value of the signed [OID4VP] Authorization Request ([JAR] Request Object) as received by the Wallet, computed over the compact-serialised JWT string.                                                                 |
+| `wallet_instance_version`   | yes         | Version identifier of the Wallet application that authorized the transaction.                                                                                                                                                                 |
 
 ### 6.2 Authentication Methods
 
@@ -164,11 +170,13 @@ For PaSO Credentials in [mdoc] format, the Wallet **SHALL** include device authe
 | `amr`                       | array of tstr |
 | `transaction_data_hash`     | bstr          |
 | `transaction_data_hash_alg` | tstr          |
+| `metadata_integrity`        | tstr          |
+| `request_integrity`         | tstr          |
 | `wallet_instance_version`   | tstr          |
 
 ## 7 Transaction Data Processing
 
-### 7.1 Transactional Data Object
+### 7.1 Transaction Data Object
 
 PaSO extends the [OID4VP] `transaction_data` entry with the following parameter:
 
@@ -203,7 +211,7 @@ The presentation request **MAY** contain multiple PaSO-targeted `transaction_dat
 
 When `credential_sets` are used in the DCQL query ([OID4VP] Section 6.2), all credential query identifiers referenced by PaSO-targeted `transaction_data` entries' `credential_ids` **SHALL** appear within options of the same credential set.
 
-Each inner array within the `options` of the credential set (hereafter called an **alternative**) lists credential query identifiers that must all be presented together. An alternative **resolves to** a PaSO-targeted `transaction_data` entry if it contains a credential query identifier listed in that entry's `credential_ids`. When an alternative resolves to multiple PaSO-targeted `transaction_data` entries for the same credential, the Wallet **SHALL** apply the first-match selection rule from Section 7.4.2 step 2.
+Each inner array within the `options` of the credential set (hereafter called an **alternative**) lists credential query identifiers that **MUST** all be presented together. An alternative **resolves to** a PaSO-targeted `transaction_data` entry if it contains a credential query identifier listed in that entry's `credential_ids`. When an alternative resolves to multiple PaSO-targeted `transaction_data` entries for the same credential, the Wallet **SHALL** apply the first-match selection rule from Section 7.4.2 step 2.
 
 All alternatives that involve a PaSO-targeted `transaction_data` entry **SHALL** be **transposable**. Transposability means that the user's credential choices must be fully independent of each other. Selecting one credential should never constrain which credentials are available in another slot.
 
@@ -219,7 +227,7 @@ The ordering of alternatives expresses the Relying Party's preference: the Walle
 
 This first-match rule allows a Relying Party to provide versioned transaction data: a newer `type` can be listed first in the `transaction_data` array, with an older `type` as a fallback for credentials that do not yet support it.
 
-A presentation request may combine PaSO Credentials with non-PaSO credentials.
+A presentation request **MAY** combine PaSO Credentials with non-PaSO credentials.
 
 #### 7.4.2 Discovery and Validation
 
@@ -229,26 +237,30 @@ For the PaSO-targeted entries, the Wallet **SHALL** perform the following steps:
 
 1. The Wallet **SHALL** identify all credentials matching the presentation request that are PaSO Credentials. A credential is a candidate for a PaSO-targeted `transaction_data` entry if the credential matches a credential query whose identifier is listed in that entry's `credential_ids`.
 2. For each candidate credential, the Wallet **SHALL** select the first PaSO-targeted `transaction_data` entry (in array order) that targets that credential via `credential_ids`, whose `type` is among the transaction data types supported by that credential, and whose `payload` conforms to the rulebook definition for that type. A `payload` conforms if it does not contain fields not declared by the rulebook, all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting. If no entry is compatible, the credential **SHALL** be excluded.
-3. If at any point during the processing of this section no compatible credentials remain, the Wallet **SHALL** cease processing and inform the user.
-4. The Wallet **SHALL** present the remaining compatible credentials as alternatives to the user. For the initially selected credential, the Wallet **SHALL** display the `transaction_data` entry matched in step 2.
-5. If the user selects a different credential, the Wallet **SHALL** display the `transaction_data` entry matched for that credential in step 2. When the matched `transaction_data` entry differs between credentials, the displayed content **SHALL** update accordingly.
-6. If the user consents, the Wallet **MAY** proceed with the presentation.
+3. For each candidate credential, where the selected entry's `payload` contains claims that require resolution of an external resource with integrity verification, the Wallet **SHALL** resolve and verify them. If resolution or verification fails, the `transaction_data` entry **SHALL** be considered incompatible and the Wallet **SHALL** resume the selection in step 2 for the affected credential, continuing with the next `transaction_data` entry in array order that targets that credential. If no compatible entry remains for the credential, the credential **SHALL** be excluded.
+4. If at any point during the processing of this section no compatible credentials remain, the Wallet **SHALL** cease processing and inform the user.
+5. The Wallet **SHALL** present the remaining compatible credentials as alternatives to the user. For the initially selected credential, the Wallet **SHALL** display the `transaction_data` entry matched in step 2.
+6. If the user selects a different credential, the Wallet **SHALL** display the `transaction_data` entry matched for that credential in step 2. When the matched `transaction_data` entry differs between credentials, the displayed content **SHALL** update accordingly.
+7. If the user consents, the Wallet **MAY** proceed with the presentation.
 
 ## 8 References
 
-| Reference    | Description                                                                                                                |
-|--------------|----------------------------------------------------------------------------------------------------------------------------|
-| [OID4VP]     | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |
-| [OID4VCI]    | [OpenID for Verifiable Credential Issuance 1.0](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) |
-| [PSD2]       | [Directive (EU) 2015/2366 on payment services in the internal market](https://eur-lex.europa.eu/eli/dir/2015/2366/)        |
-| [RFC2119]    | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |
-| [RFC8174]    | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)        |
-| [RFC4647]    | [RFC 4647 — Matching of Language Tags](https://www.rfc-editor.org/rfc/rfc4647.html)                                        |
-| [RFC5646]    | [RFC 5646 — Tags for Identifying Languages](https://www.rfc-editor.org/rfc/rfc5646.html)                                   |
-| [RFC7519]    | [RFC 7519 — JSON Web Token (JWT)](https://www.rfc-editor.org/rfc/rfc7519.html)                                             |
-| [RFC8176]    | [RFC 8176 — Authentication Method Reference Values](https://www.rfc-editor.org/rfc/rfc8176.html)                           |
-| [SD-JWT-VC]  | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
-| [mdoc]       | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |
+| Reference             | Description                                                                                                                |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------|
+| [OID4VP]              | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |
+| [OID4VCI]             | [OpenID for Verifiable Credential Issuance 1.0](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) |
+| [PSD2]                | [Directive (EU) 2015/2366 on payment services in the internal market](https://eur-lex.europa.eu/eli/dir/2015/2366/)        |
+| [RFC2119]             | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |
+| [RFC8174]             | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)        |
+| [RFC4647]             | [RFC 4647 — Matching of Language Tags](https://www.rfc-editor.org/rfc/rfc4647.html)                                        |
+| [RFC5646]             | [RFC 5646 — Tags for Identifying Languages](https://www.rfc-editor.org/rfc/rfc5646.html)                                   |
+| [RFC7519]             | [RFC 7519 — JSON Web Token (JWT)](https://www.rfc-editor.org/rfc/rfc7519.html)                                             |
+| [RFC8176]             | [RFC 8176 — Authentication Method Reference Values](https://www.rfc-editor.org/rfc/rfc8176.html)                           |
+| [SD-JWT-VC]           | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
+| [mdoc]                | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |
+| [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](proof/paso-proof-metadata.md)                                                                |
+| [JAR]                 | [RFC 9101 — JWT-Secured Authorization Request](https://www.rfc-editor.org/rfc/rfc9101.html)                                |
+| [W3C.SRI]             | [Subresource Integrity](https://www.w3.org/TR/SRI/)                                                                        |
 
 ## Annex A: Examples
 
@@ -282,7 +294,7 @@ An [OID4VP] presentation request with PaSO transaction data. The `transaction_da
 
 ```json
 {
-  "type": "urn:paso:sca:eu.europa.ec:payment:single:1",
+  "type": "urn:paso:sca:com.example.payments:payment:1",
   "credential_ids": ["sca_card"],
   "payload": {
     "transaction_id": "ab9c4d5e-6f78-9012-3456-789abcdef012",
@@ -290,8 +302,7 @@ An [OID4VP] presentation request with PaSO transaction data. The `transaction_da
     "payee": {
       "name": "Shop Inc.",
       "id": "DE98ZZZ09999999999"
-    },
-    "execution_date": "2026-04-01"
+    }
   }
 }
 ```
@@ -310,6 +321,8 @@ An [OID4VP] presentation request with PaSO transaction data. The `transaction_da
   "display_locale": "de",
   "transaction_data_hash": "OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q",
   "transaction_data_hash_alg": "sha-256",
+  "metadata_integrity": "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
+  "request_integrity": "sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg=",
   "wallet_instance_version": "android:com.example.wallet:4.1.2"
 }
 ```
@@ -326,6 +339,8 @@ CBOR diagnostic notation:
   "display_locale" : "de",
   "transaction_data_hash" : h'3897274100F2BD5D624D8C624104310431E75C76EF...',
   "transaction_data_hash_alg" : "sha-256",
+  "metadata_integrity" : "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
+  "request_integrity" : "sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg=",
   "wallet_instance_version" : "android:com.example.wallet:4.1.2"
 }
 ```
@@ -340,7 +355,6 @@ How a Wallet might display the transaction from Annex A.1 with locale `en`:
 │                                          │
 │  Amount            49.99 EUR             │
 │  Payee             Shop Inc.             │
-│  Execution date    1 April 2026          │
 │                                          │
 │  ┌──────────────┐  ┌──────────────┐      │
 │  │     Pay      │  │    Cancel    │      │
@@ -395,7 +409,7 @@ Decoded `transaction_data` entries:
 ```json
 [
   {
-    "type": "urn:paso:sca:eu.europa.ec:payment:single:1",
+    "type": "urn:paso:sca:com.example.payments:payment:1",
     "credential_ids": ["sca_card"],
     "payload": {
       "transaction_id": "ab9c4d5e-6f78-9012-3456-789abcdef012",
@@ -404,7 +418,7 @@ Decoded `transaction_data` entries:
     }
   },
   {
-    "type": "urn:paso:sca:eu.europa.ec:payment:single:1",
+    "type": "urn:paso:sca:com.example.payments:payment:1",
     "credential_ids": ["sca_account"],
     "payload": {
       "transaction_id": "ab9c4d5e-6f78-9012-3456-789abcdef012",

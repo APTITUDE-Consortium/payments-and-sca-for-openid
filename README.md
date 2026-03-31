@@ -9,6 +9,7 @@ It is based on the [OpenID4VP](https://openid.net/specs/openid-4-verifiable-pres
 - [PaSO Core](specs/paso-core.md)
 - [PaSO Proof: Metadata Module](specs/proof/paso-proof-metadata.md)
 - [PaSO Proof: SD-JWT-VC and SVG Module](specs/proof/paso-proof-sd-jwt-vc-svg.md)
+- [PaSO Proof: Log Module](specs/proof/paso-proof-log.md)
 
 ## Overview
 
@@ -22,7 +23,6 @@ The project is composed of the following standards:
     - **Holder Binding Proof**: The proof structure produced by the Wallet and consumed by the Authorizing Party to verify the transaction.
     - **Transaction Data Processing**: How wallets process transaction data, with a simple profile and an advanced profile supporting credential sets and versioned fallback.
 - **PaSO Proof**: Establishes modular guidelines for producing a verifiable and replayable proof package.
-    - **Core Module**: Defines the requirements to ensure a secure and deterministic presentation process.
     - **Trust Module**: Defines a standardized way to handle trust automatically within the PaSO Ecosystem.
     - **Verify Module**: Defines the service provider proof package format and verification procedures.
     - **Log Module**: Defines the wallet requirements for transaction logs.

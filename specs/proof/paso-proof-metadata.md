@@ -24,10 +24,12 @@ This section defines an extension to [OID4VCI] Credential Issuer Metadata for se
 
 The Attestation Provider **SHALL** include a `credential_metadata_uri` in each PaSO Credential configuration within the Credential Issuer Metadata and **SHALL** serve the credential metadata at that URI.
 
-When fetching from a `credential_metadata_uri`, the Wallet **SHALL** use the `Accept` header to request the desired format and **MAY** include an `Accept-Language` header per [OID4VCI] Section 12.2.2. If the `Accept` header is absent or does not express a preference, the Attestation Provider **SHALL** default to `application/json`. If the Attestation Provider does not support the requested media type, it **MAY** return an appropriate HTTP error (e.g., `406 Not Acceptable`).
+When fetching from a `credential_metadata_uri`, the Wallet **SHALL** include an `Accept` header and an `Accept-Language` header per [OID4VCI] Section 12.2.2. If the `Accept` header is absent or does not express a preference, the Attestation Provider **SHALL** default to `application/json`. The Attestation Provider **MAY** refuse requests without an `Accept-Language` header.
 
 - `Accept: application/json` — The Attestation Provider **SHALL** return the credential metadata as a plain JSON object.
 - `Accept: application/jwt` — The Attestation Provider **SHALL** return the credential metadata as a signed JWT per Section 4.
+
+The Attestation Provider **MAY** serve one or more locales per signed JWT. The Attestation Provider **SHALL** include at least the first supported locale from the `Accept-Language` header and **MAY** include additional locales.
 
 ## 3 Transaction Data Types in Credential Metadata
 
@@ -50,7 +52,7 @@ Each entry in `transaction_data_types` **MUST** supply metadata for each claim o
 - A `value_type` parameter (string) **MAY** be added to claim objects that have a `display` array. It indicates how the Wallet **SHALL** format the claim value for display. If omitted, the value is treated as plain text and **MUST** be a string. The `value_type` parameter **MUST NOT** be used on claims without a `display` array. The set of supported value types is defined by the applicable Transaction Data Type Rulebook or by other PaSO specifications.
 - A `display_type` parameter (string) **MAY** be added to `display` entry objects. It governs how the Wallet **SHALL** format the `name` text of that display entry, applying the same rendering rules as the corresponding `value_type` but to the label. If omitted, the label is plain text.
 
-Claims that are relevant to the user's consent **MUST** include a `display` array with entries for all locales supported by the PaSO Credential. Claims without a `display` array **MUST** be internal values irrelevant to the user's consent.
+Claims that are relevant to the user's consent **MUST** include a `display` array with entries for the locales served in that signed JWT. Claims without a `display` array **MUST** be internal values irrelevant to the user's consent.
 
 The `display` entries and `value_type` provide default rendering hints. The applicable Transaction Data Type Rulebook defines the semantic meaning of each claim; a Wallet that implements a specific rulebook **MAY** provide its own labels or visual representations in place of the metadata-supplied `display` entries, provided the meaning remains clear and unmistakable to the user.
 
@@ -96,9 +98,9 @@ The Wallet **MAY** refuse issuance if the returned metadata does not contain any
 
 ## 5 Storage and Handling
 
-The Wallet **SHALL** persist the signed credential metadata JWT in its signed form and **SHALL NOT** persist the decoded credential metadata. Each time the Wallet loads the metadata JWT from storage, it **SHALL** perform the full verification procedure defined in Section 6.
+The Wallet **SHALL** persist signed credential metadata JWTs in their signed form and **SHALL NOT** persist the decoded credential metadata. The Wallet **MAY** store multiple signed metadata JWTs per credential to cover different locales. Each time the Wallet loads a metadata JWT from storage, it **SHALL** perform the full verification procedure defined in Section 6.
 
-If the stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 6. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT is obtained.
+If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 6. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT covering the required locale is obtained.
 
 ## 6 Verification
 
@@ -118,7 +120,7 @@ If any step fails, the metadata JWT **SHALL** be considered invalid and the Wall
 
 ## 7 Renewal and Unlinkability
 
-The Wallet **SHALL** renew the signed credential metadata JWT before its `exp` time by re-fetching from the `credential_metadata_uri`, and **MAY** re-fetch at any other time.
+The Wallet **SHALL** renew each signed credential metadata JWT before its `exp` time by re-fetching from the `credential_metadata_uri`, and **MAY** re-fetch at any other time. The Wallet **MAY** fetch additional locales by issuing separate requests with different `Accept-Language` headers during renewal.
 
 Credential metadata retrieval **SHALL NOT** be linkable to credential usage. The Wallet **SHALL NOT** fetch credential metadata immediately before or after a presentation in a pattern that would allow a network observer to correlate the two activities.
 

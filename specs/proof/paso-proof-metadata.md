@@ -190,7 +190,7 @@ A `credential_configurations_supported` entry with `credential_metadata_uri`:
       }
     ],
     "transaction_data_types": {
-      "urn:paso:sca:com.example.payments:payment:1": {
+      "urn:paso:sca:global:payment:1": {
         "claims": [
           {
             "path": ["transaction_id"],

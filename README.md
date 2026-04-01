@@ -9,6 +9,7 @@ It is based on the [OpenID4VP](https://openid.net/specs/openid-4-verifiable-pres
 - [PaSO Core](specs/paso-core.md)
 - [PaSO Proof: Metadata Module](specs/proof/paso-proof-metadata.md)
 - [PaSO Proof: SD-JWT-VC and SVG Module](specs/proof/paso-proof-sd-jwt-vc-svg.md)
+- [PaSO Proof: Verify Module](specs/proof/paso-proof-verify.md)
 - [PaSO Proof: Log Module](specs/proof/paso-proof-log.md)
 - [PaSO View](specs/paso-view.md)
 

@@ -96,7 +96,7 @@ urn:paso:sca:<domain>:<suffix>:<version>
 
 Where:
 
-- `<domain>` is an organisation identifier in reverse domain notation (e.g., `com.example`),
+- `<domain>` is an organisation identifier in reverse domain notation (e.g., `com.example`), or `global` for transaction data types defined by PaSO itself,
 - `<suffix>` is one or more colon-separated segments identifying the type (e.g., `payment`),
 - `<version>` is a version number (e.g., `1`).
 
@@ -294,7 +294,7 @@ An [OID4VP] presentation request with PaSO transaction data. The `transaction_da
 
 ```json
 {
-  "type": "urn:paso:sca:com.example.payments:payment:1",
+  "type": "urn:paso:sca:global:payment:1",
   "credential_ids": ["sca_card"],
   "payload": {
     "transaction_id": "ab9c4d5e-6f78-9012-3456-789abcdef012",
@@ -409,7 +409,7 @@ Decoded `transaction_data` entries:
 ```json
 [
   {
-    "type": "urn:paso:sca:com.example.payments:payment:1",
+    "type": "urn:paso:sca:global:payment:1",
     "credential_ids": ["sca_card"],
     "payload": {
       "transaction_id": "ab9c4d5e-6f78-9012-3456-789abcdef012",
@@ -418,7 +418,7 @@ Decoded `transaction_data` entries:
     }
   },
   {
-    "type": "urn:paso:sca:com.example.payments:payment:1",
+    "type": "urn:paso:sca:global:payment:1",
     "credential_ids": ["sca_account"],
     "payload": {
       "transaction_id": "ab9c4d5e-6f78-9012-3456-789abcdef012",

@@ -1,3 +1,8 @@
+---
+title: "PaSO Proof: SD-JWT-VC and SVG Module"
+description: Display-metadata resolution and SVG integrity for SD-JWT-VC credentials.
+---
+
 # PaSO Proof: SD-JWT-VC and SVG Module
 
 ## Abstract

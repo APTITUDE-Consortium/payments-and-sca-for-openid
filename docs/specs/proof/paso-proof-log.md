@@ -1,3 +1,8 @@
+---
+title: "PaSO Proof: Log Module"
+description: What the wallet retains for audit and replay.
+---
+
 # PaSO Proof: Log Module
 
 ## Abstract

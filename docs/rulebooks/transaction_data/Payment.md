@@ -1,3 +1,8 @@
+---
+title: "Payment Rulebook (urn:paso:sca:global:payment:1)"
+description: The base Payment transaction data type rulebook.
+---
+
 # Transaction Data Type Rulebook: Base Payment
 
 **Type identifier**: `urn:paso:sca:global:payment:1`

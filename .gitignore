@@ -1,3 +1,11 @@
 .idea
 *.iml
 .DS_Store
+
+# Jekyll
+docs/_site
+docs/.sass-cache
+docs/.jekyll-cache
+docs/.jekyll-metadata
+docs/vendor
+docs/Gemfile.lock

@@ -1,3 +1,8 @@
+---
+title: PaSO Core
+description: Common foundation of PaSO — roles, flows, rulebooks, holder-binding proof, and transaction-data processing.
+---
+
 # PaSO Core
 
 ## Abstract

@@ -1,0 +1,159 @@
+/* Spec/rulebook reading view */
+.page-spec { background: var(--bg); color: var(--ink); }
+
+.spec {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+}
+.spec__article {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--ink);
+}
+
+.spec__article h1,
+.spec__article h2,
+.spec__article h3,
+.spec__article h4,
+.spec__article h5 {
+  color: var(--eu-blue-deep);
+  letter-spacing: -0.02em;
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+  scroll-margin-top: 80px;
+}
+.spec__article h1 {
+  font-size: clamp(2rem, 4.4vw, 2.8rem);
+  margin-top: 0;
+  padding-bottom: 14px;
+  border-bottom: 4px solid var(--eu-yellow);
+  display: inline-block;
+}
+.spec__article h2 {
+  font-size: 1.6rem;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.spec__article h3 {
+  font-size: 1.2rem;
+  color: var(--eu-blue);
+}
+.spec__article h4 {
+  font-size: 1.02rem;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.spec__article p,
+.spec__article ul,
+.spec__article ol { margin: 0 0 1.1em; }
+.spec__article ul, .spec__article ol { padding-left: 1.3em; }
+.spec__article li { margin-bottom: 0.4em; }
+.spec__article li > ul, .spec__article li > ol { margin-top: 0.4em; }
+
+.spec__article a {
+  color: var(--eu-blue);
+  text-decoration: underline;
+  text-decoration-color: var(--eu-yellow);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.spec__article a:hover { color: var(--eu-blue-deep); text-decoration-thickness: 3px; }
+
+.spec__article code {
+  background: var(--bg-soft);
+  color: var(--eu-blue-deep);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.92em;
+  font-family: var(--font-mono);
+}
+.spec__article pre {
+  background: var(--eu-blue-deep);
+  color: #e6ecff;
+  padding: 22px 24px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 1.4em 0;
+  border-left: 4px solid var(--eu-yellow);
+}
+.spec__article pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  font-size: inherit;
+}
+
+.spec__article blockquote {
+  margin: 1.4em 0;
+  padding: 16px 22px;
+  background: var(--bg-soft);
+  border-left: 4px solid var(--eu-yellow);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--ink-soft);
+}
+.spec__article blockquote p:last-child { margin-bottom: 0; }
+
+.spec__article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.4em 0;
+  font-size: 0.95rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+.spec__article th, .spec__article td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.spec__article th {
+  background: var(--eu-blue);
+  color: var(--eu-white);
+  font-weight: 700;
+  font-size: 0.84rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.spec__article tbody tr:nth-child(even) td { background: var(--bg-soft); }
+
+.spec__article hr {
+  border: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--eu-blue), var(--eu-yellow));
+  margin: 2.2em 0;
+  border-radius: 2px;
+}
+
+.spec__article .mermaid {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin: 1.4em 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+/* Source link hint on spec pages */
+.spec::before {
+  content: "Specification";
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--eu-blue);
+  margin-bottom: 14px;
+  padding-left: 38px;
+  position: relative;
+}
+.spec::before {
+  position: relative;
+}

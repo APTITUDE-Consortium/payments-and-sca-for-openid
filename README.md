@@ -322,11 +322,11 @@ PaSO is technology that helps a payment service provider *implement* these requi
 
 For the precise, normative rules, read the specifications in roughly this order:
 
-1. [**PaSO Core**](specs/paso-core.md) — roles, flows, rulebooks, the holder binding proof, and transaction data processing.
-2. [**PaSO View**](specs/paso-view.md) — generic rendering, value types, and locale selection.
-3. [**PaSO Proof: Metadata Module**](specs/proof/paso-proof-metadata.md) — signed credential metadata and how transaction data types are described.
-4. [**PaSO Proof: SD-JWT-VC and SVG Module**](specs/proof/paso-proof-sd-jwt-vc-svg.md) — display-metadata resolution and SVG integrity for SD-JWT-VC credentials.
-5. [**PaSO Proof: Verify Module**](specs/proof/paso-proof-verify.md)— the proof package, verification procedure, and ingestion endpoint.
-6. [**PaSO Proof: Log Module**](specs/proof/paso-proof-log.md) — what the wallet retains for audit and replay.
-7. [**Transaction Data Type Rulebooks**](rulebooks/transaction_data/Payment.md) — concrete type definitions, starting with the base Payment rulebook.
+1. [**PaSO Core**](docs/specs/paso-core.md) — roles, flows, rulebooks, the holder binding proof, and transaction data processing.
+2. [**PaSO View**](docs/specs/paso-view.md) — generic rendering, value types, and locale selection.
+3. [**PaSO Proof: Metadata Module**](docs/specs/proof/paso-proof-metadata.md) — signed credential metadata and how transaction data types are described.
+4. [**PaSO Proof: SD-JWT-VC and SVG Module**](docs/specs/proof/paso-proof-sd-jwt-vc-svg.md) — display-metadata resolution and SVG integrity for SD-JWT-VC credentials.
+5. [**PaSO Proof: Verify Module**](docs/specs/proof/paso-proof-verify.md)— the proof package, verification procedure, and ingestion endpoint.
+6. [**PaSO Proof: Log Module**](docs/specs/proof/paso-proof-log.md) — what the wallet retains for audit and replay.
+7. [**Transaction Data Type Rulebooks**](docs/rulebooks/transaction_data/Payment.md) — concrete type definitions, starting with the base Payment rulebook.
 

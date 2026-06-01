@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {% include head.html %}
+</head>
+<body class="page-spec">
+  {% include nav.html %}
+  <main class="spec">
+    <article class="spec__article">
+      {{ content }}
+    </article>
+  </main>
+  {% include footer.html %}
+  <script src="{{ '/assets/js/main.js' | relative_url }}" defer></script>
+  <script src="{{ '/assets/js/mermaid-init.js' | relative_url }}" defer></script>
+</body>
+</html>

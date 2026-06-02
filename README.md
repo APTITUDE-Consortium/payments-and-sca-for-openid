@@ -328,5 +328,7 @@ For the precise, normative rules, read the specifications in roughly this order:
 4. [**PaSO Proof: SD-JWT-VC and SVG Module**](docs/specs/proof/paso-proof-sd-jwt-vc-svg.md) — display-metadata resolution and SVG integrity for SD-JWT-VC credentials.
 5. [**PaSO Proof: Verify Module**](docs/specs/proof/paso-proof-verify.md)— the proof package, verification procedure, and ingestion endpoint.
 6. [**PaSO Proof: Log Module**](docs/specs/proof/paso-proof-log.md) — what the wallet retains for audit and replay.
-7. [**Transaction Data Type Rulebooks**](docs/rulebooks/transaction_data/Payment.md) — concrete type definitions, starting with the base Payment rulebook.
+7. [**Payment Rulebook**](docs/rulebooks/transaction_data/Payment.md) — the concrete base Payment transaction data type.
+8. [**Generic Rulebook**](docs/rulebooks/transaction_data/Generic.md) — free-form transaction data for login, AISP consent, and other non-payment authorizations.
+9. [**Mandate Rulebook**](docs/rulebooks/transaction_data/Mandate.md) — authorize a delegate, business, or software agent to act on the user's behalf under defined limits.
 

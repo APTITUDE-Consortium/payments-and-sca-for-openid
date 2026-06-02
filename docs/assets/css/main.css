@@ -367,6 +367,20 @@ em { font-style: italic; color: var(--eu-blue); }
 .band--blue em, .band--specs em { color: var(--eu-yellow); }
 
 /* ------------------------------------------------------------------ */
+/* View hero figure                                                    */
+/* ------------------------------------------------------------------ */
+.view-hero {
+  margin: 36px auto 44px;
+  max-width: 880px;
+  text-align: center;
+}
+.view-hero img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-lg);
+}
+
 /* Cards                                                               */
 /* ------------------------------------------------------------------ */
 .cards { display: grid; gap: 22px; }

@@ -63,7 +63,7 @@ Each object in a claim's `display` array **MAY** include a `display_type` parame
 </tr>
 <tr>
 <td><code>frequency</code></td>
-<td>
+<td markdown="1">
 
 The value is one of the following frequency codes: `INDA` (intraday), `DAIL` (daily), `WEEK` (weekly), `TOWK` (every two weeks), `TWMN` (twice a month), `MNTH` (monthly), `TOMN` (every two months), `QUTR` (quarterly), `FOMN` (every four months), `SEMI` (twice a year), `YEAR` (yearly), `TYEA` (every two years).
 
@@ -73,7 +73,7 @@ The Wallet **SHALL** display it as a human-readable, localised string that accur
 </tr>
 <tr>
 <td><code>image</code></td>
-<td>
+<td markdown="1">
 
 The value is a string containing a resolvable URL or a Data URL per [RFC2397] pointing to an image. Images serve an informational or illustrative purpose; the user is not required to view them to give informed consent.
 
@@ -101,7 +101,7 @@ If the URL is not a Data URL, the `payload` **MUST** contain a sibling claim at 
 </tr>
 <tr>
 <td><code>iso_currency_amount</code></td>
-<td>
+<td markdown="1">
 
 The value is a string consisting of a decimal number (integer part, decimal point, fractional digits per [ISO4217]) followed by a space and an [ISO4217] Alpha-3 currency code (e.g., `"49.99 EUR"`).
 
@@ -111,7 +111,7 @@ The Wallet **MAY** display it in a user-friendly localised format that accuratel
 </tr>
 <tr>
 <td><code>label_only</code></td>
-<td>
+<td markdown="1">
 
 The Wallet **SHALL** render only the `name` from the locale-matched `display` entry, without any associated value. This type is intended for contexts where no value is needed to convey the meaning, such as informational statements (e.g., "This is a recurring payment").
 
@@ -121,7 +121,7 @@ The claim **MUST NOT** be `mandatory`. The value in the `payload` **MAY** be of 
 </tr>
 <tr>
 <td><code>mini_markdown</code></td>
-<td>
+<td markdown="1">
 
 The value is a string containing text with inline formatting. The Wallet **MAY** render emphasis and strong emphasis as per [CommonMark] Section 6.2 (italic and bold) and `<u>` tags for underline as per [CommonMark] Section 6.6, or **MAY** render the value as plain text without formatting.
 
@@ -131,7 +131,7 @@ All other [CommonMark] constructs and raw HTML **MUST** be rendered as their lit
 </tr>
 <tr>
 <td><code>url</code></td>
-<td>
+<td markdown="1">
 
 The value is a string containing a navigatable URL. URLs serve an informational or illustrative purpose; the user is not required to view them to give informed consent.
 
@@ -141,7 +141,7 @@ The Wallet **SHALL** display it as a clearly identifiable link. The Wallet **SHA
 </tr>
 <tr>
 <td><code>template:${value_type}</code></td>
-<td>
+<td markdown="1">
 
 A composable prefix that enables placeholder interpolation. The value is a string that **MAY** contain placeholders of the form `{<index>}`, where `<index>` is the zero-based position of a claim in the `claims` array for the transaction data type (e.g., `{2}` references the third claim).
 

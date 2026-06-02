@@ -715,6 +715,60 @@ em { font-style: italic; color: var(--eu-blue); }
 .spec-grid p { color: rgba(255, 255, 255, 0.78); font-size: 0.92rem; margin: 0; }
 
 /* ------------------------------------------------------------------ */
+/* Language switch (used on Impressum / Imprint)                        */
+/* ------------------------------------------------------------------ */
+.lang-switch {
+  display: inline-flex;
+  gap: 0;
+  margin: 0 0 24px;
+  border: 1px solid var(--eu-blue-deep, #003399);
+  border-radius: 999px;
+  overflow: hidden;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.lang-switch a {
+  padding: 8px 16px;
+  color: var(--eu-blue-deep, #003399);
+  text-decoration: none !important;
+  background: transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.lang-switch a + a {
+  border-left: 1px solid var(--eu-blue-deep, #003399);
+}
+.lang-switch a:hover { background: rgba(0, 51, 153, 0.08); }
+.lang-switch a.is-active {
+  background: var(--eu-blue-deep, #003399);
+  color: var(--eu-white, #fff);
+  font-weight: 600;
+  cursor: default;
+}
+.lang-switch a.is-active:hover { background: var(--eu-blue-deep, #003399); }
+
+/* ------------------------------------------------------------------ */
+/* Rulebooks sub-section (under specs grid, before license card)       */
+/* ------------------------------------------------------------------ */
+.rulebooks-subsection {
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+.rulebooks-subsection h3 {
+  color: var(--eu-white);
+  font-size: 1.8rem;
+  line-height: 1.2;
+  margin: 6px 0 12px;
+}
+.rulebooks-subsection .lede {
+  margin-bottom: 28px;
+}
+@media (max-width: 600px) {
+  .rulebooks-subsection { margin-top: 40px; padding-top: 28px; }
+  .rulebooks-subsection h3 { font-size: 1.5rem; }
+}
+
+/* ------------------------------------------------------------------ */
 /* License card (under specs grid)                                     */
 /* ------------------------------------------------------------------ */
 .license-card {

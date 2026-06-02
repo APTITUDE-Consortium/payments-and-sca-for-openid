@@ -479,28 +479,37 @@ description: The trust and proof layer that lets OpenID wallets satisfy Strong C
           <p>What the wallet retains for audit and replay.</p>
         </a>
       </li>
-      <li>
-        <a href="{{ '/rulebooks/transaction_data/Payment.html' | relative_url }}">
-          <span class="spec-grid__n">7</span>
-          <h3>Payment Rulebook</h3>
-          <p>The concrete base Payment transaction data type.</p>
-        </a>
-      </li>
-      <li>
-        <a href="{{ '/rulebooks/transaction_data/Generic.html' | relative_url }}">
-          <span class="spec-grid__n">8</span>
-          <h3>Generic Rulebook</h3>
-          <p>Free-form transaction data for login, AISP consent, and other non-payment authorizations.</p>
-        </a>
-      </li>
-      <li>
-        <a href="{{ '/rulebooks/transaction_data/Mandate.html' | relative_url }}">
-          <span class="spec-grid__n">9</span>
-          <h3>Mandate Rulebook</h3>
-          <p>Authorize a delegate, business, or software agent to act on the user's behalf under defined limits.</p>
-        </a>
-      </li>
     </ol>
+
+    <div class="rulebooks-subsection">
+      <span class="eyebrow eyebrow--yellow">Transaction Data Type Rulebooks</span>
+      <h3 id="rulebooks-h">Concrete transaction data types</h3>
+      <p class="lede lede--inverted">Each rulebook defines the payload schema, display, and verification rules for a specific transaction data type identifier.</p>
+
+      <ol class="spec-grid">
+        <li>
+          <a href="{{ '/rulebooks/transaction_data/Payment.html' | relative_url }}">
+            <span class="spec-grid__n">1</span>
+            <h3>Payment Rulebook</h3>
+            <p>The concrete base Payment transaction data type.</p>
+          </a>
+        </li>
+        <li>
+          <a href="{{ '/rulebooks/transaction_data/Generic.html' | relative_url }}">
+            <span class="spec-grid__n">2</span>
+            <h3>Generic Rulebook</h3>
+            <p>Free-form transaction data for login, AISP consent, and other non-payment authorizations.</p>
+          </a>
+        </li>
+        <li>
+          <a href="{{ '/rulebooks/transaction_data/Mandate.html' | relative_url }}">
+            <span class="spec-grid__n">3</span>
+            <h3>Mandate Rulebook</h3>
+            <p>Authorize a delegate, business, or software agent to act on the user's behalf under defined limits.</p>
+          </a>
+        </li>
+      </ol>
+    </div>
 
     <a class="license-card" href="https://github.com/digitallabor-berlin/payments-and-sca-for-openid/blob/master/LICENSE.txt" target="_blank" rel="noopener license">
       <span class="license-card__tag">CC BY 4.0</span>

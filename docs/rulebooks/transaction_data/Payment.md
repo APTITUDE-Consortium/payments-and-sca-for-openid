@@ -49,3 +49,105 @@ In addition to the verification procedure defined in [PaSO Proof Verify], the Au
 | [PaSO Proof Verify] | [PaSO Proof: Verify Module](../../specs/proof/paso-proof-verify.md) |
 | [PaSO View]         | [PaSO View](../../specs/paso-view.md)                               |
 | [W3C.SRI]           | [Subresource Integrity](https://www.w3.org/TR/SRI/)                 |
+
+## Annex A: Examples
+
+_**Note**: This annex is **informative**._
+
+### A.1 One-Time Checkout Payment
+
+Transaction data for a single payment of €49.99 to an online retailer named "Acme Store", including the Payee's verified logo:
+
+```json
+{
+  "type": "urn:paso:sca:global:payment:1",
+  "credential_ids": ["bank_payment_card"],
+  "payload": {
+    "transaction_id": "chk_2026-06-02_3f9b",
+    "amount": "49.99 EUR",
+    "payee": {
+      "name": "Acme Store",
+      "id": "DE987654321",
+      "logo": "https://cdn.acme.example/logo.png",
+      "logo#integrity": "sha256-abc123def456ghi789jkl012mno345pqr678stu901vwx234yz="
+    }
+  }
+}
+```
+
+Corresponding `transaction_data_types` entry in the signed credential metadata:
+
+```json
+{
+  "urn:paso:sca:global:payment:1": {
+    "claims": [
+      { "path": ["transaction_id"] },
+      {
+        "path": ["amount"],
+        "mandatory": true,
+        "value_type": "iso_currency_amount",
+        "display": [
+          { "locale": "en", "name": "Amount" },
+          { "locale": "de", "name": "Betrag" }
+        ]
+      },
+      {
+        "path": ["payee", "name"],
+        "mandatory": true,
+        "display": [
+          { "locale": "en", "name": "Payee" },
+          { "locale": "de", "name": "Empfänger" }
+        ]
+      },
+      { "path": ["payee", "id"], "mandatory": true },
+      {
+        "path": ["payee", "logo"],
+        "value_type": "image",
+        "display": [
+          { "locale": "en", "name": "Payee logo" },
+          { "locale": "de", "name": "Logo des Empfängers" }
+        ]
+      },
+      { "path": ["payee", "logo#integrity"] }
+    ],
+    "ui_labels": {
+      "transaction_title": [
+        { "locale": "en", "value": "Confirm Payment" },
+        { "locale": "de", "value": "Zahlung bestätigen" }
+      ],
+      "affirmative_action_label": [
+        { "locale": "en", "value": "Pay" },
+        { "locale": "de", "value": "Bezahlen" }
+      ]
+    }
+  }
+}
+```
+
+The Wallet renders, in claim order: **Amount** — €49.99, **Payee** — Acme Store, **Payee logo** — (resolved + SRI-verified image).
+
+```text
+┌────────────────────────────────────────────┐
+│                                            │
+│            Confirm Payment                 │
+│                                            │
+├────────────────────────────────────────────┤
+│                                            │
+│  Amount                                    │
+│    €49.99                                  │
+│                                            │
+│  Payee                                     │
+│    Acme Store                              │
+│                                            │
+│  Payee logo                                │
+│    ┌──────────────────┐                    │
+│    │   [ACME logo]    │                    │
+│    │   (PNG, SRI ✓)   │                    │
+│    └──────────────────┘                    │
+│                                            │
+├────────────────────────────────────────────┤
+│                                            │
+│       [ Cancel ]        [ Pay ]            │
+│                                            │
+└────────────────────────────────────────────┘
+```

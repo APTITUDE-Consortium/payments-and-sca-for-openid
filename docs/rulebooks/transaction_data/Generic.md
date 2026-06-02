@@ -59,6 +59,32 @@ The payload object **SHALL** contain no more than **11 properties** in total. Of
 | `["payment_payload"]`  | false       | _(object)_              | no        | An embedded payload of type `urn:paso:sca:global:payment:1` as defined in the [Payment] rulebook. **MAY** be used to leverage the payment data structure for authorization scenarios such as e-mandate setup for merchant-initiated transactions (MITs). |
 | `["<custom_key>"]`     | false       | any [PaSO View] type    | yes       | A Relying-Party-defined custom claim. The value **MUST** be a JSON string or `null`. The key **MUST** be a string and **MUST** be declared in the credential metadata `claims` array with a localised `display` array.                                   |
 
+The payload-property budget is fixed at 11 slots. The diagram below shows how the slots split between the reserved keys and the flexible custom-claim region:
+
+```text
+            ╔══════════════ payload (max 11 properties) ══════════════╗
+slot  1 →   ║ transaction_id           REQUIRED, not displayed        ║
+slot  2 →   ║ payment_payload          OPTIONAL (Payment rulebook)    ║
+            ╠──── custom claims (up to 10, total cap still 11) ───────╣
+slot  3 →   ║ <custom_key_1>           string | null                  ║
+slot  4 →   ║ <custom_key_2>           string | null                  ║
+slot  5 →   ║ <custom_key_3>           string | null                  ║
+slot  6 →   ║ <custom_key_4>           string | null                  ║
+slot  7 →   ║ <custom_key_5>           string | null                  ║
+slot  8 →   ║ <custom_key_6>           string | null                  ║
+slot  9 →   ║ <custom_key_7>           string | null                  ║
+slot 10 →   ║ <custom_key_8>           string | null                  ║
+slot 11 →   ║ <custom_key_9>           string | null                  ║
+            ║ <custom_key_10>          ✗ blocked: 11-property cap     ║
+            ╚═════════════════════════════════════════════════════════╝
+
+If payment_payload is OMITTED:    transaction_id + up to 10 customs  = 11
+If payment_payload is PRESENT:    transaction_id + payment_payload
+                                                 + up to  9 customs  = 11
+```
+
+The 10-custom upper bound applies independently of the 11-property cap. The cap is always the binding constraint when `payment_payload` is present.
+
 ### 3.1 Custom Claims
 
 Each custom claim **SHALL** satisfy all of the following:

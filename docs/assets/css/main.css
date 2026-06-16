@@ -666,6 +666,7 @@ em { font-style: italic; color: var(--eu-blue); }
   border-collapse: collapse;
   font-size: 0.96rem;
   background: var(--bg);
+  color: var(--ink);
 }
 .reg-table th, .reg-table td {
   text-align: left;

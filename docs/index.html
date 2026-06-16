@@ -434,6 +434,84 @@ description: The trust and proof layer that lets OpenID wallets satisfy Strong C
   </div>
 </section>
 
+<section class="band band--blue" id="ts12" aria-labelledby="ts12-h">
+  <div class="band__inner">
+    <span class="eyebrow eyebrow--yellow">TS12 → PaSO</span>
+    <h2 id="ts12-h">What changed</h2>
+    <p class="lede lede--inverted">
+      PaSO builds on <a href="https://github.com/eu-digital-identity-wallet/eudi-doc-standards-and-technical-specifications/blob/main/docs/technical-specifications/ts12-electronic-payments-SCA-implementation-with-wallet.md" rel="noopener"><strong>TS12</strong></a>,
+      the technical specification for performing PSD2 Strong Customer Authentication with a wallet, developed within the Large Scale Pilots for the European Digital Identity Wallet
+      to define how OpenID4VP can carry SCA and dynamic linking. PaSO keeps that foundation — OpenID4VP, dynamic linking, and a cryptographic SCA proof — and extends it
+      with the verification, trust, rendering, and governance machinery a real deployment needs.
+    </p>
+
+    <div class="table-wrap">
+      <table class="reg-table">
+        <thead>
+          <tr><th>Area</th><th>TS12</th><th>PaSO</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Roles</strong></td>
+            <td>Single verifier; what happens after it receives the presentation is out of scope</td>
+            <td>Distinct <strong>Relying Party</strong> (collects consent) and <strong>Authorizing Party</strong> (verifies &amp; settles) — matches real payment topology</td>
+          </tr>
+          <tr>
+            <td><strong>Verification</strong></td>
+            <td>"The Relying Party shall verify the presentation" — no procedure, packet, or transport</td>
+            <td>Defined <strong>proof package</strong>, step-by-step <strong>verification procedure</strong>, and HTTP <strong>ingestion endpoint</strong> — independently re-verifiable by the liable party</td>
+          </tr>
+          <tr>
+            <td><strong>Metadata trust</strong></td>
+            <td>Transaction types in unsigned VC type metadata; integrity hashes optional</td>
+            <td><strong>Signed credential metadata</strong>, issuer-bound, re-verified on every use — admissible as evidence</td>
+          </tr>
+          <tr>
+            <td><strong>Rendering</strong></td>
+            <td>Four fixed transaction schemas the wallet must hard-code</td>
+            <td><strong>Generic metadata-driven rendering</strong> via reusable value types — new types need no wallet update; the precondition for broad bank adoption</td>
+          </tr>
+          <tr>
+            <td><strong>Proof contents</strong></td>
+            <td><code>jti</code>, <code>amr</code>, transaction-data hash</td>
+            <td>Adds <code>request_integrity</code>, <code>metadata_integrity</code>, <code>display_locale</code>, <code>wallet_instance_version</code> — records <em>what the user saw</em>, not just that they signed</td>
+          </tr>
+          <tr>
+            <td><strong>Auth factors</strong></td>
+            <td>Bespoke <code>amr</code> taxonomy</td>
+            <td>IANA <strong>RFC 8176</strong> values + checkable <code>bio_strong</code> / <code>bio_weak</code> criteria — interoperable and policy-verifiable</td>
+          </tr>
+          <tr>
+            <td><strong>Credential formats</strong></td>
+            <td>SD-JWT VC only</td>
+            <td><strong>SD-JWT VC and mdoc</strong> — both mandatory EUDI formats</td>
+          </tr>
+          <tr>
+            <td><strong>Multiple credentials</strong></td>
+            <td>Combined presentations mentioned, mechanics undefined</td>
+            <td><strong>Advanced profile</strong> with formal <strong>transposability</strong> + <strong>versioned fallback</strong> — honest consent, safe upgrades</td>
+          </tr>
+          <tr>
+            <td><strong>Audit log</strong></td>
+            <td>List of fields to record</td>
+            <td>Retains request, response, metadata &amp; resolved resources for <strong>exact replay</strong> — supports the PSD2 burden of proof</td>
+          </tr>
+          <tr>
+            <td><strong>Governance</strong></td>
+            <td>One "SCA Attestation Rulebook" concept</td>
+            <td>Split <strong>Credential</strong> vs <strong>Transaction Data Type</strong> rulebooks, <strong>versioned URN</strong> identifiers, generic <strong>Mandate</strong> type (e-mandates, delegation, agentic commerce)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <strong>The bottom line.</strong>
+      PaSO turns TS12's foundation into a specification complete enough to deploy — adding the verification, trust, rendering, and governance pieces that real codebases, bank integrations, and settlement paths depend on.
+    </div>
+  </div>
+</section>
+
 <section class="band band--specs" id="specs" aria-labelledby="specs-h">
   <div class="band__inner">
     <span class="eyebrow eyebrow--yellow">Specifications</span>

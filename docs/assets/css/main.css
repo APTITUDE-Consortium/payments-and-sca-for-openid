@@ -681,8 +681,6 @@ em { font-style: italic; color: var(--eu-blue); }
   font-size: 0.88rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  position: sticky;
-  top: 60px;
 }
 .reg-table tbody tr:nth-child(even) td { background: var(--bg-soft); }
 .reg-table tbody tr:hover td { background: #fff7d1; }

@@ -36,23 +36,7 @@ This rulebook does **not** define a normative registry of subtype values. Coordi
 
 Within the rest of this document, the phrase "this type identifier" refers to any URN matching the above pattern.
 
-## 2 Credential Requirements
-
-PaSO Credentials used with this transaction data type **SHALL** contain the following attributes:
-
-| Attribute                | Description                                                                                                                          |
-|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| `authorizing_party`      | The domain of the Authorizing Party's ingestion system (the party that registers and enforces the mandate).                          |
-| `authorizing_party_name` | The human-readable name of the Authorizing Party.                                                                                    |
-
-In addition, when the payload includes a `payment_payload` (see Section 3.2), the PaSO Credential **SHALL** also contain the following attributes:
-
-| Attribute                | Description                                                       |
-|--------------------------|-------------------------------------------------------------------|
-| `payment_network`        | The hostname of the payment network that settles the transaction. |
-| `payment_network_name`   | The human-readable name of the payment network.                   |
-
-## 3 Transaction Data Claims
+## 2 Transaction Data Claims
 
 | `path`                            | `mandatory` | `value_type`          | `display` | Description                                                                                                                                                                                                                       |
 |-----------------------------------|-------------|-----------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -69,19 +53,19 @@ In addition, when the payload includes a `payment_payload` (see Section 3.2), th
 | `["period"]`                      | false       | _(text)_              | yes       | The period over which `max_amount` and `max_count` apply, where applicable (e.g., `"per month"`, `"per calendar year"`, `"over the validity of this mandate"`).                                                                     |
 | `["valid_from"]`                  | false       | `iso_date`            | yes       | First date on which the mandate becomes effective. If omitted, the mandate is effective immediately upon Authorizing Party registration.                                                                                          |
 | `["valid_until"]`                 | true        | `iso_date`            | yes       | Last date on which the mandate is effective. The Authorizing Party **SHALL NOT** honor the mandate after this date.                                                                                                                |
-| `["payment_payload"]`             | false       | _(object)_            | no        | An embedded payload of type `urn:paso:sca:global:payment:1` as defined in the [Payment] rulebook. See Section 3.2.                                                                                                                  |
+| `["payment_payload"]`             | false       | _(object)_            | no        | An embedded payload of type `urn:paso:sca:global:payment:1` as defined in the [Payment] rulebook. See Section 2.2.                                                                                                                  |
 
-### 3.1 Rendering
+### 2.1 Rendering
 
 A Wallet implementing this rulebook **SHALL** render the displayable claims in the table order above, applying [PaSO View] formatting rules for each `value_type`. The Wallet **MAY** group `max_amount`, `max_count`, and `period` into a single visual "limit" block. The Wallet **SHALL** ensure that every displayable claim has been shown to the User before enabling the confirmation action, as required by [PaSO Core] Section 5.3 and [PaSO View] Section 2.
 
-### 3.2 Embedded Payment Payload
+### 2.2 Embedded Payment Payload
 
 When `payment_payload` is present, its value **SHALL** be a payload object conforming to the [Payment] rulebook (`urn:paso:sca:global:payment:1`). The Wallet **SHALL** render the `payment_payload` block as a clearly delimited section of the consent screen, immediately after the Mandate claims, and **SHALL** apply the Payment rulebook's display and verification semantics to its contents.
 
 A `payment_payload` carries a single representative payment instance: for an e-mandate, this is typically the first or template collection; for an agentic-commerce mandate that authorizes a single purchase, it is the payment itself. The presence of `payment_payload` does not extend the mandate's authority beyond what is described by `action`, `conditions`, and the limit claims — the embedded payment is informational unless the mandate's `action` and `conditions` expressly authorize its execution.
 
-## 4 Authorizing Party Verification
+## 3 Authorizing Party Verification
 
 In addition to the verification procedure defined in [PaSO Proof Verify], the Authorizing Party verifies the following for this transaction data type:
 
@@ -91,10 +75,10 @@ In addition to the verification procedure defined in [PaSO Proof Verify], the Au
 4. `action` is present and non-empty.
 5. `valid_until` is present, parses as an [ISO 8601] date, and is not in the past at the time of verification. If `valid_from` is present, it parses as an [ISO 8601] date and is not later than `valid_until`.
 6. If `max_amount` is present, it conforms to the payment network's rules (e.g., valid currency, supported amount range). If `period` is present alongside `max_amount` or `max_count`, the combination is supported by the Authorizing Party's enforcement engine.
-7. If `payment_payload` is present, the Authorizing Party verifies it per the [Payment] rulebook's Section 3 and confirms that the embedded payment falls within the mandate's scope (`action`, `conditions`, limits, validity period).
+7. If `payment_payload` is present, the Authorizing Party verifies it per the [Payment] rulebook's Section 2 and confirms that the embedded payment falls within the mandate's scope (`action`, `conditions`, limits, validity period).
 8. If a `transaction_id` is present, the Authorizing Party **MAY** use it for end-to-end correlation with the Relying Party's systems.
 
-## 5 References
+## 4 References
 
 | Reference           | Description                                                              |
 |---------------------|--------------------------------------------------------------------------|

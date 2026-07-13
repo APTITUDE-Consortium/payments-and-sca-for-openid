@@ -15,7 +15,7 @@ This document defines how an Authorizing Party receives, verifies, and authorize
 
 After the Wallet produces a presentation response, the Relying Party forwards the proof package to the Authorizing Party. This module defines what the proof package contains, how the Authorizing Party verifies it, and a standard HTTP endpoint for receiving it.
 
-The Authorizing Party's public key and endpoint URI are obtained via [PaSO Trust] or the applicable Transaction Data Type Rulebook.
+How the Relying Party obtains the Authorizing Party's public key and endpoint URI is out of scope of this document.
 
 ### 1.2 Requirements Notation
 
@@ -97,14 +97,13 @@ The Relying Party **SHOULD** encrypt the proof package as a [JWE] compact serial
 
 The JWE payload is the JSON proof package defined in Section 4.1. The JOSE header **SHALL** include the Relying Party's certificate chain in the `x5c` parameter.
 
-How the Relying Party obtains the Authorizing Party's public key is determined by [PaSO Trust] or the applicable Transaction Data Type Rulebook.
+How the Relying Party obtains the Authorizing Party's public key is out of scope of this document.
 
 ## 5 References
 
 | Reference             | Description                                                                                                                |
 |-----------------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core]           | [PaSO Core](../paso-core.md)                                                                                               |
-| [PaSO Trust]          | PaSO Trust (forthcoming)                                                                                                   |
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](paso-proof-metadata.md)                                                                      |
 | [OID4VP]              | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |
 | [JAR]                 | [RFC 9101 — JWT-Secured Authorization Request](https://www.rfc-editor.org/rfc/rfc9101.html)                                |

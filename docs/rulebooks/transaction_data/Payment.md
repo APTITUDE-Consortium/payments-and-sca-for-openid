@@ -11,18 +11,7 @@ A single payment. The User authorizes a one-time transfer of a specific amount t
 
 Attestation Providers **SHALL** use the claims exactly as specified below. Attestation Providers **MAY** add additional claims without a `display` array for internal processing purposes. The order of claims in the table defines the normative claim order; Attestation Providers **SHALL** list the claims in their `claims` arrays in this order. Value types are as defined in [PaSO View].
 
-## 1 Credential Requirements
-
-PaSO Credentials used with this transaction data type **SHALL** contain the following attributes:
-
-| Attribute                | Description                                                       |
-|--------------------------|-------------------------------------------------------------------|
-| `authorizing_party`      | The domain of the Authorizing Party's ingestion system.           |
-| `authorizing_party_name` | The human-readable name of the Authorizing Party.                 |
-| `payment_network`        | The hostname of the payment network that settles the transaction. |
-| `payment_network_name`   | The human-readable name of the payment network.                   |
-
-## 2 Transaction Data Claims
+## 1 Transaction Data Claims
 
 | `path`                        | `mandatory` | `value_type`          | `display` | Description                                                                                                          |
 |-------------------------------|-------------|-----------------------|-----------|----------------------------------------------------------------------------------------------------------------------|
@@ -33,7 +22,7 @@ PaSO Credentials used with this transaction data type **SHALL** contain the foll
 | `["payee", "logo"]`           | false       | `image`               | yes       | Logo of the Payee. A dedicated UI **MAY** choose to not display it.                                                  |
 | `["payee", "logo#integrity"]` | false       | _(text)_              | no        | [W3C.SRI] hash of the logo content. **MUST** be present if `payee.logo` is a resolvable URL.                         |
 
-## 3 Authorizing Party Verification
+## 2 Authorizing Party Verification
 
 In addition to the verification procedure defined in [PaSO Proof Verify], the Authorizing Party verifies the following for this transaction data type:
 
@@ -41,7 +30,7 @@ In addition to the verification procedure defined in [PaSO Proof Verify], the Au
 2. The `amount` conforms to the payment network's rules (e.g., valid currency, supported amount range).
 3. If a `transaction_id` is present, the Authorizing Party may use it for end-to-end correlation with the Relying Party's systems.
 
-## 4 References
+## 3 References
 
 | Reference           | Description                                                         |
 |---------------------|---------------------------------------------------------------------|

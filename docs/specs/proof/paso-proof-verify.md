@@ -59,6 +59,7 @@ Upon receiving the proof package, the Authorizing Party **SHALL** perform the fo
    - Verify that every required signal is present in the `risk_signals` claim, with any `status`.
    - Verify each envelope is well-formed and that its `collected_at` is within an acceptable freshness window.
    - Interpreting signal values to reach a risk decision is out of scope and left to Authorizing Party policy.
+   - When encryption is required for the transaction data type, verify that the `risk_signals` value is an encrypted structure and reject a plaintext value; the presence, well-formedness, and freshness checks are performed by the holder of the issuer decryption key after decryption, as defined in [PaSO Risk Signals] Section 6.1.
 
 If any check fails, the Authorizing Party **SHALL** reject the transaction.
 

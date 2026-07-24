@@ -1,7 +1,7 @@
 .idea
 *.iml
 .DS_Store
-
+.pi/
 # Jekyll
 docs/_site
 docs/.sass-cache

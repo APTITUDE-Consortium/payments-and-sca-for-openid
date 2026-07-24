@@ -25,6 +25,8 @@ As an exception to [PaSO Proof Metadata], the Wallet **MAY** use integrity-verif
 
 When displaying a PaSO Credential in [SD-JWT-VC] format, the Wallet **SHALL** resolve display metadata following the priority order defined in [OID4VCI] Section 12.2.4. [SD-JWT-VC] integrity verification is always required in a PaSO context; any resource that is not integrity-verified **SHALL** be considered absent.
 
+For risk-signal encryption, the Wallet **MAY** obtain the issuer encryption key from integrity-verified [SD-JWT-VC] Type Metadata as an equal-integrity alternative to the signed credential metadata JWT, per [PaSO Risk Signals]. Consistent with the rule above, a key that is not integrity-verified **SHALL** be considered absent.
+
 ## 3 SVG Embedded Resource Integrity
 
 SVG template retrieval, integrity verification, and placeholder substitution **SHALL** follow [SD-JWT-VC] Sections 7 and 8.
@@ -43,6 +45,7 @@ If the fragment is missing, invalid, or verification fails, the SVG document **S
 |-----------------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core]           | [PaSO Core](../paso-core.md)                                                                                               |
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](paso-proof-metadata.md)                                                                      |
+| [PaSO Risk Signals]   | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                              |
 | [OID4VCI]             | [OpenID for Verifiable Credential Issuance 1.0](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) |
 | [SD-JWT-VC]           | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
 | [RFC2119]             | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |

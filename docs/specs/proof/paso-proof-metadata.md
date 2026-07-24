@@ -46,6 +46,7 @@ The credential metadata for a PaSO Credential **SHALL** include the following pa
   - **`risk_signals`**: **OPTIONAL** (array). Declares the risk signals that apply to this transaction data type, per [PaSO Risk Signals]. Each element is an object with:
     - **`type`**: **REQUIRED** (string). A risk-signal type URN (`urn:paso:risk:<domain>:<suffix>:<version>`).
     - **`required`**: **OPTIONAL** (boolean, default `false`). When `true`, the Wallet **SHALL** include this signal's envelope in the holder binding proof, reporting its `status` even when the value cannot be measured.
+  - **`encrypted`**: **OPTIONAL** (boolean, default `false`). When `true`, the Wallet **SHALL** encrypt the `risk_signals` array for this transaction data type to the issuer encryption key, per [PaSO Risk Signals]. Encryption is also required, independently of this flag, when the applicable Transaction Data Type Rulebook mandates it.
   - Additional parameters **MAY** be defined and used. The Wallet **MUST** ignore any unrecognised parameters.
 
 A PaSO Credential **SHALL NOT** be accepted by the Wallet unless its credential metadata was obtained as a signed JWT from the `credential_metadata_uri` and successfully verified per Section 6. The signed credential metadata JWT is the sole authoritative source for the credential metadata; the Wallet **SHALL NOT** use unsigned credential metadata from the Credential Issuer Metadata endpoint for PaSO Credentials.
@@ -98,6 +99,7 @@ When the Wallet requests `Accept: application/jwt`, the Attestation Provider **S
   - `exp`: **REQUIRED**. Expiration time. The Attestation Provider **SHOULD** set a validity period appropriate for the rate of metadata change.
   - `credential_metadata_uri`: **REQUIRED**. The URL from which this JWT was served and from which the Wallet **SHALL** re-fetch it upon renewal.
   - `credential_metadata`: **REQUIRED**. The `credential_metadata` object as defined in [OID4VCI] Section 12.2.4, extended with `transaction_data_types` per Section 3.
+  - `risk_signals_encryption_keys`: **OPTIONAL**. A set of issuer public keys used to encrypt risk signals per [PaSO Risk Signals]. For [SD-JWT-VC], a JWK Set per [RFC7517] in which each key has `use` set to `enc`, a `kid`, and an `alg`; for [mdoc], one or more `COSE_Key` structures per [RFC9052]. **REQUIRED** when encryption is required for any transaction data type of this credential, whether via the `encrypted` flag in Section 3 or the applicable Transaction Data Type Rulebook.
 - The JWT **SHALL** be signed using an algorithm appropriate for the key in the `x5c` leaf certificate.
 
 The Attestation Provider **SHALL** rotate signed credential metadata JWTs before their `exp` time and **SHOULD** set `exp` values that balance freshness against unnecessary network traffic.
@@ -145,6 +147,8 @@ Credential metadata retrieval **SHALL NOT** be linkable to credential usage. The
 | [RFC5646]   | [RFC 5646 — Tags for Identifying Languages](https://www.rfc-editor.org/rfc/rfc5646.html)                                   |
 | [SD-JWT-VC] | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
 | [mdoc]      | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |
+| [RFC7517]   | [RFC 7517 — JSON Web Key (JWK)](https://www.rfc-editor.org/rfc/rfc7517.html)                                               |
+| [RFC9052]   | [RFC 9052 — CBOR Object Signing and Encryption (COSE)](https://www.rfc-editor.org/rfc/rfc9052.html)                        |
 
 ## Annex A: Examples
 

@@ -43,6 +43,9 @@ The credential metadata for a PaSO Credential **SHALL** include the following pa
 - **`transaction_data_types`**: **REQUIRED** (object). An object where each key is a transaction data type identifier following the `urn:paso:sca:<domain>:<suffix>:<version>` structure defined in [PaSO Core] Section 5.2, and each value is an object containing:
   - **`claims`**: **REQUIRED**. Array of claim metadata objects per Section 3.1.
   - **`ui_labels`**: **REQUIRED** when the credential is issued to a Wallet that does not have a dedicated UI for the transaction data type; **OPTIONAL** otherwise. Object providing localised strings for the consent UI per Section 3.2.
+  - **`risk_signals`**: **OPTIONAL** (array). Declares the risk signals that apply to this transaction data type, per [PaSO Risk Signals]. Each element is an object with:
+    - **`type`**: **REQUIRED** (string). A risk-signal type URN (`urn:paso:risk:<domain>:<suffix>:<version>`).
+    - **`required`**: **OPTIONAL** (boolean, default `false`). When `true`, the Wallet **SHALL** include this signal's envelope in the holder binding proof, reporting its `status` even when the value cannot be measured.
   - Additional parameters **MAY** be defined and used. The Wallet **MUST** ignore any unrecognised parameters.
 
 A PaSO Credential **SHALL NOT** be accepted by the Wallet unless its credential metadata was obtained as a signed JWT from the `credential_metadata_uri` and successfully verified per Section 6. The signed credential metadata JWT is the sole authoritative source for the credential metadata; the Wallet **SHALL NOT** use unsigned credential metadata from the Credential Issuer Metadata endpoint for PaSO Credentials.
@@ -134,6 +137,7 @@ Credential metadata retrieval **SHALL NOT** be linkable to credential usage. The
 | Reference   | Description                                                                                                                |
 |-------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core] | [PaSO Core](../paso-core.md)                                                                                               |
+| [PaSO Risk Signals]   | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                              |
 | [OID4VP]    | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |
 | [OID4VCI]   | [OpenID for Verifiable Credential Issuance 1.0](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) |
 | [RFC2119]   | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |

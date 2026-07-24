@@ -143,6 +143,7 @@ The Wallet **SHALL** include the following claims in every PaSO Credential prese
 | `metadata_integrity`        | conditional | The [W3C.SRI] integrity value of the signed credential metadata JWT (per [PaSO Proof Metadata]) used to display the transaction data during this presentation. **REQUIRED** when a signed credential metadata JWT was used; absent otherwise. |
 | `request_integrity`         | yes         | The [W3C.SRI] integrity value of the signed [OID4VP] Authorization Request ([JAR] Request Object) as received by the Wallet, computed over the compact-serialised JWT string.                                                                 |
 | `wallet_instance_version`   | yes         | Version identifier of the Wallet application that authorized the transaction.                                                                                                                                                                 |
+| `risk_signals`              | conditional | An array of risk-signal envelopes per [PaSO Risk Signals]. **REQUIRED** when the matched transaction data type has one or more required risk signals; absent otherwise.                                                                       |
 
 ### 6.2 Authentication Methods
 
@@ -178,6 +179,7 @@ For PaSO Credentials in [mdoc] format, the Wallet **SHALL** include device authe
 | `metadata_integrity`        | tstr          |
 | `request_integrity`         | tstr          |
 | `wallet_instance_version`   | tstr          |
+| `risk_signals`              | array of maps |
 
 ## 7 Transaction Data Processing
 
@@ -264,6 +266,7 @@ For the PaSO-targeted entries, the Wallet **SHALL** perform the following steps:
 | [SD-JWT-VC]           | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
 | [mdoc]                | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](proof/paso-proof-metadata.md)                                                                |
+| [PaSO Risk Signals]   | [PaSO Proof: Risk Signals Module](proof/paso-proof-risk-signals.md)                                                         |
 | [JAR]                 | [RFC 9101 — JWT-Secured Authorization Request](https://www.rfc-editor.org/rfc/rfc9101.html)                                |
 | [W3C.SRI]             | [Subresource Integrity](https://www.w3.org/TR/SRI/)                                                                        |
 

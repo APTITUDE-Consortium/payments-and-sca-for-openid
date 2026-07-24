@@ -128,6 +128,8 @@ The Wallet **SHALL** carry risk signals in the holder binding proof as an additi
 
 Because the claim is part of the holder binding proof, it is covered by the same signature and dynamic-linking guarantee as the other SCA response claims; no separate hash or signature is defined.
 
+When encryption is required for the matched transaction data type (Section 7), the value of the `risk_signals` claim is the encrypted structure defined in Section 7.5 instead of the plaintext array defined in this section and its profiles.
+
 ### 5.1 SD-JWT-VC Profile
 
 For PaSO Credentials in [SD-JWT-VC] format, `risk_signals` **SHALL** be included as a top-level claim in the Key Binding JWT payload, alongside the other SCA response claims.
@@ -144,7 +146,7 @@ Each envelope is encoded as a CBOR map. Within it, `type`, `collected_at`, and `
 
 ## 6 Verification
 
-The Authorizing Party **SHALL** perform the following checks in addition to those in [PaSO Proof Verify], after the SCA response claims verification:
+The Authorizing Party **SHALL** perform the following checks in addition to those in [PaSO Proof Verify], after the SCA response claims verification. When the risk signals are encrypted (Section 7), these checks apply to the decrypted array and verification responsibilities are split as defined in Section 6.1.
 
 1. **Presence of required signals.** Determine the required signal set for the matched transaction data type (the union defined in Section 4.1). For every required signal, verify that an envelope with the matching `type` is present in the `risk_signals` array, with any `status`. If a required signal's envelope is missing, the Authorizing Party **SHALL** reject the transaction.
 
@@ -156,17 +158,100 @@ The Authorizing Party **SHALL** perform the following checks in addition to thos
 
 Envelopes for signal types the Authorizing Party does not recognise, and optional signals, **MAY** be ignored.
 
-## 7 References
+### 6.1 Encrypted Risk Signals
+
+When encryption is required for the matched transaction data type (Section 7.2), verification is split between the Authorizing Party and the holder of the issuer decryption key.
+
+The Authorizing Party, without access to the plaintext, **SHALL**:
+
+1. verify the holder binding proof signature, which covers the encrypted `risk_signals` value and binds it to the transaction; and
+2. verify that the `risk_signals` value is an encrypted structure (Section 7.5). If encryption was required but the value is plaintext, the Authorizing Party **SHALL** reject the transaction.
+
+The holder of the issuer decryption key — the issuer, which in a first-party flow ([PaSO Core] Section 3) is the Authorizing Party — **SHALL**:
+
+3. decrypt the `risk_signals` value using the private key referenced by the encrypted structure's key identifier; and
+4. perform the checks of this section (presence of required signals, envelope well-formedness, freshness) on the decrypted array.
+
+How the encrypted structure reaches the issuer in a third-party flow where the Authorizing Party is not the issuer, and the channel between them, are out of scope for this module.
+
+## 7 Encryption of Risk Signals
+
+### 7.1 Overview
+
+For privacy, the risk-signals section **MAY** be required to be encrypted so that a Relying Party forwarding the proof package in a third-party flow ([PaSO Core] Section 3) cannot read the user's device and behavioral data. When encryption is required, the Wallet encrypts the entire `risk_signals` array to the issuer's public key. Only the holder of the corresponding private key — the issuer, which is or feeds the Authorizing Party — can decrypt and read the signals.
+
+### 7.2 Encryption Trigger
+
+Encryption is **required** for a transaction data type when **either** source mandates it:
+
+1. the applicable Transaction Data Type Rulebook, or
+2. the issuer's credential metadata, via the `encrypted` flag on the `transaction_data_types` entry (per [PaSO Proof Metadata]).
+
+If either source requires encryption, the Wallet **SHALL** encrypt. Encryption applies to the entire `risk_signals` array for that transaction data type; individual signals are not encrypted separately.
+
+### 7.3 Encryption Key
+
+The Wallet **SHALL** obtain the issuer encryption key from the credential's signed credential metadata JWT, which is the authoritative source for a PaSO Credential's metadata (per [PaSO Proof Metadata] Section 3). For PaSO Credentials in [SD-JWT-VC] format, the Wallet **MAY** obtain the key from integrity-verified [SD-JWT-VC] Type Metadata as an equal-integrity alternative, mirroring the display relaxation in [PaSO Proof SD-JWT-VC and SVG] Section 2. A key that is not integrity-verified **SHALL** be treated as absent.
+
+The issuer publishes one or more encryption keys under the `risk_signals_encryption_keys` metadata member, each with a key identifier and its intended key-management algorithm:
+
+- For [SD-JWT-VC], as a JWK Set per [RFC7517], each JWK with `use` set to `enc`, a `kid`, and an `alg`.
+- For [mdoc], as one or more `COSE_Key` structures per [RFC9052], each with a key identifier and algorithm.
+
+When multiple keys are published, the Wallet **SHALL** select one and reference its key identifier in the encrypted structure's header.
+
+If encryption is required and no integrity-verified issuer encryption key is available, the Wallet **SHALL NOT** send the risk signals in plaintext. The Wallet **SHALL** treat the `transaction_data` entry as incompatible, cease processing it, and inform the user.
+
+### 7.4 Encryption Procedure
+
+The Wallet **SHALL** encrypt before signing the holder binding proof ("encrypt-then-sign"):
+
+1. Serialise the plaintext `risk_signals` array (Section 2.2).
+2. Encrypt it to the selected issuer key, producing a single encrypted structure.
+3. Place the encrypted structure as the value of the `risk_signals` claim.
+4. Produce the holder binding proof signature (Key Binding JWT for [SD-JWT-VC], device authentication for [mdoc]) over the proof including the encrypted `risk_signals` value.
+
+The holder binding proof signature therefore authenticates the ciphertext and binds it to the transaction; no separate hash of the risk signals is defined.
+
+### 7.5 Formats
+
+#### 7.5.1 SD-JWT-VC
+
+The `risk_signals` claim value **SHALL** be a [JWE] in compact serialization (a string) instead of the JSON array of Section 5.1. The JWE protected header **SHALL** include `alg` (key management), `enc` (content encryption), and `kid` (the selected issuer key).
+
+#### 7.5.2 mdoc
+
+The `risk_signals` device-signed element **SHALL** be a `COSE_Encrypt` structure per [RFC9052] instead of the array of maps of Section 5.2. The COSE headers **SHALL** identify the key and the algorithms.
+
+### 7.6 Algorithms
+
+The Wallet and the decryptor **SHALL** support the following baseline:
+
+- **[SD-JWT-VC] / JOSE**: `ECDH-ES` key agreement using the `P-256` curve with `A256GCM` content encryption, per [RFC7518].
+- **[mdoc] / COSE**: the equivalent `ECDH-ES` key agreement with `A256GCM` content encryption, per [RFC9052].
+
+Other algorithms **MAY** be used when the published issuer key declares them. The baseline guarantees a common denominator between the Wallet and the decryptor.
+
+### 7.7 Consumer Detection
+
+When encryption is required for the matched transaction data type, the consumer **SHALL** expect the `risk_signals` value to be an encrypted structure — a [JWE] compact string ([SD-JWT-VC]) or a `COSE_Encrypt` ([mdoc]) — rather than the plaintext structure of Section 5. A plaintext `risk_signals` value where encryption was required **SHALL** be rejected (Section 6.1).
+
+## 8 References
 
 | Reference             | Description                                                                                                                |
 |-----------------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core]           | [PaSO Core](../paso-core.md)                                                                                               |
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](paso-proof-metadata.md)                                                                      |
 | [PaSO Proof Verify]   | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                          |
+| [PaSO Proof SD-JWT-VC and SVG] | [PaSO Proof: SD-JWT-VC and SVG Module](paso-proof-sd-jwt-vc-svg.md)                                                        |
 | [RFC2119]             | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |
 | [RFC8174]             | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)        |
 | [SD-JWT-VC]           | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
 | [mdoc]                | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |
+| [JWE]                 | [RFC 7516 — JSON Web Encryption (JWE)](https://www.rfc-editor.org/rfc/rfc7516.html)                                        |
+| [RFC7517]             | [RFC 7517 — JSON Web Key (JWK)](https://www.rfc-editor.org/rfc/rfc7517.html)                                               |
+| [RFC7518]             | [RFC 7518 — JSON Web Algorithms (JWA)](https://www.rfc-editor.org/rfc/rfc7518.html)                                        |
+| [RFC9052]             | [RFC 9052 — CBOR Object Signing and Encryption (COSE)](https://www.rfc-editor.org/rfc/rfc9052.html)                        |
 | [ISO8601]             | [ISO 8601 — Date and time format](https://www.iso.org/iso-8601-date-and-time-format.html)                                  |
 
 ## Annex A: Examples
@@ -267,6 +352,59 @@ A `transaction_data_types` entry declaring required and optional risk signals (p
       { "type": "urn:paso:risk:global:geolocation:1", "required": true },
       { "type": "urn:paso:risk:global:call_activity:1", "required": true },
       { "type": "urn:paso:risk:global:device_motion:1", "required": false }
+    ]
+  }
+}
+```
+
+### A.5 Encrypted `risk_signals` Claim (SD-JWT-VC)
+
+When encryption is required, the KB-JWT `risk_signals` claim value is a JWE compact string instead of the array shown in A.2:
+
+```json
+{
+  "nonce": "bUtJdjJESWdmTWNjb011YQ",
+  "sd_hash": "Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY",
+  "jti": "deeec2b0-3bea-4477-bd5d-e3462a709481",
+  "amr": ["pin", "hwk", "bio_strong", "face"],
+  "display_locale": "de",
+  "transaction_data_hash": "OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q",
+  "transaction_data_hash_alg": "sha-256",
+  "risk_signals": "eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImtpZCI6Imlzc3Vlci1lbmMtMSJ9..O94i8v...ciphertext...Q.tag"
+}
+```
+
+The JWE protected header (decoded) is:
+
+```json
+{ "alg": "ECDH-ES", "enc": "A256GCM", "kid": "issuer-enc-1" }
+```
+
+### A.6 Issuer Encryption Key and Trigger (Metadata)
+
+A `transaction_data_types` entry requiring encryption, with the issuer encryption key published as a JWK Set in the signed credential metadata (per [PaSO Proof Metadata]):
+
+```json
+{
+  "transaction_data_types": {
+    "urn:paso:sca:global:payment:1": {
+      "risk_signals": [
+        { "type": "urn:paso:risk:global:geolocation:1", "required": true }
+      ],
+      "encrypted": true
+    }
+  },
+  "risk_signals_encryption_keys": {
+    "keys": [
+      {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+        "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
+        "use": "enc",
+        "kid": "issuer-enc-1",
+        "alg": "ECDH-ES"
+      }
     ]
   }
 }

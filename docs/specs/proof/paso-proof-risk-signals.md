@@ -204,7 +204,13 @@ A `risk_signals` array for a transaction that required geolocation and call acti
   {
     "type": "urn:paso:risk:global:device_motion:1",
     "collected_at": "2026-07-24T10:15:30Z",
-    "status": "denied"
+    "status": "ok",
+    "value": {
+      "window_ms": 1000,
+      "orientation": { "pitch": 5.2, "roll": -1.8, "yaw": 120.0 },
+      "acceleration": { "rms": 0.12, "max": 0.45 },
+      "rotation_rate": { "rms": 0.03, "max": 0.11 }
+    }
   }
 ]
 ```

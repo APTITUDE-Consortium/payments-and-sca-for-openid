@@ -54,6 +54,12 @@ Upon receiving the proof package, the Authorizing Party **SHALL** perform the fo
 
 5. **Payload verification**: Verify that the `transaction_data` entry's `payload` conforms to the applicable Transaction Data Type Rulebook. The specific checks are defined by the rulebook.
 
+6. **Risk-signals verification** per [PaSO Risk Signals] Section 6:
+   - Determine the required signal set for the matched transaction data type (the union of the issuer metadata `risk_signals` declaration and the Transaction Data Type Rulebook).
+   - Verify that every required signal is present in the `risk_signals` claim, with any `status`.
+   - Verify each envelope is well-formed and that its `collected_at` is within an acceptable freshness window.
+   - Interpreting signal values to reach a risk decision is out of scope and left to Authorizing Party policy.
+
 If any check fails, the Authorizing Party **SHALL** reject the transaction.
 
 ## 4 Transaction Ingestion Endpoint
@@ -105,6 +111,7 @@ How the Relying Party obtains the Authorizing Party's public key is out of scope
 |-----------------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core]           | [PaSO Core](../paso-core.md)                                                                                               |
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](paso-proof-metadata.md)                                                                      |
+| [PaSO Risk Signals]   | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                              |
 | [OID4VP]              | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |
 | [JAR]                 | [RFC 9101 — JWT-Secured Authorization Request](https://www.rfc-editor.org/rfc/rfc9101.html)                                |
 | [JWE]                 | [RFC 7516 — JSON Web Encryption](https://www.rfc-editor.org/rfc/rfc7516.html)                                              |

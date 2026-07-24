@@ -262,11 +262,12 @@ A `transaction_data_types` entry declaring required and optional risk signals (p
 
 ```json
 {
-  "type": "urn:paso:sca:global:payment:1",
-  "risk_signals": [
-    { "type": "urn:paso:risk:global:geolocation:1", "required": true },
-    { "type": "urn:paso:risk:global:call_activity:1", "required": true },
-    { "type": "urn:paso:risk:global:device_motion:1", "required": false }
-  ]
+  "urn:paso:sca:global:payment:1": {
+    "risk_signals": [
+      { "type": "urn:paso:risk:global:geolocation:1", "required": true },
+      { "type": "urn:paso:risk:global:call_activity:1", "required": true },
+      { "type": "urn:paso:risk:global:device_motion:1", "required": false }
+    ]
+  }
 }
 ```

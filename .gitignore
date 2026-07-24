@@ -1,7 +1,9 @@
 .idea
 *.iml
 .DS_Store
-
+.pi/
+.superpowers
+docs/superpowers
 # Jekyll
 docs/_site
 docs/.sass-cache

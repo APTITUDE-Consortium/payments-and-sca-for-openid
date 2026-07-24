@@ -143,7 +143,7 @@ The Wallet **SHALL** include the following claims in every PaSO Credential prese
 | `metadata_integrity`        | conditional | The [W3C.SRI] integrity value of the signed credential metadata JWT (per [PaSO Proof Metadata]) used to display the transaction data during this presentation. **REQUIRED** when a signed credential metadata JWT was used; absent otherwise. |
 | `request_integrity`         | yes         | The [W3C.SRI] integrity value of the signed [OID4VP] Authorization Request ([JAR] Request Object) as received by the Wallet, computed over the compact-serialised JWT string.                                                                 |
 | `wallet_instance_version`   | yes         | Version identifier of the Wallet application that authorized the transaction.                                                                                                                                                                 |
-| `risk_signals`              | conditional | An array of risk-signal envelopes per [PaSO Risk Signals]. **REQUIRED** when the matched transaction data type has one or more required risk signals; absent otherwise.                                                                       |
+| `risk_signals`              | conditional | An array of risk-signal envelopes per [PaSO Risk Signals]. **REQUIRED** when the matched transaction data type has one or more required risk signals; absent otherwise. When encryption is required for the transaction data type, this value is an encrypted structure per [PaSO Risk Signals] instead of a plaintext array. |
 
 ### 6.2 Authentication Methods
 

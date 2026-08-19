@@ -43,10 +43,14 @@ The credential metadata for a PaSO Credential **SHALL** include the following pa
 - **`transaction_data_types`**: **REQUIRED** (object). An object where each key is a transaction data type identifier following the `urn:paso:sca:<domain>:<suffix>:<version>` structure defined in [PaSO Core] Section 5.2, and each value is an object containing:
   - **`claims`**: **REQUIRED**. Array of claim metadata objects per Section 3.1.
   - **`ui_labels`**: **REQUIRED** when the credential is issued to a Wallet that does not have a dedicated UI for the transaction data type; **OPTIONAL** otherwise. Object providing localised strings for the consent UI per Section 3.2.
-  - **`risk_signals`**: **OPTIONAL** (array). Declares the risk signals that apply to this transaction data type, per [PaSO Risk Signals]. Each element is an object with:
+  - **`risk_signal_profiles`**: **OPTIONAL** (array of strings). Risk signal profile URNs (`urn:paso:risk-profile:<domain>:<suffix>:<version>`) that apply to this transaction data type, per [PaSO Risk Signals] Section 3. The `signals` of every referenced profile are unioned as defined in [PaSO Risk Signals] Section 4.1. No profile applies unless referenced here or by the applicable Transaction Data Type Rulebook.
+  - **`risk_signals`**: **OPTIONAL** (array). Tightens the signal set resolved from `risk_signal_profiles`, per [PaSO Risk Signals] Section 4.1. Each element is an object with:
     - **`type`**: **REQUIRED** (string). A risk-signal type URN (`urn:paso:risk:<domain>:<suffix>:<version>`).
     - **`required`**: **OPTIONAL** (boolean, default `false`). When `true`, the Wallet **SHALL** include this signal's envelope in the holder binding proof, reporting its `status` even when the value cannot be measured.
-  - **`encrypted`**: **OPTIONAL** (boolean, default `false`). When `true`, the Wallet **SHALL** encrypt the `risk_signals` array for this transaction data type to the issuer encryption key, per [PaSO Risk Signals]. Encryption is also required, independently of this flag, when the applicable Transaction Data Type Rulebook mandates it.
+    - **`max_age`**: **OPTIONAL** (integer). Maximum acceptable age in seconds of this signal's `collected_at`, per [PaSO Risk Signals] Section 4.3.
+
+    An element **MAY** introduce a signal type absent from every referenced profile, promote `required` from `false` to `true`, or lower `max_age`. An element **SHALL NOT** relax a constraint a referenced profile established; where it specifies a looser value, the stricter value applies. This array **MAY** be used without `risk_signal_profiles`, in which case it is the sole source of the signal set.
+  - **`encrypted`**: **OPTIONAL** (boolean, default `false`). When `true`, the Wallet **SHALL** encrypt the `risk_signals` array for this transaction data type to the issuer encryption key, per [PaSO Risk Signals]. Encryption is also required, independently of this flag, when the applicable Transaction Data Type Rulebook mandates it or when a referenced risk signal profile sets its own `encrypted` member, per [PaSO Risk Signals] Section 7.2.
   - Additional parameters **MAY** be defined and used. The Wallet **MUST** ignore any unrecognised parameters.
 
 A PaSO Credential **SHALL NOT** be accepted by the Wallet unless its credential metadata was obtained as a signed JWT from the `credential_metadata_uri` and successfully verified per Section 6. The signed credential metadata JWT is the sole authoritative source for the credential metadata; the Wallet **SHALL NOT** use unsigned credential metadata from the Credential Issuer Metadata endpoint for PaSO Credentials.
@@ -204,6 +208,7 @@ A `credential_configurations_supported` entry with `credential_metadata_uri`:
     ],
     "transaction_data_types": {
       "urn:paso:sca:global:payment:1": {
+        "risk_signal_profiles": ["urn:paso:risk-profile:global:default:1"],
         "claims": [
           {
             "path": ["transaction_id"],

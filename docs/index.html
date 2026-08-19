@@ -568,6 +568,13 @@ description: The trust and proof layer that lets OpenID wallets satisfy Strong C
           <p>Wallet-asserted risk signals carried in the holder binding proof.</p>
         </a>
       </li>
+      <li>
+        <a href="{{ '/specs/proof/paso-proof-risk-signal-registry.html' | relative_url }}">
+          <span class="spec-grid__n">8</span>
+          <h3>Proof · Risk Signal Registry</h3>
+          <p>The normative catalogue of risk signal type definitions.</p>
+        </a>
+      </li>
     </ol>
 
     <div class="rulebooks-subsection">
@@ -595,6 +602,20 @@ description: The trust and proof layer that lets OpenID wallets satisfy Strong C
             <span class="spec-grid__n">3</span>
             <h3>Mandate Rulebook</h3>
             <p>Authorize a delegate, business, or software agent to act on the user's behalf under defined limits.</p>
+          </a>
+        </li>
+      </ol>
+
+      <span class="eyebrow eyebrow--yellow">Risk Signal Profiles</span>
+      <h3 id="risk-profiles-h">Published risk signal bundles</h3>
+      <p class="lede lede--inverted">Each profile bundles risk signal types with a requirement flag and an optional freshness bound, for an ecosystem to reference from credential metadata or a rulebook.</p>
+
+      <ol class="spec-grid">
+        <li>
+          <a href="{{ '/rulebooks/risk_profiles/Default.html' | relative_url }}">
+            <span class="spec-grid__n">1</span>
+            <h3>Default Profile</h3>
+            <p>The recommended starting bundle — every global signal type except authentication methods.</p>
           </a>
         </li>
       </ol>

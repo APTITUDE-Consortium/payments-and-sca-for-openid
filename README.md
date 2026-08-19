@@ -209,10 +209,10 @@ sequenceDiagram
     wallet ->> user: Render transaction data for consent
     user ->> user: Review amount and payee
     user ->> wallet: Authenticate (two independent factors)
-    wallet ->> wallet: Produce holder binding proof (transaction_data hash, request integrity, amr, jti)
+    wallet ->> wallet: Produce holder binding proof (transaction_data hash, request integrity, risk signals, jti)
     wallet -->> rp: OpenID4VP response (vp_token)
     deactivate wallet
-    rp ->> rp: Verify proof against original request (re-hash, integrity, amr, replay check)
+    rp ->> rp: Verify proof against original request (re-hash, integrity, risk signals, replay check)
     rp -->> wallet: Result
 ```
 
@@ -237,12 +237,12 @@ sequenceDiagram
     wallet ->> user: Render transaction data for consent
     user ->> user: Review amount and payee
     user ->> wallet: Authenticate (two independent factors)
-    wallet ->> wallet: Produce holder binding proof (transaction_data hash, request integrity, amr, jti)
+    wallet ->> wallet: Produce holder binding proof (transaction_data hash, request integrity, risk signals, jti)
     wallet -->> rp: OpenID4VP response (vp_token)
     deactivate wallet
     Note over rp,ap: Proof package forwarded (signed request + vp_token), optionally signed and encrypted
     rp ->> ap: Forward proof package
-    ap ->> ap: Verify proof against original request (re-hash, integrity, amr, replay check, payload vs rulebook)
+    ap ->> ap: Verify proof against original request (re-hash, integrity, risk signals, replay check, payload vs rulebook)
     ap -->> rp: Transaction result
     rp -->> user: Result
 ```
@@ -274,7 +274,7 @@ PaSO is technology that helps a payment service provider *implement* these requi
 
 **Requirement.** PSD2 Article 4(30) and Article 97 require authentication based on two or more elements from the categories knowledge, possession, and inherence, which are independent so that the breach of one does not compromise the others (SCA-RTS Articles 6–9). The EBA Opinion clarifies which concrete elements qualify in each category — for example, a device-bound private key in a secure element as *possession*, a PIN or password as *knowledge*, and a fingerprint or face match as *inherence* — and sets expectations for their independence.
 
-**How PaSO helps.** A PaSO presentation is produced with a credential whose private key is bound to the device's secure cryptographic environment (possession), released only after the user unlocks it with a PIN (knowledge) or a biometric (inherence). PaSO makes the factors that were actually used *explicit and evidenced*: the holder binding proof carries an authentication-methods (`amr`) claim, and in a payments context this claim is required to span at least two different categories. PaSO additionally distinguishes stronger from weaker biometrics with dedicated values, so an authorizing party can check the factor mix against its policy rather than assuming it. The independence expectation (SCA-RTS Article 9, EBA Opinion) is supported by the wallet's architecture — the signing key is confined to hardware-isolated storage and is usable only after a separate unlock factor.
+**How PaSO helps.** A PaSO presentation is produced with a credential whose private key is bound to the device's secure cryptographic environment (possession), released only after the user unlocks it with a PIN (knowledge) or a biometric (inherence). PaSO makes the factors that were actually used *explicit and evidenced*: an authentication-methods risk signal carries them inside the holder binding proof, and PaSO distinguishes stronger from weaker biometrics with dedicated values, so an authorizing party can check the factor mix against its policy rather than assuming it. That signal is not unconditional — an ecosystem requiring SCA publishes a risk signal profile that mandates it, which is how a payments deployment obtains the two-category guarantee of PSD2 Article 4(30). The independence expectation (SCA-RTS Article 9, EBA Opinion) is supported by the wallet's architecture — the signing key is confined to hardware-isolated storage and is usable only after a separate unlock factor.
 
 ### 9.2 Authentication code (SCA-RTS Article 4)
 
@@ -310,7 +310,7 @@ PaSO is technology that helps a payment service provider *implement* these requi
 
 | Regulatory requirement | Source | PaSO mechanism |
 |---|---|---|
-| Two independent SCA factors | PSD2 Art. 4(30), 97; SCA-RTS Arts. 6–9; EBA Opinion | Device-bound key (possession) released by PIN/biometric (knowledge/inherence); `amr` claim records the factor categories and biometric strength |
+| Two independent SCA factors | PSD2 Art. 4(30), 97; SCA-RTS Arts. 6–9; EBA Opinion | Device-bound key (possession) released by PIN/biometric (knowledge/inherence); an authentication-methods risk signal records the factor categories and biometric strength, mandated by the ecosystem's risk signal profile |
 | Single-use, unforgeable authentication code | SCA-RTS Art. 4 | Unique per-presentation identifier in a device-key signature; replay checking at the authorizing party |
 | Dynamic linking to amount and payee | PSD2 Art. 97(2); SCA-RTS Art. 5 | Signed hash of the exact transaction data; any change invalidates the proof; re-checked by the authorizing party |
 | Integrity of the authenticated request | SCA-RTS Art. 5(1) | Signed presentation request plus a recorded request-integrity value |

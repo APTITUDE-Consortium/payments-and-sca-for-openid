@@ -207,8 +207,8 @@ The Authorizing Party, without access to the plaintext, **SHALL**:
 
 The holder of the issuer decryption key — the issuer, which in a first-party flow ([PaSO Core] Section 3) is the Authorizing Party — **SHALL**:
 
-3. decrypt the `risk_signals` value using the private key referenced by the encrypted structure's key identifier; and
-4. perform the checks of this section (presence of required signals, envelope well-formedness, freshness) on the decrypted array.
+1. decrypt the `risk_signals` value using the private key referenced by the encrypted structure's key identifier; and
+2. perform the checks of this section (presence of required signals, envelope well-formedness, freshness) on the decrypted array.
 
 How the encrypted structure reaches the issuer in a third-party flow where the Authorizing Party is not the issuer, and the channel between them, are out of scope for this module.
 
@@ -307,10 +307,16 @@ _**Note**: This annex is **informative**._
 
 ### A.1 Risk Signals Array
 
-A `risk_signals` array for a transaction that required geolocation and call activity, and optionally device motion:
+A `risk_signals` array for a transaction whose effective signal set required `response_mode`, geolocation, and call activity, and listed device motion as optional:
 
 ```json
 [
+  {
+    "type": "urn:paso:risk:global:response_mode:1",
+    "collected_at": "2026-07-24T10:15:30Z",
+    "status": "ok",
+    "value": "direct_post.jwt"
+  },
   {
     "type": "urn:paso:risk:global:geolocation:1",
     "collected_at": "2026-07-24T10:15:30Z",
@@ -356,11 +362,16 @@ The `risk_signals` claim as a top-level KB-JWT claim, shown alongside selected S
   "nonce": "bUtJdjJESWdmTWNjb011YQ",
   "sd_hash": "Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY",
   "jti": "deeec2b0-3bea-4477-bd5d-e3462a709481",
-  "amr": ["pin", "hwk", "bio_strong", "face"],
   "display_locale": "de",
   "transaction_data_hash": "OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q",
   "transaction_data_hash_alg": "sha-256",
   "risk_signals": [
+    {
+      "type": "urn:paso:risk:global:amr:1",
+      "collected_at": "2026-07-24T10:15:30Z",
+      "status": "ok",
+      "value": ["pin", "hwk", "bio_strong", "face"]
+    },
     {
       "type": "urn:paso:risk:global:geolocation:1",
       "collected_at": "2026-07-24T10:15:30Z",
@@ -390,19 +401,21 @@ CBOR diagnostic notation for the `risk_signals` element under `urn:paso:sca:1`:
 
 ### A.4 Metadata Declaration
 
-A `transaction_data_types` entry declaring required and optional risk signals (per [PaSO Proof Metadata]):
+A `transaction_data_types` entry that references the default profile and tightens it: a shorter freshness bound is imposed on geolocation, and a signal absent from the profile is added (per [PaSO Proof Metadata]).
 
 ```json
 {
   "urn:paso:sca:global:payment:1": {
+    "risk_signal_profiles": ["urn:paso:risk-profile:global:default:1"],
     "risk_signals": [
-      { "type": "urn:paso:risk:global:geolocation:1", "required": true },
-      { "type": "urn:paso:risk:global:call_activity:1", "required": true },
-      { "type": "urn:paso:risk:global:device_motion:1", "required": false }
+      { "type": "urn:paso:risk:global:geolocation:1", "max_age": 60 },
+      { "type": "urn:paso:risk:global:amr:1", "required": true }
     ]
   }
 }
 ```
+
+The default profile declares geolocation with no `max_age`, so the first enumeration entry lowers it to 60 seconds. The second adds `amr`, which the default profile deliberately omits. An entry attempting the reverse of either — raising `max_age`, or setting `required` to `false` against a profile's `true` — would have no effect, per Section 4.1 step 3.
 
 ### A.5 Encrypted `risk_signals` Claim (SD-JWT-VC)
 
@@ -413,7 +426,6 @@ When encryption is required, the KB-JWT `risk_signals` claim value is a JWE comp
   "nonce": "bUtJdjJESWdmTWNjb011YQ",
   "sd_hash": "Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY",
   "jti": "deeec2b0-3bea-4477-bd5d-e3462a709481",
-  "amr": ["pin", "hwk", "bio_strong", "face"],
   "display_locale": "de",
   "transaction_data_hash": "OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q",
   "transaction_data_hash_alg": "sha-256",
@@ -426,6 +438,8 @@ The JWE protected header (decoded) is:
 ```json
 { "alg": "ECDH-ES", "enc": "A256GCM", "kid": "issuer-enc-1" }
 ```
+
+Any `amr` signal in the effective set is inside this ciphertext. Where the Authorizing Party is not the issuer it cannot read it — see Section 7.8.
 
 ### A.6 Issuer Encryption Key and Trigger (Metadata)
 
@@ -456,3 +470,33 @@ A `transaction_data_types` entry requiring encryption, with the issuer encryptio
   }
 }
 ```
+
+### A.7 Profile Reference and Resolution
+
+The default profile published by PaSO ([PaSO Default Risk Signal Profile]) declares:
+
+| `type`                                 | `required` | `max_age` |
+|----------------------------------------|------------|-----------|
+| `urn:paso:risk:global:response_mode:1` | `true`     | —         |
+| `urn:paso:risk:global:geolocation:1`   | `true`     | —         |
+| `urn:paso:risk:global:call_activity:1` | `true`     | —         |
+| `urn:paso:risk:global:device_motion:1` | `true`     | —         |
+
+An ecosystem profile `urn:paso:risk-profile:com.example:high-value:1` declares:
+
+| `type`                               | `required` | `max_age` |
+|--------------------------------------|------------|-----------|
+| `urn:paso:risk:global:geolocation:1` | `true`     | `120`     |
+| `urn:paso:risk:global:amr:1`         | `true`     | —         |
+
+A transaction data type referencing both profiles, with the metadata enumeration of A.4 also applied, resolves to:
+
+| `type`                                 | `required` | `max_age` | Source                                              |
+|----------------------------------------|------------|-----------|-----------------------------------------------------|
+| `urn:paso:risk:global:response_mode:1` | `true`     | —         | default profile                                     |
+| `urn:paso:risk:global:geolocation:1`   | `true`     | `60`      | both profiles; `max_age` lowered by the enumeration |
+| `urn:paso:risk:global:call_activity:1` | `true`     | —         | default profile                                     |
+| `urn:paso:risk:global:device_motion:1` | `true`     | —         | default profile                                     |
+| `urn:paso:risk:global:amr:1`           | `true`     | —         | ecosystem profile, and the enumeration              |
+
+Because `amr` resolved as required and neither profile sets `encrypted`, the Authorizing Party can verify the authentication methods directly. Had either profile set `encrypted` to `true`, that check would move behind decryption per Section 6.1, which Section 7.8 advises against in a third-party flow.

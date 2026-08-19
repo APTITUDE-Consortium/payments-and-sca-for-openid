@@ -41,6 +41,7 @@ The key words "**MUST**", "**MUST NOT**", "**REQUIRED**", "**SHALL**", "**SHALL 
 | Strong Customer Authentication (SCA) | Authentication using at least two elements from different categories (knowledge, possession, inherence) that are independent of each other, per [PSD2] Article 97.                                                                                                                     |
 | Credential Rulebook                  | A governance document that defines the rules for issuing, displaying, and verifying a credential type. See Section 4.                                                                                                                                                                  |
 | Transaction Data Type Rulebook       | A governance document that defines the semantic meaning and structure of a specific transaction data type. See Section 5.                                                                                                                                                              |
+| Risk Signal Profile                  | A published governance document that bundles risk signal types — defined in [PaSO Risk Signal Registry] — with a per-signal requirement flag and an optional freshness bound. Referenced by signed credential metadata or a Transaction Data Type Rulebook. See [PaSO Risk Signals] Section 3.                          |
 | Authorizing Party                    | The party that receives the proof package from the Relying Party, verifies the transaction, and authorizes the action. See Section 2.                                                                                                                                                  |
 
 ## 2 Roles
@@ -135,45 +136,28 @@ The Wallet **SHALL** include the following claims in every PaSO Credential prese
 | Claim                       | Required    | Description                                                                                                                                                                                                                                   |
 |-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `jti`                       | yes         | A fresh, cryptographically random value with sufficient entropy per [RFC7519] Section 4.1.7. Unique per presentation. When used for SCA, serves as the Authentication Code per [PSD2].                                                        |
-| `response_mode`             | yes         | The `response_mode` parameter as given or defaulted in the [OID4VP] Authorization Request.                                                                                                                                                    |
 | `display_locale`            | yes         | A [RFC5646] language tag representing the locale shown to the user during consent. Enables deterministic reconstruction of which display entries were used.                                                                                   |
-| `amr`                       | yes         | Authentication Methods References. A JSON array of strings per [RFC8176]. See Section 6.2.                                                                                                                                                    |
 | `transaction_data_hash`     | yes         | Hash of the base64url-encoded `transaction_data` entry selected for the PaSO Credential.                                                                                                                                                      |
 | `transaction_data_hash_alg` | yes         | Hash algorithm identifier. Default: `sha-256`.                                                                                                                                                                                                |
 | `metadata_integrity`        | conditional | The [W3C.SRI] integrity value of the signed credential metadata JWT (per [PaSO Proof Metadata]) used to display the transaction data during this presentation. **REQUIRED** when a signed credential metadata JWT was used; absent otherwise. |
 | `request_integrity`         | yes         | The [W3C.SRI] integrity value of the signed [OID4VP] Authorization Request ([JAR] Request Object) as received by the Wallet, computed over the compact-serialised JWT string.                                                                 |
 | `wallet_instance_version`   | yes         | Version identifier of the Wallet application that authorized the transaction.                                                                                                                                                                 |
-| `risk_signals`              | conditional | An array of risk-signal envelopes per [PaSO Risk Signals]. **REQUIRED** when the matched transaction data type has one or more required risk signals; absent otherwise. When encryption is required for the transaction data type, this value is an encrypted structure per [PaSO Risk Signals] instead of a plaintext array. |
+| `risk_signals`              | conditional | An array of risk-signal envelopes per [PaSO Risk Signals]. **REQUIRED** when the signal set resolved for the matched transaction data type contains one or more required signals, per [PaSO Risk Signals] Section 4.1; absent otherwise. Signal types are defined by [PaSO Risk Signal Registry]. When encryption is required for the transaction data type, this value is an encrypted structure per [PaSO Risk Signals] instead of a plaintext array. |
 
-### 6.2 Authentication Methods
+The authentication methods used to release the transaction, and the `response_mode` of the Authorization Request, are not claims of this section. They are risk signal types defined by [PaSO Risk Signal Registry] and are carried inside `risk_signals` when a referenced risk signal profile requires them. A PaSO transaction therefore evidences Strong Customer Authentication only where the risk signal profile in force requires the authentication-methods signal; this specification does not require it.
 
-Values from the IANA "Authentication Method Reference Values" registry [RFC8176] **SHALL** be used where applicable. Common values include `pin`, `pwd`, `hwk`, `swk`, and `otp`.
-
-This specification defines two additional values for biometric strength:
-
-| Value        | Criteria                                                                                                                                 |
-|--------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| `bio_strong` | Biometric matching in hardware-isolated environment (e.g., TEE, Secure Element); FAR ≤ 1:50,000; presentation attack detection required. |
-| `bio_weak`   | Biometric matching with FAR ≤ 1:10,000; does not meet `bio_strong` criteria.                                                             |
-
-When a biometric factor is used, the Wallet **SHALL** include exactly one of `bio_strong` or `bio_weak`. The Wallet **SHOULD** additionally include the modality value (`fpt`, `face`, `iris`) when the platform identifies it.
-
-When used in a [PSD2] context, the `amr` array **SHALL** cover at least two different categories of authentication elements (knowledge, possession, inherence) as required by [PSD2] Article 4(30).
-
-### 6.3 SD-JWT-VC Profile
+### 6.2 SD-JWT-VC Profile
 
 For PaSO Credentials in [SD-JWT-VC] format, the Wallet **SHALL** include a Key Binding JWT (KB-JWT). The SCA response claims from Section 6.1 **SHALL** be included as top-level claims in the KB-JWT payload, in addition to the standard KB-JWT claims defined by [OID4VP].
 
-### 6.4 mdoc Profile
+### 6.3 mdoc Profile
 
 For PaSO Credentials in [mdoc] format, the Wallet **SHALL** include device authentication. The SCA response claims **SHALL** be included as device-signed data elements in the `DeviceNameSpaces` structure under the namespace `urn:paso:sca:1`.
 
 | Data element                | CBOR type     |
 |-----------------------------|---------------|
 | `jti`                       | tstr          |
-| `response_mode`             | tstr          |
 | `display_locale`            | tstr          |
-| `amr`                       | array of tstr |
 | `transaction_data_hash`     | bstr          |
 | `transaction_data_hash_alg` | tstr          |
 | `metadata_integrity`        | tstr          |
@@ -262,11 +246,11 @@ For the PaSO-targeted entries, the Wallet **SHALL** perform the following steps:
 | [RFC4647]             | [RFC 4647 — Matching of Language Tags](https://www.rfc-editor.org/rfc/rfc4647.html)                                        |
 | [RFC5646]             | [RFC 5646 — Tags for Identifying Languages](https://www.rfc-editor.org/rfc/rfc5646.html)                                   |
 | [RFC7519]             | [RFC 7519 — JSON Web Token (JWT)](https://www.rfc-editor.org/rfc/rfc7519.html)                                             |
-| [RFC8176]             | [RFC 8176 — Authentication Method Reference Values](https://www.rfc-editor.org/rfc/rfc8176.html)                           |
 | [SD-JWT-VC]           | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
 | [mdoc]                | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](proof/paso-proof-metadata.md)                                                                |
 | [PaSO Risk Signals]   | [PaSO Proof: Risk Signals Module](proof/paso-proof-risk-signals.md)                                                         |
+| [PaSO Risk Signal Registry] | [PaSO Proof: Risk Signal Registry](proof/paso-proof-risk-signal-registry.md)                                         |
 | [JAR]                 | [RFC 9101 — JWT-Secured Authorization Request](https://www.rfc-editor.org/rfc/rfc9101.html)                                |
 | [W3C.SRI]             | [Subresource Integrity](https://www.w3.org/TR/SRI/)                                                                        |
 
@@ -317,6 +301,8 @@ An [OID4VP] presentation request with PaSO transaction data. The `transaction_da
 
 ### A.2 KB-JWT Payload (SD-JWT-VC)
 
+This example assumes a risk signal profile requiring the `response_mode` and authentication-methods signals is in force; absent such a profile the `risk_signals` claim would be absent.
+
 ```json
 {
   "aud": "x509_san_dns:shop.example.com",
@@ -324,14 +310,26 @@ An [OID4VP] presentation request with PaSO transaction data. The `transaction_da
   "nonce": "bUtJdjJESWdmTWNjb011YQ",
   "sd_hash": "Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY",
   "jti": "deeec2b0-3bea-4477-bd5d-e3462a709481",
-  "response_mode": "direct_post.jwt",
-  "amr": ["pin", "hwk", "bio_strong", "face"],
   "display_locale": "de",
   "transaction_data_hash": "OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q",
   "transaction_data_hash_alg": "sha-256",
   "metadata_integrity": "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
   "request_integrity": "sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg=",
-  "wallet_instance_version": "android:com.example.wallet:4.1.2"
+  "wallet_instance_version": "android:com.example.wallet:4.1.2",
+  "risk_signals": [
+    {
+      "type": "urn:paso:risk:global:response_mode:1",
+      "collected_at": "2026-07-24T10:15:30Z",
+      "status": "ok",
+      "value": "direct_post.jwt"
+    },
+    {
+      "type": "urn:paso:risk:global:amr:1",
+      "collected_at": "2026-07-24T10:15:30Z",
+      "status": "ok",
+      "value": ["pin", "hwk", "bio_strong", "face"]
+    }
+  ]
 }
 ```
 
@@ -342,14 +340,26 @@ CBOR diagnostic notation:
 ```cbor-diag
 "urn:paso:sca:1" : {
   "jti" : "deeec2b0-3bea-4477-bd5d-e3462a709481",
-  "response_mode" : "direct_post.jwt",
-  "amr" : ["pin", "hwk", "bio_strong", "face"],
   "display_locale" : "de",
   "transaction_data_hash" : h'3897274100F2BD5D624D8C624104310431E75C76EF...',
   "transaction_data_hash_alg" : "sha-256",
   "metadata_integrity" : "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
   "request_integrity" : "sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg=",
-  "wallet_instance_version" : "android:com.example.wallet:4.1.2"
+  "wallet_instance_version" : "android:com.example.wallet:4.1.2",
+  "risk_signals" : [
+    {
+      "type" : "urn:paso:risk:global:response_mode:1",
+      "collected_at" : "2026-07-24T10:15:30Z",
+      "status" : "ok",
+      "value" : "direct_post.jwt"
+    },
+    {
+      "type" : "urn:paso:risk:global:amr:1",
+      "collected_at" : "2026-07-24T10:15:30Z",
+      "status" : "ok",
+      "value" : ["pin", "hwk", "bio_strong", "face"]
+    }
+  ]
 }
 ```
 

@@ -251,9 +251,9 @@ description: The trust and proof layer that lets OpenID wallets satisfy Strong C
         <p>A fresh, unique, high-entropy identifier per presentation. In an SCA context, <em>this is</em> the authentication code.</p>
       </div>
       <div class="proof-claim">
-        <span class="proof-claim__key">amr</span>
-        <h4>Authentication methods</h4>
-        <p>Explicit values distinguish strong from weaker biometrics. In payments, factors must span at least two independent categories.</p>
+        <span class="proof-claim__key">risk_signals</span>
+        <h4>Risk signals</h4>
+        <p>Device, environment, and transaction observations — including the authentication methods used, with explicit values distinguishing strong from weaker biometrics. Which signals are required is set by the risk signal profile in force; a payments profile mandates factors spanning at least two independent categories.</p>
       </div>
       <div class="proof-claim">
         <span class="proof-claim__key">transaction_data_hash</span>
@@ -396,7 +396,7 @@ description: The trust and proof layer that lets OpenID wallets satisfy Strong C
           <tr>
             <td>Two independent SCA factors</td>
             <td>PSD2 Art. 4(30), 97 · SCA-RTS Arts. 6–9 · EBA Opinion</td>
-            <td>Device-bound key (possession) released by PIN/biometric; <code>amr</code> records factor categories and biometric strength</td>
+            <td>Device-bound key (possession) released by PIN/biometric; an authentication-methods risk signal records factor categories and biometric strength, mandated by the ecosystem's risk signal profile</td>
           </tr>
           <tr>
             <td>Single-use, unforgeable authentication code</td>

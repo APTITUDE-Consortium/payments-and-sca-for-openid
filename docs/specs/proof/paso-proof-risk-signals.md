@@ -171,17 +171,26 @@ For PaSO Credentials in [mdoc] format, `risk_signals` **SHALL** be included as a
 |----------------|----------------|
 | `risk_signals` | array of maps  |
 
-Each envelope is encoded as a CBOR map. Within it, `type`, `collected_at`, and `status` are `tstr`; string members of `value` are `tstr`; numeric members of `value` are CBOR floats.
+Each envelope is encoded as a CBOR map in which `type`, `collected_at`, and `status` are `tstr`.
+
+The encoding of `value` follows its shape, as defined for that signal type by [PaSO Risk Signal Registry] or another catalogue:
+
+| `value` shape    | CBOR encoding                                                                                                                          |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| Object           | A CBOR map. String members are `tstr`; numeric members are CBOR floats; nested objects are CBOR maps, applying this table recursively.  |
+| String           | `tstr`                                                                                                                                 |
+| Array of strings | An array of `tstr`                                                                                                                     |
+| Number           | A CBOR float                                                                                                                           |
 
 ## 6 Verification
 
 The Authorizing Party **SHALL** perform the following checks in addition to those in [PaSO Proof Verify], after the SCA response claims verification. When the risk signals are encrypted (Section 7), these checks apply to the decrypted array and verification responsibilities are split as defined in Section 6.1.
 
-1. **Presence of required signals.** Determine the required signal set for the matched transaction data type (the union defined in Section 4.1). For every required signal, verify that an envelope with the matching `type` is present in the `risk_signals` array, with any `status`. If a required signal's envelope is missing, the Authorizing Party **SHALL** reject the transaction.
+1. **Presence of required signals.** Resolve the effective signal set for the matched transaction data type per Section 4.1. For every required signal, verify that an envelope with the matching `type` is present in the `risk_signals` array, with any `status`. If a required signal's envelope is missing, the Authorizing Party **SHALL** reject the transaction. The absence of a signal that did not resolve as required **SHALL NOT** be treated as a failure.
 
 2. **Envelope well-formedness.** For each envelope, verify that `type` has the `urn:paso:risk:` prefix, `collected_at` is a valid [ISO8601] timestamp, `status` is one of `ok`, `unavailable`, or `denied`, and `value` is present if and only if `status` is `ok`. When `value` is present, verify it conforms to the schema for the signal type. If any envelope is malformed, the Authorizing Party **SHALL** reject the transaction.
 
-3. **Freshness.** Verify that each `collected_at` is within an acceptable window relative to the transaction. The acceptable window is a matter of Transaction Data Type Rulebook or Authorizing Party policy and is not fixed by this module.
+3. **Freshness.** For each signal for which the effective signal set resolved a `max_age`, verify that `collected_at` is no older than `max_age`, measured from the time the Authorizing Party received the proof package, allowing for reasonable clock skew and forwarding delay. Where no `max_age` was resolved for a signal, the acceptable window is a matter of Transaction Data Type Rulebook or Authorizing Party policy and is not fixed by this module.
 
 4. **Policy evaluation.** Interpreting signal values to reach a risk decision is the Authorizing Party's own policy and is out of scope for this module.
 
@@ -211,12 +220,13 @@ For privacy, the risk-signals section **MAY** be required to be encrypted so tha
 
 ### 7.2 Encryption Trigger
 
-Encryption is **required** for a transaction data type when **either** source mandates it:
+Encryption is **required** for a transaction data type when **any** of the following mandates it:
 
-1. the applicable Transaction Data Type Rulebook, or
-2. the issuer's credential metadata, via the `encrypted` flag on the `transaction_data_types` entry (per [PaSO Proof Metadata]).
+1. the applicable Transaction Data Type Rulebook,
+2. the issuer's credential metadata, via the `encrypted` flag on the `transaction_data_types` entry (per [PaSO Proof Metadata]), or
+3. any risk signal profile referenced for the transaction data type, via its `encrypted` member (Section 3.3).
 
-If either source requires encryption, the Wallet **SHALL** encrypt. Encryption applies to the entire `risk_signals` array for that transaction data type; individual signals are not encrypted separately.
+If any source requires encryption, the Wallet **SHALL** encrypt. Encryption applies to the entire `risk_signals` array for that transaction data type; individual signals are not encrypted separately.
 
 ### 7.3 Encryption Key
 
@@ -265,6 +275,12 @@ Other algorithms **MAY** be used when the published issuer key declares them. Th
 
 When encryption is required for the matched transaction data type, the consumer **SHALL** expect the `risk_signals` value to be an encrypted structure — a [JWE] compact string ([SD-JWT-VC]) or a `COSE_Encrypt` ([mdoc]) — rather than the plaintext structure of Section 5. A plaintext `risk_signals` value where encryption was required **SHALL** be rejected (Section 6.1).
 
+### 7.8 Interaction with Authentication-Method Signals
+
+Encryption covers the entire `risk_signals` array, including transaction-fact signals such as `urn:paso:risk:global:amr:1`. Under Section 6.1 the Authorizing Party can then verify only that the value is an encrypted structure; the checks on the signals themselves move to the holder of the issuer decryption key.
+
+An ecosystem **SHOULD NOT** combine a profile that requires `urn:paso:risk:global:amr:1` with encryption for a transaction data type used in a third-party flow ([PaSO Core] Section 3). An Authorizing Party that is not the issuer would be unable to confirm how the user authenticated, which is precisely the check a Strong Customer Authentication policy depends on.
+
 ## 8 References
 
 | Reference             | Description                                                                                                                |
@@ -273,6 +289,8 @@ When encryption is required for the matched transaction data type, the consumer 
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](paso-proof-metadata.md)                                                                      |
 | [PaSO Proof Verify]   | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                          |
 | [PaSO Proof SD-JWT-VC and SVG] | [PaSO Proof: SD-JWT-VC and SVG Module](paso-proof-sd-jwt-vc-svg.md)                                                        |
+| [PaSO Risk Signal Registry] | [PaSO Proof: Risk Signal Registry](paso-proof-risk-signal-registry.md)                                             |
+| [PaSO Default Risk Signal Profile] | [Default Risk Signal Profile](../../rulebooks/risk_profiles/Default.md)                                     |
 | [RFC2119]             | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |
 | [RFC8174]             | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)        |
 | [SD-JWT-VC]           | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |

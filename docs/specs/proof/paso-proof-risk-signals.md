@@ -7,7 +7,7 @@ description: Wallet-asserted risk signals carried in the holder binding proof fo
 
 ## Abstract
 
-This document defines an extensible framework for **risk signals** in PaSO: device, environment, and behavioral observations that a Wallet collects and carries to the Authorizing Party as part of a transaction. It specifies a signal envelope, a naming scheme, a normative starter set of three signal types, how collection is triggered, how signals are transported in the holder binding proof, and how the Authorizing Party verifies them. Risk signals are Wallet self-asserted and factual; PaSO standardises their structure and carriage but never mandates a risk decision.
+This document defines an extensible framework for **risk signals** in PaSO: device, environment, and behavioral observations that a Wallet collects and carries to the Authorizing Party as part of a transaction. It specifies a signal envelope, a naming scheme, risk signal profiles as the unit by which signal sets are agreed and referenced, how collection is triggered, how signals are transported in the holder binding proof, and how the Authorizing Party verifies them. Signal types themselves are defined by [PaSO Risk Signal Registry]. Risk signals are Wallet self-asserted and factual; PaSO standardises their structure and carriage but never mandates a risk decision.
 
 ## 1 Introduction
 
@@ -19,7 +19,7 @@ Risk signals are **self-asserted** by the Wallet: they inherit the Wallet's key-
 
 ### 1.2 Scope
 
-This module defines the risk-signal framework, a starter set of signal types, the collection trigger, transport in the holder binding proof, and verification. It does not define the Authorizing Party's risk decisioning logic, hardware or platform attestation of signals, or per-transaction user consent. User consent for signal collection is governed by the credential's terms and conditions at issuance and is out of scope for PaSO.
+This module defines the risk-signal framework, risk signal profiles, the collection trigger, transport in the holder binding proof, and verification. It does not define signal types; those are defined by [PaSO Risk Signal Registry] and by other published catalogues. It does not define any specific profile; PaSO publishes one, the [PaSO Default Risk Signal Profile]. It does not define the Authorizing Party's risk decisioning logic, hardware or platform attestation of signals, or per-transaction user consent. User consent for signal collection is governed by the credential's terms and conditions at issuance and is out of scope for PaSO.
 
 ### 1.3 Requirements Notation
 
@@ -54,71 +54,100 @@ Every risk signal is a JSON object with the following members:
 | `status`       | yes         | One of `ok`, `unavailable`, or `denied` (Section 2.3).                                                                                |
 | `value`        | conditional | The signal value. **REQUIRED** when `status` is `ok`; **MUST** be absent otherwise. Its structure is defined per signal type.        |
 
-Overall binding of the signals to the transaction is provided by the holder binding proof signature (Section 4); `collected_at` exists so the Authorizing Party can additionally assess per-signal freshness.
+Overall binding of the signals to the transaction is provided by the holder binding proof signature (Section 5); `collected_at` exists so the Authorizing Party can additionally assess per-signal freshness (Section 4.3, Section 6).
 
 ### 2.3 Status
 
 The `status` member reports whether the Wallet could measure the signal:
 
 - `ok`: the signal was measured; `value` is present.
-- `unavailable`: the signal could not be measured because the sensor is absent or no measurement was obtainable (e.g., no location fix); `value` is absent.
+- `unavailable`: the signal could not be measured because the sensor is absent, no measurement was obtainable (e.g., no location fix), or the Wallet does not implement this signal type; `value` is absent.
 - `denied`: the signal could not be measured because the required permission was refused; `value` is absent.
 
-A required signal (Section 3) **SHALL NOT** be silently omitted: if it cannot be measured, the Wallet **SHALL** include its envelope with `status` set to `unavailable` or `denied`. This lets the Authorizing Party apply its own policy to missing measurements.
+A required signal (Section 4.1) **SHALL NOT** be silently omitted: if it cannot be measured, the Wallet **SHALL** include its envelope with `status` set to `unavailable` or `denied`. This lets the Authorizing Party apply its own policy to missing measurements.
 
-## 3 Starter Signal Types
+## 3 Risk Signal Profiles
 
-This section defines the signal types in the `global` domain. Each `value` schema applies when `status` is `ok`.
+### 3.1 Purpose
 
-### 3.1 Geolocation
+A **risk signal profile** bundles risk signal types into a single referencable set, each with a requirement flag and an optional freshness bound. Profiles exist so that an ecosystem can state its risk-signal expectations once, and have Attestation Providers and Transaction Data Type Rulebooks reference them, instead of restating an enumeration in every credential's metadata.
 
-Type: `urn:paso:risk:global:geolocation:1`
+A profile is a governance document, not part of this specification. This section defines what a profile contains and how it is identified; any organisation **MAY** publish one. PaSO publishes exactly one, the [PaSO Default Risk Signal Profile].
 
-| Member     | Required | Description                                        |
-|------------|----------|----------------------------------------------------|
-| `lat`      | yes      | WGS84 latitude in decimal degrees.                 |
-| `lon`      | yes      | WGS84 longitude in decimal degrees.                |
-| `accuracy` | yes      | Horizontal accuracy radius in metres.              |
-| `altitude` | no       | Altitude in metres.                                |
-| `source`   | no       | One of `gnss`, `network`, or `fused`.              |
+No profile applies by default. A profile takes effect for a transaction data type only where it is referenced, as defined in Section 4.1.
 
-### 3.2 Call Activity
+### 3.2 Profile Identifiers
 
-Type: `urn:paso:risk:global:call_activity:1`
+Each risk signal profile is identified by a URN following this structure:
 
-| Member              | Required | Description                                                            |
-|---------------------|----------|-----------------------------------------------------------------------|
-| `call_state`        | yes      | One of `idle`, `ringing`, or `active`.                                 |
-| `direction`         | no       | One of `incoming`, `outgoing`, or `unknown`.                           |
-| `call_active_since` | no       | An [ISO8601] timestamp indicating when the current call became active. |
+```text
+urn:paso:risk-profile:<domain>:<suffix>:<version>
+```
 
-### 3.3 Device Orientation & Motion
+Where:
 
-Type: `urn:paso:risk:global:device_motion:1`
+- `<domain>` is an organisation identifier in reverse domain notation (e.g., `com.example`), or `global` for profiles published by PaSO itself,
+- `<suffix>` is one or more colon-separated segments identifying the profile (e.g., `default`),
+- `<version>` is a version number (e.g., `1`).
 
-The value reports current device orientation and a bounded statistical summary of motion over a short sampling window. No interpretation (such as "walking") is performed by the Wallet.
+The `urn:paso:risk-profile:` prefix is distinct from the `urn:paso:risk:` prefix by which the Wallet identifies signal types (Section 2.1). A profile identifier **SHALL NOT** appear where a signal type URN is expected, and a signal type URN **SHALL NOT** appear where a profile identifier is expected.
 
-| Member          | Required | Description                                                                                              |
-|-----------------|----------|--------------------------------------------------------------------------------------------------------|
-| `window_ms`     | yes      | Length of the sampling window in milliseconds.                                                          |
-| `orientation`   | yes      | Object with `pitch`, `roll`, and `yaw`, each the device attitude angle in degrees.                      |
-| `acceleration`  | yes      | Object with `rms` and `max`, each the user-acceleration magnitude in *g* over the window.               |
-| `rotation_rate` | yes      | Object with `rms` and `max`, each the gyroscope rotation-rate magnitude in radians per second over the window. |
+The set of signals a profile declares, together with their `required` and `max_age` constraints, constitutes its **semantic structure**. The semantic structure **SHALL** be immutable once published; changes **SHALL** require a new version of the profile identifier.
+
+### 3.3 Profile Contents
+
+A risk signal profile **SHALL** define:
+
+| Member        | Required            | Description                                                                                                    |
+|---------------|---------------------|----------------------------------------------------------------------------------------------------------------|
+| `profile`     | yes                 | The profile URN (Section 3.2).                                                                                 |
+| `description` | no                  | A human-readable statement of the profile's purpose.                                                           |
+| `encrypted`   | no, default `false` | When `true`, encryption per Section 7 is required for every transaction data type that references this profile. |
+| `signals`     | yes                 | An array of profile entries per Section 3.4. **SHALL** contain at least one entry.                             |
+
+A profile **SHALL** publish its contents in a form an implementer can transcribe without ambiguity; a table of `type`, `required`, and `max_age` is sufficient.
+
+### 3.4 Profile Entries
+
+Each entry in a profile's `signals` array declares one signal type and its constraints:
+
+| Member     | Required | Description                                                                                                                                                                 |
+|------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`     | yes      | A signal type URN (Section 2.1). A profile **SHALL** reference only signal types whose definition is published, whether in [PaSO Risk Signal Registry] or another catalogue. |
+| `required` | yes      | Boolean. When `true`, the Wallet **SHALL** include an envelope for this signal, reporting its `status` even where the value cannot be measured (Section 4.2).                 |
+| `max_age`  | no       | Integer seconds. The maximum acceptable age of this signal's `collected_at`, applied by the Wallet per Section 4.3 and by the Authorizing Party per Section 6.                |
+
+A profile **SHALL NOT** declare more than one entry for the same signal type.
 
 ## 4 Collection
 
-### 4.1 Collection Trigger
+### 4.1 Signal Set Resolution
 
-The risk signals a Wallet **SHALL** collect for a transaction are determined by the union of two sources for the matched transaction data type:
+The Wallet **SHALL** resolve the **effective signal set** for the matched transaction data type as follows:
 
-1. **Issuer credential metadata**: the `risk_signals` array declared for the transaction data type in the signed credential metadata (per [PaSO Proof Metadata]).
-2. **Transaction Data Type Rulebook**: the risk signals mandated for the transaction data type by its rulebook (per [PaSO Core] Section 5).
+1. **Collect referenced profiles.** Gather every risk signal profile referenced by either source:
+   - the `risk_signal_profiles` member declared for the transaction data type in the signed credential metadata (per [PaSO Proof Metadata]), and
+   - the profiles referenced for the transaction data type by its Transaction Data Type Rulebook (per [PaSO Core] Section 5).
 
-A signal is **required** if it is marked required in either source. A signal that is present in either source but not required is **optional**.
+2. **Union the profile entries.** The effective signal set is the union of the `signals` entries of every referenced profile. Where the same signal type appears in more than one referenced profile, `required` is the logical OR of its values and `max_age` is the minimum of the values present. The strictest constraint wins in every case.
+
+3. **Apply enumerations as a ratchet.** Apply the `risk_signals` array declared in the signed credential metadata, and any signals enumerated directly by the Transaction Data Type Rulebook, over the unioned set. An enumeration entry **MAY** introduce a signal type absent from every referenced profile, promote `required` from `false` to `true`, or lower `max_age`. An enumeration entry **SHALL NOT** demote `required` from `true` to `false` and **SHALL NOT** raise `max_age`; where it specifies a looser value than a referenced profile established, the Wallet **SHALL** apply the stricter value.
+
+A signal in the effective set whose resolved `required` is `true` is a **required signal**. One whose resolved `required` is `false` is an **optional signal**.
+
+Where neither source references a profile and neither enumerates a signal, the effective signal set is empty.
 
 ### 4.2 Wallet Processing
 
-When the matched `transaction_data` entry's type has one or more required risk signals (Section 4.1), the Wallet **SHALL** populate the `risk_signals` proof claim (Section 5) with an envelope for every required signal, each carrying its `status`. The Wallet **MAY** additionally include envelopes for optional signals when they are available. When no risk signal is required for the matched transaction data type, the Wallet **MAY** omit the `risk_signals` claim entirely.
+When the effective signal set (Section 4.1) contains one or more required signals, the Wallet **SHALL** populate the `risk_signals` proof claim (Section 5) with an envelope for every required signal, each carrying its `status`. The Wallet **MAY** additionally include envelopes for optional signals when they are available. When the effective signal set contains no required signal, the Wallet **MAY** omit the `risk_signals` claim entirely.
+
+A Wallet that does not implement a signal type resolved as required **SHALL** include that signal's envelope with `status` set to `unavailable` (Section 2.3). The Wallet **SHALL NOT** treat an unimplemented required signal as rendering the `transaction_data` entry incompatible; whether to accept such a transaction is the Authorizing Party's decision.
+
+### 4.3 Freshness
+
+Where the effective signal set resolves a `max_age` for a signal, the Wallet **SHALL** ensure that, at the moment it produces the holder binding proof signature, that signal's `collected_at` is no older than `max_age`. A measurement that has aged out **SHALL** either be re-taken or have its envelope carried with `status` `unavailable`.
+
+The Authorizing Party applies the same bound against its own reference instant, as defined in Section 6. Two instants are named deliberately: the Wallet cannot know when the Authorizing Party will verify, and the Authorizing Party cannot re-measure.
 
 ## 5 Transport
 

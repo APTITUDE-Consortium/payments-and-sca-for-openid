@@ -1731,51 +1731,49 @@
 </ol>
 <h3 id="71-first-party-flow">7.1 First-party flow</h3>
 <p>In the first-party flow, a single party fulfils the roles of Relying Party and Authorizing Party (and, at issuance time, Attestation Provider). The wallet presents a PaSO credential back to the party that issued it. This matches the case where an institution authenticates its own customer directly — for example, to authorize an action the customer initiated in that institution's own channel. Because the verifying party is also the authorizing party, no separate proof-package hand-off is required; the same party that received the presentation verifies it.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sequenceDiagram
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    autonumber
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    actor user as User
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    participant wallet as Wallet
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    participant rp as Relying Party&lt;br/&gt;(also Authorizing Party)
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    Note over rp: Action requiring SCA is triggered
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    rp -&gt;&gt; wallet: Signed OpenID4VP request (DCQL query, transaction_data, request signature)
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    activate wallet
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    wallet -&gt;&gt; wallet: Match credential and validate transaction_data against rulebook and signed metadata
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    wallet -&gt;&gt; user: Render transaction data for consent
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    user -&gt;&gt; user: Review amount and payee
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    user -&gt;&gt; wallet: Authenticate (two independent factors)
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    wallet -&gt;&gt; wallet: Produce holder binding proof (transaction_data hash, request integrity, amr, jti)
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    wallet --&gt;&gt; rp: OpenID4VP response (vp_token)
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    deactivate wallet
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    rp -&gt;&gt; rp: Verify proof against original request (re-hash, integrity, amr, replay check)
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    rp --&gt;&gt; wallet: Result
-</span></code></pre></div>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    actor user as User
+    participant wallet as Wallet
+    participant rp as Relying Party&lt;br/&gt;(also Authorizing Party)
+
+    Note over rp: Action requiring SCA is triggered
+    rp -&gt;&gt; wallet: Signed OpenID4VP request (DCQL query, transaction_data, request signature)
+    activate wallet
+    wallet -&gt;&gt; wallet: Match credential and validate transaction_data against rulebook and signed metadata
+    wallet -&gt;&gt; user: Render transaction data for consent
+    user -&gt;&gt; user: Review amount and payee
+    user -&gt;&gt; wallet: Authenticate (two independent factors)
+    wallet -&gt;&gt; wallet: Produce holder binding proof (transaction_data hash, request integrity, amr, jti)
+    wallet --&gt;&gt; rp: OpenID4VP response (vp_token)
+    deactivate wallet
+    rp -&gt;&gt; rp: Verify proof against original request (re-hash, integrity, amr, replay check)
+    rp --&gt;&gt; wallet: Result</code></pre>
 <p><strong>Regulatory significance.</strong> In the European Digital Identity context, this flow is not merely one option among several — it corresponds to a regulatory obligation. The eIDAS 2.0 Regulation requires private relying parties that are obliged (by Union or national law, or by contract) to use strong user authentication for online identification to also accept European Digital Identity Wallets for that purpose (Article 5f(2)). Because payment service providers are already required to perform Strong Customer Authentication under PSD2, this places banks and PSPs squarely within scope: they must accept a compliant wallet as a means of SCA. The obligation takes effect within 36 months of the relevant implementing acts — by late 2027. The first-party flow is the direct technical expression of this duty: the institution that owes the SCA obligation invokes the user's wallet and verifies the result itself. PaSO gives that institution a concrete, regulation-aligned way to discharge the obligation while producing verifiable, dynamically linked proof.</p>
 <h3 id="72-third-party-flow">7.2 Third-party flow</h3>
 <p>In the third-party flow, the Relying Party is distinct from the Authorizing Party and Attestation Provider. A relying party — for example, a merchant or a merchant-side service — collects the user's consent, then forwards the unmodified proof package (the original signed request plus the wallet's presentation) to the authorizing party, which holds the trust relationship and ultimately verifies and authorizes the transaction. PaSO defines a standard ingestion endpoint and an optional signed-and-encrypted envelope for this hand-off, so the authorizing party can independently re-verify the evidence rather than trusting the relying party's word.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sequenceDiagram
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    autonumber
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    actor user as User
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    participant wallet as Wallet
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    participant rp as Relying Party
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    participant ap as Authorizing Party
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    user -&gt;&gt; rp: Initiate payment
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    rp -&gt;&gt; wallet: Signed OpenID4VP request (DCQL query, transaction_data, request signature)
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    activate wallet
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    wallet -&gt;&gt; wallet: Match credential and validate transaction_data against rulebook and signed metadata
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    wallet -&gt;&gt; user: Render transaction data for consent
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    user -&gt;&gt; user: Review amount and payee
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    user -&gt;&gt; wallet: Authenticate (two independent factors)
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    wallet -&gt;&gt; wallet: Produce holder binding proof (transaction_data hash, request integrity, amr, jti)
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    wallet --&gt;&gt; rp: OpenID4VP response (vp_token)
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    deactivate wallet
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    Note over rp,ap: Proof package forwarded (signed request + vp_token), optionally signed and encrypted
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    rp -&gt;&gt; ap: Forward proof package
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    ap -&gt;&gt; ap: Verify proof against original request (re-hash, integrity, amr, replay check, payload vs rulebook)
-</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    ap --&gt;&gt; rp: Transaction result
-</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    rp --&gt;&gt; user: Result
-</span></code></pre></div>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    actor user as User
+    participant wallet as Wallet
+    participant rp as Relying Party
+    participant ap as Authorizing Party
+
+    user -&gt;&gt; rp: Initiate payment
+    rp -&gt;&gt; wallet: Signed OpenID4VP request (DCQL query, transaction_data, request signature)
+    activate wallet
+    wallet -&gt;&gt; wallet: Match credential and validate transaction_data against rulebook and signed metadata
+    wallet -&gt;&gt; user: Render transaction data for consent
+    user -&gt;&gt; user: Review amount and payee
+    user -&gt;&gt; wallet: Authenticate (two independent factors)
+    wallet -&gt;&gt; wallet: Produce holder binding proof (transaction_data hash, request integrity, amr, jti)
+    wallet --&gt;&gt; rp: OpenID4VP response (vp_token)
+    deactivate wallet
+    Note over rp,ap: Proof package forwarded (signed request + vp_token), optionally signed and encrypted
+    rp -&gt;&gt; ap: Forward proof package
+    ap -&gt;&gt; ap: Verify proof against original request (re-hash, integrity, amr, replay check, payload vs rulebook)
+    ap --&gt;&gt; rp: Transaction result
+    rp --&gt;&gt; user: Result</code></pre>
 <p><strong>The role of payment schemes.</strong> In the third-party flow the relying party (for example, a merchant or its payment service provider) is generally not in a direct trust or contractual relationship with the user's bank. Something has to carry the proof package from the relying party to the issuing bank that will authorize and settle the transaction — and to define how that bank should interpret and process it. This is the role of a <strong>payment scheme</strong>. The scheme provides the rails between the merchant side and the issuing side: it transports the proof package (the signed request plus the wallet's presentation) to the issuing bank acting as Authorizing Party, and it specifies how the bank evaluates the evidence and returns a result that the merchant side can act on. In PaSO terms, the scheme is the mechanism that realises the hand-off shown above as "forward proof package": PaSO defines the package contents, the verification procedure, and a standard ingestion endpoint, while a payment scheme (or another agreed forwarding mechanism named by the applicable Transaction Data Type Rulebook) governs how the package travels across organisational boundaries and how settlement follows. This is also why a PaSO Credential used in this flow must carry the information the scheme and the issuing bank need — such as which Authorizing Party and which payment network are responsible — so the relying party knows where to send the proof and the bank can correlate and settle it. Unlike the first-party flow, the third-party flow is not mandated by regulation; it is an opportunity to use the wallet's capabilities to enhance existing payment and checkout journeys.</p>
 <h2 id="8-design-principles-in-summary">8 Design principles, in summary</h2>
 <ul>

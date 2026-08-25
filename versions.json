@@ -2,6 +2,11 @@
   {
     "version": "draft-2",
     "title": "draft-2",
+    "aliases": []
+  },
+  {
+    "version": "draft-1",
+    "title": "draft-1",
     "aliases": [
       "latest"
     ]

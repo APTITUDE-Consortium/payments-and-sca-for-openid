@@ -87,7 +87,7 @@ When the Wallet requests `Accept: application/jwt`, the Attestation Provider **S
   - `kid`: **REQUIRED** when the credential's issuer keys are instead published in a key set resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata). Identifies the signing key within that key set. In this case, `x5c` **SHALL NOT** be used.
 - The JWT payload **SHALL** include:
   - `iss`: **REQUIRED**. The Credential Issuer Identifier.
-  - `sub`: **REQUIRED**. The credential type identifier as defined by the credential format (e.g., `vct` for [SD-JWT-VC], `doctype` for [mdoc]).
+  - `sub`: **REQUIRED**. The credential type identifier as defined by the credential format: the `vct` claim value for [SD-JWT-VC], or the `docType` value of the mobile security object (MSO) for [mdoc].
   - `format`: **REQUIRED**. The credential format identifier as defined in [OID4VCI] (e.g., `dc+sd-jwt`, `mso_mdoc`).
   - `iat`: **REQUIRED**. Issuance time.
   - `exp`: **REQUIRED**. Expiration time. The Attestation Provider **SHOULD** set a validity period appropriate for the rate of metadata change.
@@ -101,7 +101,7 @@ The Wallet **MAY** refuse issuance if the returned metadata does not contain any
 
 ## 5 Ad-hoc Transaction Data Metadata
 
-This section defines an alternative mechanism for supplying transaction data type metadata. Instead of relying solely on the corresponding entry in the signed credential metadata JWT, the metadata for a transaction data type **MAY** be supplied ad hoc within the `transaction_data` entry itself, as a JWT signed by the Attestation Provider of the targeted PaSO Credential.
+This section defines an alternative mechanism for supplying transaction data type metadata. Instead of relying solely on the corresponding entry in the signed credential metadata JWT, the metadata for a transaction data type **MAY** be supplied ad hoc within the `transaction_data` entry itself, as a JWT signed by the Attestation Provider of the targeted PaSO Credential. This mechanism applies to PaSO Credentials of every credential format supported by [PaSO Core], including [SD-JWT-VC] and [mdoc]; only the values of the `sub` and `format` claims (Section 5.2) are format-specific.
 
 ### 5.1 The `metadata` Parameter
 
@@ -118,13 +118,15 @@ The ad-hoc metadata JWT **SHALL** have the following structure:
   - `typ`: set to `adhoc-transaction-metadata+jwt`.
 - The JWT payload **SHALL** include:
   - `iss`: **REQUIRED**. The Credential Issuer Identifier.
-  - `sub`: **REQUIRED**. The credential type identifier as defined by the credential format (e.g., `vct` for [SD-JWT-VC], `doctype` for [mdoc]).
+  - `sub`: **REQUIRED**. The credential type identifier as defined by the credential format: the `vct` claim value for [SD-JWT-VC], or the `docType` value of the mobile security object (MSO) for [mdoc].
   - `format`: **REQUIRED**. The credential format identifier as defined in [OID4VCI] (e.g., `dc+sd-jwt`, `mso_mdoc`).
   - `iat`: **REQUIRED**. Issuance time.
   - `exp`: **REQUIRED**. Expiration time. The Attestation Provider **SHOULD** choose a validity period that bounds how long Relying Parties can cache and reuse the JWT.
   - `transaction_data_type`: **REQUIRED**. The transaction data type identifier the metadata applies to, following the structure defined in [PaSO Core] Section 5.2. It **SHALL** equal the `type` of the enclosing `transaction_data` entry.
   - `metadata`: **REQUIRED**. An object with the same structure as a single `transaction_data_types` entry value as defined in Section 3, i.e. containing `claims` per Section 3.1, `ui_labels` per Section 3.2 where applicable, and any additional parameters. The requirements of Sections 3.1 and 3.2 apply unchanged.
 - The JWT **SHALL** be signed using an algorithm appropriate for the key in the `x5c` leaf certificate.
+
+The credential type identifier bound by `sub` is unrelated to the device-signed namespace `urn:paso:sca:1` defined in [PaSO Core] Section 6.3: that namespace identifies where the SCA response claims are placed within an mdoc presentation and is not a credential type identifier. For an [mdoc] PaSO Credential, `sub` carries the credential's `docType` and `format` is `mso_mdoc`.
 
 ### 5.3 Verification
 
@@ -182,7 +184,7 @@ The Wallet **SHALL** perform the following verification each time it needs to re
 4. Verify that the `iss` claim matches the Credential Issuer Identifier.
 5. Verify that the `exp` claim has not passed.
 6. Verify the credential binding:
-   - The `sub` claim **SHALL** match the credential's type identifier as defined by the credential format (e.g., `vct` for [SD-JWT-VC], `doctype` for [mdoc]).
+   - The `sub` claim **SHALL** match the credential's type identifier as defined by the credential format: the `vct` claim of the credential for [SD-JWT-VC], or the `docType` of the mobile security object (MSO) for [mdoc]. The device-signed namespace `urn:paso:sca:1` ([PaSO Core] Section 6.3) is not a credential type identifier and **SHALL NOT** be accepted as a `sub` value.
    - When the credential carries an `x5c` certificate chain:
      - The root CA in the metadata JWT's `x5c` chain **SHALL** be the same as the root CA in the credential's `x5c` chain.
      - The Subject of the leaf certificate in the metadata JWT's `x5c` chain **SHALL** match the Subject of the leaf certificate in the credential's `x5c` chain.
@@ -371,6 +373,34 @@ Decoded ad-hoc metadata JWT payload:
         { "locale": "de", "value": "Zahlung bestätigen" }
       ]
     }
+  }
+}
+```
+
+### A.5 Ad-hoc Metadata JWT Payload for an mdoc Credential
+
+The same ad-hoc mechanism targeting a PaSO Credential in `mso_mdoc` format. Only `sub` and `format` differ from A.4: `sub` carries the credential's `docType` per Section 5.2 — not a `vct`, and not the device-signed namespace `urn:paso:sca:1` from [PaSO Core] Section 6.3. The `transaction_data_type` is unchanged, since transaction data type identifiers are format-independent.
+
+```json
+{
+  "iss": "https://issuer.bank.example",
+  "sub": "com.example.bank.paymentcard.1",
+  "format": "mso_mdoc",
+  "iat": 1710000000,
+  "exp": 1710604800,
+  "transaction_data_type": "urn:paso:sca:global:payment:1",
+  "metadata": {
+    "claims": [
+      {
+        "path": ["amount"],
+        "mandatory": true,
+        "value_type": "iso_currency_amount",
+        "display": [
+          { "locale": "en", "name": "Amount" },
+          { "locale": "de", "name": "Betrag" }
+        ]
+      }
+    ]
   }
 }
 ```

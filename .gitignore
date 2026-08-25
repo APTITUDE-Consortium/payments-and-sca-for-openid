@@ -12,3 +12,4 @@ docs/Gemfile.lock
 .venv
 .superpowers
 .claude
+site

@@ -903,10 +903,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#62-authentication-methods" class="md-nav__link">
+  <a href="#62-sd-jwt-vc-profile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6.2 Authentication Methods
+        6.2 SD-JWT-VC Profile
       
     </span>
   </a>
@@ -914,21 +914,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#63-sd-jwt-vc-profile" class="md-nav__link">
+  <a href="#63-mdoc-profile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6.3 SD-JWT-VC Profile
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#64-mdoc-profile" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6.4 mdoc Profile
+        6.3 mdoc Profile
       
     </span>
   </a>
@@ -1647,10 +1636,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#62-authentication-methods" class="md-nav__link">
+  <a href="#62-sd-jwt-vc-profile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6.2 Authentication Methods
+        6.2 SD-JWT-VC Profile
       
     </span>
   </a>
@@ -1658,21 +1647,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#63-sd-jwt-vc-profile" class="md-nav__link">
+  <a href="#63-mdoc-profile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6.3 SD-JWT-VC Profile
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#64-mdoc-profile" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        6.4 mdoc Profile
+        6.3 mdoc Profile
       
     </span>
   </a>
@@ -1946,6 +1924,10 @@
 <td>A governance document that defines the semantic meaning and structure of a specific transaction data type. See Section 5.</td>
 </tr>
 <tr>
+<td>Risk Signal Profile</td>
+<td>A published governance document that bundles risk signal types — defined in [PaSO Risk Signal Registry] — with a per-signal requirement flag and an optional freshness bound. Referenced by signed credential metadata or a Transaction Data Type Rulebook. See [PaSO Risk Signals] Section 3.</td>
+</tr>
+<tr>
 <td>Authorizing Party</td>
 <td>The party that receives the proof package from the Relying Party, verifies the transaction, and authorizes the action. See Section 2.</td>
 </tr>
@@ -2032,19 +2014,9 @@
 <td>A fresh, cryptographically random value with sufficient entropy per [RFC7519] Section 4.1.7. Unique per presentation. When used for SCA, serves as the Authentication Code per [PSD2].</td>
 </tr>
 <tr>
-<td><code>response_mode</code></td>
-<td>yes</td>
-<td>The <code>response_mode</code> parameter as given or defaulted in the [OID4VP] Authorization Request.</td>
-</tr>
-<tr>
 <td><code>display_locale</code></td>
 <td>yes</td>
 <td>A [RFC5646] language tag representing the locale shown to the user during consent. Enables deterministic reconstruction of which display entries were used.</td>
-</tr>
-<tr>
-<td><code>amr</code></td>
-<td>yes</td>
-<td>Authentication Methods References. A JSON array of strings per [RFC8176]. See Section 6.2.</td>
 </tr>
 <tr>
 <td><code>transaction_data_hash</code></td>
@@ -2071,34 +2043,17 @@
 <td>yes</td>
 <td>Version identifier of the Wallet application that authorized the transaction.</td>
 </tr>
-</tbody>
-</table>
-<h3 id="62-authentication-methods">6.2 Authentication Methods</h3>
-<p>Values from the IANA "Authentication Method Reference Values" registry [RFC8176] <strong>SHALL</strong> be used where applicable. Common values include <code>pin</code>, <code>pwd</code>, <code>hwk</code>, <code>swk</code>, and <code>otp</code>.</p>
-<p>This specification defines two additional values for biometric strength:</p>
-<table>
-<thead>
 <tr>
-<th>Value</th>
-<th>Criteria</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>bio_strong</code></td>
-<td>Biometric matching in hardware-isolated environment (e.g., TEE, Secure Element); FAR ≤ 1:50,000; presentation attack detection required.</td>
-</tr>
-<tr>
-<td><code>bio_weak</code></td>
-<td>Biometric matching with FAR ≤ 1:10,000; does not meet <code>bio_strong</code> criteria.</td>
+<td><code>risk_signals</code></td>
+<td>conditional</td>
+<td>An array of risk-signal envelopes per [PaSO Risk Signals]. <strong>REQUIRED</strong> when the signal set resolved for the matched transaction data type contains one or more required signals, per [PaSO Risk Signals] Section 4.1; absent otherwise. Signal types are defined by [PaSO Risk Signal Registry]. When encryption is required for the transaction data type, this value is an encrypted structure per [PaSO Risk Signals] instead of a plaintext array.</td>
 </tr>
 </tbody>
 </table>
-<p>When a biometric factor is used, the Wallet <strong>SHALL</strong> include exactly one of <code>bio_strong</code> or <code>bio_weak</code>. The Wallet <strong>SHOULD</strong> additionally include the modality value (<code>fpt</code>, <code>face</code>, <code>iris</code>) when the platform identifies it.</p>
-<p>When used in a [PSD2] context, the <code>amr</code> array <strong>SHALL</strong> cover at least two different categories of authentication elements (knowledge, possession, inherence) as required by [PSD2] Article 4(30).</p>
-<h3 id="63-sd-jwt-vc-profile">6.3 SD-JWT-VC Profile</h3>
+<p>The authentication methods used to release the transaction, and the <code>response_mode</code> of the Authorization Request, are not claims of this section. They are risk signal types defined by [PaSO Risk Signal Registry] and are carried inside <code>risk_signals</code> when a referenced risk signal profile requires them. A PaSO transaction therefore evidences Strong Customer Authentication only where the risk signal profile in force requires the authentication-methods signal; this specification does not require it.</p>
+<h3 id="62-sd-jwt-vc-profile">6.2 SD-JWT-VC Profile</h3>
 <p>For PaSO Credentials in [SD-JWT-VC] format, the Wallet <strong>SHALL</strong> include a Key Binding JWT (KB-JWT). The SCA response claims from Section 6.1 <strong>SHALL</strong> be included as top-level claims in the KB-JWT payload, in addition to the standard KB-JWT claims defined by [OID4VP].</p>
-<h3 id="64-mdoc-profile">6.4 mdoc Profile</h3>
+<h3 id="63-mdoc-profile">6.3 mdoc Profile</h3>
 <p>For PaSO Credentials in [mdoc] format, the Wallet <strong>SHALL</strong> include device authentication. The SCA response claims <strong>SHALL</strong> be included as device-signed data elements in the <code>DeviceNameSpaces</code> structure under the namespace <code>urn:paso:sca:1</code>.</p>
 <table>
 <thead>
@@ -2113,16 +2068,8 @@
 <td>tstr</td>
 </tr>
 <tr>
-<td><code>response_mode</code></td>
-<td>tstr</td>
-</tr>
-<tr>
 <td><code>display_locale</code></td>
 <td>tstr</td>
-</tr>
-<tr>
-<td><code>amr</code></td>
-<td>array of tstr</td>
 </tr>
 <tr>
 <td><code>transaction_data_hash</code></td>
@@ -2143,6 +2090,10 @@
 <tr>
 <td><code>wallet_instance_version</code></td>
 <td>tstr</td>
+</tr>
+<tr>
+<td><code>risk_signals</code></td>
+<td>array of maps</td>
 </tr>
 </tbody>
 </table>
@@ -2233,10 +2184,6 @@
 <td><a href="https://www.rfc-editor.org/rfc/rfc7519.html">RFC 7519 — JSON Web Token (JWT)</a></td>
 </tr>
 <tr>
-<td>[RFC8176]</td>
-<td><a href="https://www.rfc-editor.org/rfc/rfc8176.html">RFC 8176 — Authentication Method Reference Values</a></td>
-</tr>
-<tr>
 <td>[SD-JWT-VC]</td>
 <td><a href="https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/">SD-JWT-based Verifiable Credentials</a></td>
 </tr>
@@ -2247,6 +2194,14 @@
 <tr>
 <td>[PaSO Proof Metadata]</td>
 <td><a href="../proof/paso-proof-metadata/">PaSO Proof: Metadata Module</a></td>
+</tr>
+<tr>
+<td>[PaSO Risk Signals]</td>
+<td><a href="../proof/paso-proof-risk-signals/">PaSO Proof: Risk Signals Module</a></td>
+</tr>
+<tr>
+<td>[PaSO Risk Signal Registry]</td>
+<td><a href="../proof/paso-proof-risk-signal-registry/">PaSO Proof: Risk Signal Registry</a></td>
 </tr>
 <tr>
 <td>[JAR]</td>
@@ -2294,35 +2249,60 @@
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="a2-kb-jwt-payload-sd-jwt-vc">A.2 KB-JWT Payload (SD-JWT-VC)</h3>
+<p>This example assumes a risk signal profile requiring the <code>response_mode</code> and authentication-methods signals is in force; absent such a profile the <code>risk_signals</code> claim would be absent.</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">"aud"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x509_san_dns:shop.example.com"</span><span class="p">,</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1741269093</span><span class="p">,</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">"nonce"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bUtJdjJESWdmTWNjb011YQ"</span><span class="p">,</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">"sd_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY"</span><span class="p">,</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">"jti"</span><span class="p">:</span><span class="w"> </span><span class="s2">"deeec2b0-3bea-4477-bd5d-e3462a709481"</span><span class="p">,</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">"response_mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct_post.jwt"</span><span class="p">,</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">"amr"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"pin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"hwk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bio_strong"</span><span class="p">,</span><span class="w"> </span><span class="s2">"face"</span><span class="p">],</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">"display_locale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="nt">"transaction_data_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q"</span><span class="p">,</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="nt">"transaction_data_hash_alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha-256"</span><span class="p">,</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="nt">"metadata_integrity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk="</span><span class="p">,</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="nt">"request_integrity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg="</span><span class="p">,</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">  </span><span class="nt">"wallet_instance_version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"android:com.example.wallet:4.1.2"</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">}</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">"display_locale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">"transaction_data_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q"</span><span class="p">,</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">"transaction_data_hash_alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha-256"</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="nt">"metadata_integrity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk="</span><span class="p">,</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="nt">"request_integrity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg="</span><span class="p">,</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="nt">"wallet_instance_version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"android:com.example.wallet:4.1.2"</span><span class="p">,</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="nt">"risk_signals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:response_mode:1"</span><span class="p">,</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">      </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct_post.jwt"</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:amr:1"</span><span class="p">,</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">      </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"pin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"hwk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bio_strong"</span><span class="p">,</span><span class="w"> </span><span class="s2">"face"</span><span class="p">]</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="a3-mdoc-devicesigned-namespace">A.3 mdoc DeviceSigned Namespace</h3>
 <p>CBOR diagnostic notation:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>"urn:paso:sca:1" : {
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  "jti" : "deeec2b0-3bea-4477-bd5d-e3462a709481",
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  "response_mode" : "direct_post.jwt",
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  "amr" : ["pin", "hwk", "bio_strong", "face"],
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  "display_locale" : "de",
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  "transaction_data_hash" : h'3897274100F2BD5D624D8C624104310431E75C76EF...',
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  "transaction_data_hash_alg" : "sha-256",
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>  "metadata_integrity" : "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  "request_integrity" : "sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg=",
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>  "wallet_instance_version" : "android:com.example.wallet:4.1.2"
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>}
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  "display_locale" : "de",
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  "transaction_data_hash" : h'3897274100F2BD5D624D8C624104310431E75C76EF...',
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  "transaction_data_hash_alg" : "sha-256",
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  "metadata_integrity" : "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  "request_integrity" : "sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg=",
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>  "wallet_instance_version" : "android:com.example.wallet:4.1.2",
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  "risk_signals" : [
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    {
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>      "type" : "urn:paso:risk:global:response_mode:1",
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>      "collected_at" : "2026-07-24T10:15:30Z",
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>      "status" : "ok",
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>      "value" : "direct_post.jwt"
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    },
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    {
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>      "type" : "urn:paso:risk:global:amr:1",
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>      "collected_at" : "2026-07-24T10:15:30Z",
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>      "status" : "ok",
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>      "value" : ["pin", "hwk", "bio_strong", "face"]
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    }
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>  ]
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>}
 </span></code></pre></div>
 <h3 id="a4-consent-screen">A.4 Consent Screen</h3>
 <p>How a Wallet might display the transaction from Annex A.1 with locale <code>en</code>:</p>

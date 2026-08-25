@@ -28,7 +28,7 @@ The Attestation Provider **SHALL** include a `credential_metadata_uri` in each P
 
 When fetching from a `credential_metadata_uri`, the Wallet **SHALL** include an `Accept` header and an `Accept-Language` header per [OID4VCI] Section 12.2.2. If the `Accept` header is absent or does not express a preference, the Attestation Provider **SHALL** default to `application/json`. The Attestation Provider **MAY** refuse requests without an `Accept-Language` header.
 
-- `Accept: application/json` — The Attestation Provider **SHALL** return the credential metadata as a plain JSON object.
+- `Accept: application/json` — The Attestation Provider **SHALL** return the credential metadata as a plain JSON object, i.e. the `credential_metadata` object extended with `transaction_data_types` per Section 3, without the JWT payload structure defined in Section 4. Note that per Section 3, the Wallet cannot rely on this unsigned form for PaSO Credentials.
 - `Accept: application/jwt` — The Attestation Provider **SHALL** return the credential metadata as a signed JWT per Section 4.
 
 The Attestation Provider **MAY** serve one or more locales per signed JWT. The Attestation Provider **SHALL** include at least the first supported locale from the `Accept-Language` header and **MAY** include additional locales.
@@ -82,8 +82,9 @@ As with claims, the applicable Transaction Data Type Rulebook defines the semant
 When the Wallet requests `Accept: application/jwt`, the Attestation Provider **SHALL** return the credential metadata as a signed JWT with the following structure:
 
 - The JOSE header **SHALL** include:
-  - `x5c`: the Attestation Provider's certificate chain.
   - `typ`: set to `credential-metadata+jwt`.
+  - `x5c`: **REQUIRED** when the credential's issuer keys are published as an x5c certificate chain. The Attestation Provider's certificate chain.
+  - `kid`: **REQUIRED** when the credential's issuer keys are instead published in a key set resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata). Identifies the signing key within that key set. In this case, `x5c` **SHALL NOT** be used.
 - The JWT payload **SHALL** include:
   - `iss`: **REQUIRED**. The Credential Issuer Identifier.
   - `sub`: **REQUIRED**. The credential type identifier as defined by the credential format (e.g., `vct` for [SD-JWT-VC], `doctype` for [mdoc]).
@@ -92,7 +93,7 @@ When the Wallet requests `Accept: application/jwt`, the Attestation Provider **S
   - `exp`: **REQUIRED**. Expiration time. The Attestation Provider **SHOULD** set a validity period appropriate for the rate of metadata change.
   - `credential_metadata_uri`: **REQUIRED**. The URL from which this JWT was served and from which the Wallet **SHALL** re-fetch it upon renewal.
   - `credential_metadata`: **REQUIRED**. The `credential_metadata` object as defined in [OID4VCI] Section 12.2.4, extended with `transaction_data_types` per Section 3.
-- The JWT **SHALL** be signed using an algorithm appropriate for the key in the `x5c` leaf certificate.
+- The JWT **SHALL** be signed using an algorithm appropriate for the signing key: the key in the `x5c` leaf certificate, or the key set key identified by `kid`.
 
 The Attestation Provider **SHALL** rotate signed credential metadata JWTs before their `exp` time and **SHOULD** set `exp` values that balance freshness against unnecessary network traffic.
 
@@ -175,17 +176,23 @@ The Wallet **SHALL** perform the following verification each time it needs to re
 
 1. Verify that the `typ` JOSE header parameter is `credential-metadata+jwt`.
 2. Verify the JWT signature.
-3. Verify the `x5c` certificate chain in the JOSE header against the Wallet's trust store.
+3. Verify the signing key trust:
+   - When the credential's issuer keys are x5c-based, verify the `x5c` certificate chain in the JOSE header against the Wallet's trust store.
+   - Otherwise, verify that the JWT is signed by a key from the credential issuer's published key set, identified by the `kid` JOSE header parameter and resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata).
 4. Verify that the `iss` claim matches the Credential Issuer Identifier.
 5. Verify that the `exp` claim has not passed.
 6. Verify the credential binding:
    - The `sub` claim **SHALL** match the credential's type identifier as defined by the credential format (e.g., `vct` for [SD-JWT-VC], `doctype` for [mdoc]).
-   - The root CA in the `x5c` chain **SHALL** be the same as the root CA in the credential's `x5c` chain.
-   - The Subject of the leaf certificate in the `x5c` chain **SHALL** match the Subject of the leaf certificate in the credential's `x5c` chain.
+   - When the credential carries an `x5c` certificate chain:
+     - The root CA in the metadata JWT's `x5c` chain **SHALL** be the same as the root CA in the credential's `x5c` chain.
+     - The Subject of the leaf certificate in the metadata JWT's `x5c` chain **SHALL** match the Subject of the leaf certificate in the credential's `x5c` chain.
+   - When the credential does not carry an `x5c` certificate chain, the metadata JWT **SHALL** have been verified per step 3 using a key from the same issuer key set that verifies the credential itself, and the `iss` claim **SHALL** equal the credential's issuer identifier.
 
 If any step fails, the metadata JWT **SHALL** be considered invalid and the Wallet **SHALL** exclude the credential from further processing. During issuance, the Wallet **SHALL** reject the issuance and inform the user.
 
 ## 8 Renewal and Unlinkability
+
+Upon fetching a signed credential metadata JWT, the Wallet **SHALL** verify that the `credential_metadata_uri` claim matches the URI from which the JWT was retrieved, after following any HTTP redirects. If they do not match, the JWT **SHALL** be considered invalid per Section 6. The Wallet **SHALL** use the `credential_metadata_uri` claim of the most recently verified JWT for subsequent renewals, allowing the Attestation Provider to relocate the endpoint via HTTP redirects.
 
 The Wallet **SHALL** renew each signed credential metadata JWT before its `exp` time by re-fetching from the `credential_metadata_uri`, and **MAY** re-fetch at any other time. The Wallet **MAY** fetch additional locales by issuing separate requests with different `Accept-Language` headers during renewal.
 

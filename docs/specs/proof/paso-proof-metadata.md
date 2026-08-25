@@ -1,9 +1,4 @@
----
-title: "PaSO Proof: Metadata Module"
-description: Signed credential metadata and the description of transaction-data types.
----
-
-# PaSO Proof: Metadata Module
+# Metadata Module
 
 ## Abstract
 

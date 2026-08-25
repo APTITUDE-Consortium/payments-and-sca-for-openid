@@ -1,9 +1,4 @@
----
-title: "PaSO Proof: Verify Module"
-description: The proof package, verification procedure, and ingestion endpoint.
----
-
-# PaSO Proof: Verify Module
+# Verify Module
 
 ## Abstract
 

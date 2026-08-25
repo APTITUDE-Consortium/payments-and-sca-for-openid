@@ -1,9 +1,4 @@
----
-title: "Mandate Rulebook (urn:paso:sca:global:mandate[:<subtype>]:1)"
-description: A generic Mandate transaction data type for authorizing a named party (a human delegate, a business, or a software agent) to act on the User's behalf under defined conditions and limits.
----
-
-# Transaction Data Type Rulebook: Base Mandate
+# Basic Mandates
 
 **Type identifier**: `urn:paso:sca:global:mandate:1` (no subtype) or `urn:paso:sca:global:mandate:<subtype>:1` (with subtype).
 

@@ -1,8 +1,3 @@
----
-title: PaSO View
-description: Generic, metadata-driven rendering of transaction data — value types and locale selection.
----
-
 # PaSO View
 
 ## Abstract

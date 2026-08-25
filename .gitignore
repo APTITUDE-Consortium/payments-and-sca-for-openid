@@ -9,3 +9,6 @@ docs/.jekyll-cache
 docs/.jekyll-metadata
 docs/vendor
 docs/Gemfile.lock
+.venv
+.superpowers
+.claude

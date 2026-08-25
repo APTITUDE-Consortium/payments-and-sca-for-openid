@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#003399"/>
-  <g fill="#FFCC00">
-    <polygon points="32,14 33.76,19.42 39.46,19.42 34.85,22.77 36.61,28.18 32,24.83 27.39,28.18 29.15,22.77 24.54,19.42 30.24,19.42"/>
-  </g>
-  <text x="32" y="50" font-family="Inter, sans-serif" font-size="14" font-weight="900" fill="#FFCC00" text-anchor="middle" letter-spacing="-1">PaSO</text>
-</svg>

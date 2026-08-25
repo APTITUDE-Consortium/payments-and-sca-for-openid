@@ -1,9 +1,4 @@
----
-title: "Generic Rulebook (urn:paso:sca:global:generic[:<subtype>]:1)"
-description: A generic, free-form transaction data type for non-payment authorization use cases such as login, risk-based authentication, account information access, and e-mandates. Subtype is encoded as an optional suffix segment in the type identifier.
----
-
-# Transaction Data Type Rulebook: Generic
+# Generic 
 
 **Type identifier**: `urn:paso:sca:global:generic:1` (no subtype) or `urn:paso:sca:global:generic:<subtype>:1` (with subtype).
 

@@ -1,18 +1,2015 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Redirecting</title>
-  <noscript>
-    <meta http-equiv="refresh" content="1; url=latest/" />
-  </noscript>
-  <script>
-    window.location.replace(
-      "latest/" + window.location.search + window.location.hash
-    );
-  </script>
-</head>
-<body>
-  Redirecting to <a href="latest/">latest/</a>...
-</body>
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://aptitude-consortium.github.io/payments-and-sca-for-openid/">
+      
+      
+      
+        <link rel="next" href="rulebooks/transaction_data/Generic/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Payment and SCA for OpenID</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#introduction" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="Payment and SCA for OpenID" class="md-header__button md-logo" aria-label="Payment and SCA for OpenID" data-md-component="logo">
+      
+  <img src="assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Payment and SCA for OpenID
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Introduction
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="pink"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="Payment and SCA for OpenID" class="md-nav__button md-logo" aria-label="Payment and SCA for OpenID" data-md-component="logo">
+      
+  <img src="assets/logo.png" alt="logo">
+
+    </a>
+    Payment and SCA for OpenID
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose-of-this-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose of this document
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1 Background
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1 Background">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-two-worlds-that-need-to-meet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Two worlds that need to meet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-the-gap-openid4vp-leaves-open" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 The gap OpenID4VP leaves open
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what-paso-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2 What PaSO is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3 Core concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3 Core concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-two-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Two flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-rulebooks-governance-instead-of-hard-coding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Rulebooks: governance instead of hard-coding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-versioned-type-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Versioned type identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-proof-what-gets-produced-and-checked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4 The proof: what gets produced and checked
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4 The proof: what gets produced and checked">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-holder-binding-proof" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Holder binding proof
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-the-proof-package-and-the-authorizing-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 The proof package and the Authorizing Party
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-signed-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Signed metadata
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-logging-and-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Logging and replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-rendering-consistent-display-across-wallets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5 Rendering: consistent display across wallets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-two-integration-paths-for-a-wallet-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6 Two integration paths for a wallet provider
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6 Two integration paths for a wallet provider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-static-path-hard-coded-transaction-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Static path: hard-coded transaction types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-dynamic-path-metadata-driven-rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Dynamic path: metadata-driven rendering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-why-the-dynamic-path-matters-for-real-banking-adoption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Why the dynamic path matters for real banking adoption
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-how-the-pieces-fit-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7 How the pieces fit together
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7 How the pieces fit together">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-first-party-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 First-party flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-third-party-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Third-party flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-design-principles-in-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8 Design principles, in summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-how-paso-helps-satisfy-the-regulatory-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9 How PaSO helps satisfy the regulatory requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9 How PaSO helps satisfy the regulatory requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-strong-customer-authentication-two-independent-factors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Strong Customer Authentication — two independent factors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-authentication-code-sca-rts-article-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Authentication code (SCA-RTS Article 4)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-dynamic-linking-sca-rts-article-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 Dynamic linking (SCA-RTS Article 5)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-informed-consent-and-faithful-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 Informed consent and faithful display
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95-confidentiality-and-integrity-of-credentials-and-data-sca-rts-articles-2227" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 Confidentiality and integrity of credentials and data (SCA-RTS Articles 22–27)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#96-auditability-and-dispute-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.6 Auditability and dispute resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#97-summary-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.7 Summary mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rulebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rulebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transaction data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Transaction data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rulebooks/transaction_data/Generic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rulebooks/transaction_data/Mandate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Mandates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="rulebooks/transaction_data/Payment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Payments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specifications
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Specifications
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="specifications/paso-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PaSO Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="specifications/paso-view/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PaSO View
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proof
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Proof
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="specifications/proof/paso-proof-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="specifications/proof/paso-proof-metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metadata Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="specifications/proof/paso-proof-sd-jwt-vc-svg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SD-JWT-VC and SVG Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="specifications/proof/paso-proof-verify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verify Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#purpose-of-this-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Purpose of this document
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1 Background
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1 Background">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-two-worlds-that-need-to-meet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Two worlds that need to meet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-the-gap-openid4vp-leaves-open" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 The gap OpenID4VP leaves open
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-what-paso-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2 What PaSO is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3 Core concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3 Core concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Roles
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-two-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Two flows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-rulebooks-governance-instead-of-hard-coding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Rulebooks: governance instead of hard-coding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-versioned-type-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Versioned type identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-proof-what-gets-produced-and-checked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4 The proof: what gets produced and checked
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4 The proof: what gets produced and checked">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-holder-binding-proof" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Holder binding proof
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-the-proof-package-and-the-authorizing-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 The proof package and the Authorizing Party
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-signed-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Signed metadata
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-logging-and-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Logging and replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-rendering-consistent-display-across-wallets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5 Rendering: consistent display across wallets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-two-integration-paths-for-a-wallet-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6 Two integration paths for a wallet provider
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6 Two integration paths for a wallet provider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-static-path-hard-coded-transaction-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Static path: hard-coded transaction types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-dynamic-path-metadata-driven-rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Dynamic path: metadata-driven rendering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-why-the-dynamic-path-matters-for-real-banking-adoption" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Why the dynamic path matters for real banking adoption
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-how-the-pieces-fit-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7 How the pieces fit together
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7 How the pieces fit together">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-first-party-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 First-party flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-third-party-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Third-party flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-design-principles-in-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8 Design principles, in summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-how-paso-helps-satisfy-the-regulatory-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9 How PaSO helps satisfy the regulatory requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9 How PaSO helps satisfy the regulatory requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-strong-customer-authentication-two-independent-factors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Strong Customer Authentication — two independent factors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-authentication-code-sca-rts-article-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Authentication code (SCA-RTS Article 4)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-dynamic-linking-sca-rts-article-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 Dynamic linking (SCA-RTS Article 5)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#94-informed-consent-and-faithful-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 Informed consent and faithful display
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#95-confidentiality-and-integrity-of-credentials-and-data-sca-rts-articles-2227" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 Confidentiality and integrity of credentials and data (SCA-RTS Articles 22–27)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#96-auditability-and-dispute-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.6 Auditability and dispute resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#97-summary-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.7 Summary mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="introduction">Introduction</h1>
+<h2 id="purpose-of-this-document">Purpose of this document</h2>
+<p>This document is a conceptual introduction to <strong>PaSO (Payments and SCA for OpenID)</strong>. It explains the problem PaSO addresses, the background it builds on, and the ideas behind its design. It is intended for readers who are new to PaSO and want to understand <em>why</em> it exists and <em>how</em> its pieces fit together, before reading the normative specifications themselves.</p>
+<p>It is deliberately non-normative. Where the specifications use precise requirement language ("MUST", "SHALL", etc.), this introduction paraphrases and simplifies. For exact rules, always refer to the specification documents.</p>
+<h2 id="1-background">1 Background</h2>
+<h3 id="11-two-worlds-that-need-to-meet">1.1 Two worlds that need to meet</h3>
+<p>Two bodies of work have matured largely in parallel:</p>
+<ul>
+<li>
+<p><strong>Digital identity wallets and the OpenID for Verifiable Credentials family.</strong> A wallet is an application, usually on a mobile device, that holds digital attestations (credentials) and can present them to other parties. Two protocols underpin this: <a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html"><strong>OpenID for Verifiable Credential Issuance (OpenID4VCI)</strong></a>, which governs how a credential is issued into a wallet, and <a href="https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html"><strong>OpenID for Verifiable Presentations (OpenID4VP)</strong></a>, which governs how a wallet presents a credential to a relying party. These protocols give us a device-bound key, a high-assurance authentication ceremony, and a signed presentation — exactly the primitives one needs for strong authentication.</p>
+</li>
+<li>
+<p><strong>European payments regulation.</strong> Payment services legislation requires <strong>Strong Customer Authentication (SCA)</strong>: authentication based on at least two independent factors drawn from the categories of knowledge, possession, and inherence. For electronic payments it additionally requires <strong>dynamic linking</strong> — the authentication must be cryptographically tied to a specific amount and a specific payee, so that the user provably consented to <em>that</em> transaction and nothing else.</p>
+</li>
+</ul>
+<p>A wallet has everything needed to satisfy SCA in principle: a device-bound private key (possession), unlocked by a PIN (knowledge) or biometric (inherence), capable of signing a presentation. The difficulty is not the cryptography. It is everything <em>around</em> the cryptography that regulation cares about: what exactly the user saw, what they consented to, whether the proof can be independently re-checked later, and whether any wallet from any provider will behave consistently.</p>
+<h3 id="12-the-gap-openid4vp-leaves-open">1.2 The gap OpenID4VP leaves open</h3>
+<p>OpenID4VP defines a parameter called <code>transaction_data</code> that lets a relying party attach transaction-specific information to a presentation request. This is the natural hook for dynamic linking. However, OpenID4VP intentionally leaves open <em>what that data means, how it is displayed, and what the resulting proof must contain</em>. Those are out of scope for a general-purpose presentation protocol.</p>
+<p>For payments this open space is the whole problem. Without agreement on it:</p>
+<ul>
+<li><strong>Data is inconsistent.</strong> Different parties send transaction details in different shapes, so a wallet cannot reliably find and display the amount and payee.</li>
+<li><strong>Consent is not demonstrably informed.</strong> If the wallet cannot be sure it displayed the right information clearly, the user's consent is legally fragile, and liability becomes contested.</li>
+<li><strong>Proofs are not independently verifiable after the fact.</strong> A signature over loosely defined data is hard to replay and check in a dispute.</li>
+<li><strong>Behaviour varies across wallets.</strong> Each wallet/provider/bank combination might do something slightly different, defeating interoperability.</li>
+</ul>
+<p>PaSO exists to close this gap in a focused, interoperable way.</p>
+<blockquote>
+<p><strong>A note on standardization layers.</strong> Other initiatives have approached parts of this gap — for example, by defining a fixed set of transaction-data schemas and mandatory display rules layered onto OpenID4VP. PaSO is an alternative that addresses the <em>same</em> concerns — standardized transaction data, mandatory and faithful display, governed consent, and enforced dynamic linking — but does so through a different and more general mechanism: generic rendering driven by signed metadata, versioned type identifiers, governance rulebooks, and a verifiable proof package. Where a solution design might otherwise rely on such a fixed-schema layer, PaSO is intended to be used in its place to provide these capabilities.</p>
+</blockquote>
+<h2 id="2-what-paso-is">2 What PaSO is</h2>
+<p>PaSO is a set of standards layered on top of OpenID4VCI and OpenID4VP. Its goal is to bridge wallets and payments/SCA requirements by establishing trust and a robust, regulation-aligned proof framework.</p>
+<p>PaSO is deliberately modular. A small core defines the shared concepts; additional modules add proof packaging, rendering, metadata handling, logging, and trust. Many modules can be extended or swapped for alternatives, provided the parties involved agree on them. Although PaSO is designed with payments and SCA in mind, its mechanisms apply to any domain that needs verifiable, user-consented transactions.</p>
+<p>The standards are organized as follows:</p>
+<ul>
+<li><strong>PaSO Core</strong> — the common foundation: roles, flow types, the governance documents (rulebooks), the proof structure the wallet produces, and the rules for processing transaction data.</li>
+<li><strong>PaSO Proof</strong> — a family of modules for producing a verifiable and replayable proof package: a metadata module, a verification module, a logging module, a status backchannel, a trust module, and a profile for SD-JWT-VC with SVG.</li>
+<li><strong>PaSO View</strong> — how a wallet renders transaction data for the user generically, so that any transaction type is supported consistently across wallets.</li>
+</ul>
+<p>The rest of this document introduces the key ideas behind these parts.</p>
+<h2 id="3-core-concepts">3 Core concepts</h2>
+<h3 id="31-roles">3.1 Roles</h3>
+<p>PaSO names four roles. Keeping them distinct is important, because in payments the party that <em>asks</em> for a payment is often not the party that <em>authorizes</em> it.</p>
+<ul>
+<li><strong>Attestation Provider</strong> — issues PaSO credentials into the wallet. (This is the credential issuer in OpenID4VCI terms.)</li>
+<li><strong>Wallet</strong> — stores PaSO credentials, processes transaction data, displays it to the user, and produces the proof. (This is the wallet in OpenID4VP terms.)</li>
+<li><strong>Relying Party</strong> — sends the presentation request containing the transaction data and receives the presentation. (This is the verifier in OpenID4VP terms.)</li>
+<li><strong>Authorizing Party</strong> — the party that ultimately verifies the proof and authorizes the transaction. It receives the proof package from the relying party and checks it against the original request. It holds trust relationships with the attestation provider and the relying party.</li>
+</ul>
+<p>The separation of <strong>Relying Party</strong> from <strong>Authorizing Party</strong> is one of PaSO's defining ideas. It cleanly models the difference between, say, a merchant or merchant-side service that collects the user's consent and the bank or settlement system that actually verifies and acts on it.</p>
+<h3 id="32-two-flows">3.2 Two flows</h3>
+<p>PaSO anticipates two common arrangements:</p>
+<ul>
+<li>
+<p><strong>First-party flow</strong> — one party plays attestation provider, relying party, and authorizing party at once. The wallet presents a credential back to the party that issued it. This matches the case where a bank authenticates its own customer directly.</p>
+</li>
+<li>
+<p><strong>Third-party flow</strong> — the relying party is separate from the attestation provider and authorizing party. The wallet presents to the relying party, which forwards the proof package onward to the authorizing party. This matches the payment case where a merchant (or merchant-side provider) collects consent and a bank or scheme verifies and settles it.</p>
+</li>
+</ul>
+<p>In all cases, presentation requests are signed, and wallets reject unsigned PaSO requests. The integrity of the request the user acted on is part of the evidence.</p>
+<h3 id="33-rulebooks-governance-instead-of-hard-coding">3.3 Rulebooks: governance instead of hard-coding</h3>
+<p>Rather than freezing every transaction type into the protocol, PaSO uses <strong>governance documents called rulebooks</strong>:</p>
+<ul>
+<li>A <strong>Credential Rulebook</strong> defines the rules for a particular kind of PaSO credential — its attributes, display rules, issuance and verification requirements, and which transaction data types it may be used with.</li>
+<li>A <strong>Transaction Data Type Rulebook</strong> defines the meaning and structure of a specific transaction data type: what each field means, whether it is required, whether it must be shown to the user, and how it should be rendered.</li>
+</ul>
+<p>This separation lets the ecosystem add new transaction types and credential types over time without changing the underlying protocol, while still keeping their meaning well-defined and stable.</p>
+<h3 id="34-versioned-type-identifiers">3.4 Versioned type identifiers</h3>
+<p>Every PaSO transaction data type is named by a URN of the form:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>urn:paso:sca:&lt;domain&gt;:&lt;suffix&gt;:&lt;version&gt;
+</span></code></pre></div>
+<p>The <code>&lt;domain&gt;</code> identifies the organization that owns the type (or <code>global</code> for types defined by PaSO itself), <code>&lt;suffix&gt;</code> names the type (for example <code>payment</code>), and <code>&lt;version&gt;</code> is a version number. A wallet recognizes PaSO transaction data simply by the <code>urn:paso:sca:</code> prefix.</p>
+<p>The semantic structure of a published type is immutable: once defined, it does not change. Any change requires a new version. This is what makes a versioned-fallback strategy possible — a relying party can offer a newer type first and an older type as a fallback, so that newer and older credentials can both transact.</p>
+<h2 id="4-the-proof-what-gets-produced-and-checked">4 The proof: what gets produced and checked</h2>
+<h3 id="41-holder-binding-proof">4.1 Holder binding proof</h3>
+<p>When a wallet presents a PaSO credential together with transaction data, it produces a <strong>holder binding proof</strong> that cryptographically ties the user's consent to that specific presentation. Beyond the standard presentation proof, PaSO requires a defined set of claims, including:</p>
+<ul>
+<li>a fresh unique identifier for the presentation (which, in an SCA context, serves as the authentication code);</li>
+<li>the authentication methods used (with explicit values distinguishing strong from weaker biometrics), required to span at least two independent factor categories in a payments context;</li>
+<li>a hash of the exact transaction data the user consented to;</li>
+<li>an integrity value over the signed request the wallet received;</li>
+<li>an integrity value over the signed credential metadata used to display the transaction (when applicable);</li>
+<li>the locale that was actually shown to the user, and the wallet's version.</li>
+</ul>
+<p>These claims are carried in the format-appropriate structure — a Key Binding JWT for SD-JWT-VC credentials, or device-signed data elements for mdoc credentials.</p>
+<p>The intent is that the proof captures not just <em>that</em> the user signed, but <em>what they were shown</em> and <em>how they authenticated</em> — the elements regulation actually cares about.</p>
+<h3 id="42-the-proof-package-and-the-authorizing-party">4.2 The proof package and the Authorizing Party</h3>
+<p>In a third-party flow, the relying party forwards an unmodified <strong>proof package</strong> — the original signed request plus the wallet's presentation — to the authorizing party. The authorizing party then independently re-verifies everything: the request signature and relying-party identity, the credential's validity and revocation status, the holder binding proof, the SCA response claims (re-hashing the transaction data and re-computing the integrity values), and conformance of the payload to the applicable rulebook. PaSO defines a standard endpoint and an optional signed-and-encrypted envelope for this hand-off.</p>
+<p>The key property is <strong>independent re-verifiability</strong>: the authorizing party does not have to trust the relying party's word; it can reconstruct and check the evidence itself.</p>
+<h3 id="43-signed-metadata">4.3 Signed metadata</h3>
+<p>Plain credential metadata served by an issuer is unsigned, which means it cannot serve as evidence and a wallet cannot prove it was untampered. PaSO defines <strong>signed credential metadata</strong> — served as a signed JWT from a dedicated URI, bound to the credential and its issuer, and verified by the wallet every time it is used. This signed metadata is the authoritative source for which transaction data types a credential supports and how its claims are described. The proof can reference exactly which metadata was in force, via an integrity value.</p>
+<h3 id="44-logging-and-replay">4.4 Logging and replay</h3>
+<p>PaSO defines a <strong>user-side audit log</strong>. For each credential and each transaction, the wallet retains the artefacts needed to reconstruct and re-verify what happened: the request as received, the presentation as delivered, the signed metadata used, and any external resources that were resolved (with their source, content, integrity value, and retrieval time). The aim is that any past transaction can be <strong>replayed exactly as it occurred</strong>, including the credential choices the user made — which is invaluable for dispute resolution.</p>
+<h2 id="5-rendering-consistent-display-across-wallets">5 Rendering: consistent display across wallets</h2>
+<p>Informed consent depends entirely on what the user actually sees. PaSO View defines how a wallet renders transaction data <strong>generically</strong>, driven only by metadata — so a wallet does not need bespoke code for every transaction type.</p>
+<p>The central ideas are:</p>
+<ul>
+<li>
+<p><strong>Generic, metadata-driven rendering.</strong> Each displayable claim carries a value type (for example, a currency amount, a date, an image, a frequency code, a URL, lightweight inline-formatted text, or a template that interpolates other claims). The wallet knows how to render each value type. A wallet may provide a dedicated UI for a type it specifically implements, but it must always be able to fall back to the generic renderer.</p>
+</li>
+<li>
+<p><strong>Display is mandatory and faithful.</strong> Everything designated for display must be shown before the user can confirm. Parties may not use labels or hints to obscure information relevant to consent. Security hints, when provided, must be shown exactly.</p>
+</li>
+<li>
+<p><strong>Locale selection is deterministic.</strong> The wallet selects a display locale according to defined matching rules, and records the locale it used in the proof — so it can later be shown precisely which text the user saw.</p>
+</li>
+<li>
+<p><strong>The advanced profile handles choice.</strong> When a request offers several credential alternatives or different transaction-data entries, the wallet presents these as independent choices and updates the displayed transaction data as the user switches between credentials. A consistency property ensures these choices are genuinely independent rather than artificially coupled.</p>
+</li>
+</ul>
+<p>This is how PaSO turns "the user consented" into "the user demonstrably saw, in their language, exactly these details, and confirmed them."</p>
+<h2 id="6-two-integration-paths-for-a-wallet-provider">6 Two integration paths for a wallet provider</h2>
+<p>A wallet provider adopting PaSO faces a choice with significant consequences for integration effort and long-term maintainability. The choice is <em>how the wallet learns to render a given transaction type</em>. PaSO supports two paths, and the <strong>PaSO Proof: Metadata Module</strong> is what makes the second one possible.</p>
+<h3 id="61-static-path-hard-coded-transaction-types">6.1 Static path: hard-coded transaction types</h3>
+<p>In the static path, the wallet provider implements support for each transaction data type directly in the wallet's code. The provider reads the relevant Transaction Data Type Rulebook, builds a dedicated consent screen for that type, and ships it as part of the wallet application.</p>
+<ul>
+<li><strong>Advantage:</strong> simple to start with. For a small, fixed set of types — say, a single base payment type — a hand-built screen is straightforward and gives the provider full control over the look and feel.</li>
+<li><strong>Drawback:</strong> it does not scale. Every new transaction data type, and every change to an existing one, requires a code change, a new wallet release, and a wait for users to update. With a growing catalogue of types — especially types defined by many different organisations under their own domains — this becomes unmaintainable. A wallet can only transact a type it has already shipped support for.</li>
+</ul>
+<p>PaSO permits this path: a wallet that implements a specific rulebook <em>may</em> provide its own dedicated UI, provided it remains faithful to the rulebook's meaning.</p>
+<h3 id="62-dynamic-path-metadata-driven-rendering">6.2 Dynamic path: metadata-driven rendering</h3>
+<p>In the dynamic path, the wallet does not hard-code any transaction type. Instead, it relies on the mechanisms of the <strong>PaSO Proof: Metadata Module</strong> together with <strong>PaSO View</strong>:</p>
+<ul>
+<li>The Attestation Provider serves <strong>signed credential metadata</strong> that describes each supported transaction data type — its claims, which of them must be displayed, how each value should be formatted (via value types), and the localised UI labels for the consent screen.</li>
+<li>The wallet retrieves and verifies this signed metadata, then <strong>renders the consent screen generically</strong> from it, using PaSO View's value types and locale-selection rules. No transaction-type-specific code is required.</li>
+</ul>
+<p>The consequence is decisive: a new transaction data type can be introduced by the issuer publishing its metadata and rulebook — <strong>the wallet needs no update</strong>. One generic renderer handles every present and future type, in every served locale, while still meeting PaSO's faithful-display and dynamic-linking guarantees. The signed nature of the metadata is what makes this safe: the wallet is not rendering arbitrary issuer-supplied UI, but verified, integrity-protected descriptions bound to the credential and its issuer, which also become part of the evidence (via the <code>metadata_integrity</code> value in the proof).</p>
+<p>This is why the Metadata Module is central rather than peripheral. It converts rendering from a per-type engineering task into a one-time capability.</p>
+<h3 id="63-why-the-dynamic-path-matters-for-real-banking-adoption">6.3 Why the dynamic path matters for real banking adoption</h3>
+<p>The dynamic path is not merely a convenience. It is effectively a precondition for using a wallet as a general authentication mechanism in existing banking applications.</p>
+<p>The reason lies in how modern banking apps already work. Today, banks routinely show transaction-specific consent dialogs — and perform dynamic linking — for far more than payments. Regulation (PSD2) mandates SCA with dynamic linking for payment transactions, but it is common market practice for banks to apply the same transaction-bound consent pattern to a range of <strong>non-payment</strong> interactions as well, for example:</p>
+<ul>
+<li>logging into online banking,</li>
+<li>changing a daily account or card limit,</li>
+<li>adding or confirming a new payee,</li>
+<li>changing security settings.</li>
+</ul>
+<p>None of these is required by PSD2 to use dynamic linking, yet banks do it because it is good security practice and users expect it. Each such interaction has its own consent screen with its own fields and wording.</p>
+<p>If a wallet is to serve as the authentication mechanism for these interactions — as an alternative to a bank's existing in-app SCA — it must be able to display the right consent screen for <em>each</em> of them. Under the static path, every one of these interaction types, across every bank that wants to use the wallet, would require the wallet provider to ship and maintain bespoke UI. That does not scale to the diversity of banks and interaction types in the market, and it puts the wallet provider in the impractical position of having to release an update whenever any bank introduces or changes an interaction.</p>
+<p>Under the dynamic path, each bank simply publishes signed metadata for its interaction types, and the wallet renders them generically. The wallet becomes a universal, transaction-aware consent surface for financial interactions — payment and non-payment alike — without per-bank, per-interaction engineering. For a wallet provider that intends to be adopted broadly as an SCA mechanism, this is the path that makes the proposition viable.</p>
+<h2 id="7-how-the-pieces-fit-together">7 How the pieces fit together</h2>
+<p>A simplified end-to-end picture:</p>
+<ol>
+<li><strong>Issuance.</strong> An attestation provider issues a PaSO credential into the wallet using OpenID4VCI, and serves signed metadata describing the credential and the transaction data types it supports.</li>
+<li><strong>Request.</strong> A relying party sends a signed OpenID4VP presentation request that includes PaSO transaction data identified by a <code>urn:paso:sca:</code> type.</li>
+<li><strong>Processing.</strong> The wallet matches the request to a suitable credential, validates the transaction data against the applicable rulebook and the signed metadata, and determines what to display.</li>
+<li><strong>Consent.</strong> The wallet renders the transaction data faithfully in the user's locale and authenticates the user with at least two independent factors.</li>
+<li><strong>Proof.</strong> The wallet produces a holder binding proof that binds the user's consent to the exact transaction, request, and metadata, and returns the presentation.</li>
+<li><strong>Verification.</strong> The relying party forwards the unmodified proof package to the authorizing party, which independently re-verifies everything and authorizes (or rejects) the transaction.</li>
+<li><strong>Record.</strong> The wallet logs the request, presentation, metadata, and resolved resources, so the transaction can be replayed and audited later.</li>
+</ol>
+<h3 id="71-first-party-flow">7.1 First-party flow</h3>
+<p>In the first-party flow, a single party fulfils the roles of Relying Party and Authorizing Party (and, at issuance time, Attestation Provider). The wallet presents a PaSO credential back to the party that issued it. This matches the case where an institution authenticates its own customer directly — for example, to authorize an action the customer initiated in that institution's own channel. Because the verifying party is also the authorizing party, no separate proof-package hand-off is required; the same party that received the presentation verifies it.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    actor user as User
+    participant wallet as Wallet
+    participant rp as Relying Party&lt;br/&gt;(also Authorizing Party)
+
+    Note over rp: Action requiring SCA is triggered
+    rp -&gt;&gt; wallet: Signed OpenID4VP request (DCQL query, transaction_data, request signature)
+    activate wallet
+    wallet -&gt;&gt; wallet: Match credential and validate transaction_data against rulebook and signed metadata
+    wallet -&gt;&gt; user: Render transaction data for consent
+    user -&gt;&gt; user: Review amount and payee
+    user -&gt;&gt; wallet: Authenticate (two independent factors)
+    wallet -&gt;&gt; wallet: Produce holder binding proof (transaction_data hash, request integrity, amr, jti)
+    wallet --&gt;&gt; rp: OpenID4VP response (vp_token)
+    deactivate wallet
+    rp -&gt;&gt; rp: Verify proof against original request (re-hash, integrity, amr, replay check)
+    rp --&gt;&gt; wallet: Result</code></pre>
+<p><strong>Regulatory significance.</strong> In the European Digital Identity context, this flow is not merely one option among several — it corresponds to a regulatory obligation. The eIDAS 2.0 Regulation requires private relying parties that are obliged (by Union or national law, or by contract) to use strong user authentication for online identification to also accept European Digital Identity Wallets for that purpose (Article 5f(2)). Because payment service providers are already required to perform Strong Customer Authentication under PSD2, this places banks and PSPs squarely within scope: they must accept a compliant wallet as a means of SCA. The obligation takes effect within 36 months of the relevant implementing acts — by late 2027. The first-party flow is the direct technical expression of this duty: the institution that owes the SCA obligation invokes the user's wallet and verifies the result itself. PaSO gives that institution a concrete, regulation-aligned way to discharge the obligation while producing verifiable, dynamically linked proof.</p>
+<h3 id="72-third-party-flow">7.2 Third-party flow</h3>
+<p>In the third-party flow, the Relying Party is distinct from the Authorizing Party and Attestation Provider. A relying party — for example, a merchant or a merchant-side service — collects the user's consent, then forwards the unmodified proof package (the original signed request plus the wallet's presentation) to the authorizing party, which holds the trust relationship and ultimately verifies and authorizes the transaction. PaSO defines a standard ingestion endpoint and an optional signed-and-encrypted envelope for this hand-off, so the authorizing party can independently re-verify the evidence rather than trusting the relying party's word.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    autonumber
+    actor user as User
+    participant wallet as Wallet
+    participant rp as Relying Party
+    participant ap as Authorizing Party
+
+    user -&gt;&gt; rp: Initiate payment
+    rp -&gt;&gt; wallet: Signed OpenID4VP request (DCQL query, transaction_data, request signature)
+    activate wallet
+    wallet -&gt;&gt; wallet: Match credential and validate transaction_data against rulebook and signed metadata
+    wallet -&gt;&gt; user: Render transaction data for consent
+    user -&gt;&gt; user: Review amount and payee
+    user -&gt;&gt; wallet: Authenticate (two independent factors)
+    wallet -&gt;&gt; wallet: Produce holder binding proof (transaction_data hash, request integrity, amr, jti)
+    wallet --&gt;&gt; rp: OpenID4VP response (vp_token)
+    deactivate wallet
+    Note over rp,ap: Proof package forwarded (signed request + vp_token), optionally signed and encrypted
+    rp -&gt;&gt; ap: Forward proof package
+    ap -&gt;&gt; ap: Verify proof against original request (re-hash, integrity, amr, replay check, payload vs rulebook)
+    ap --&gt;&gt; rp: Transaction result
+    rp --&gt;&gt; user: Result</code></pre>
+<p><strong>The role of payment schemes.</strong> In the third-party flow the relying party (for example, a merchant or its payment service provider) is generally not in a direct trust or contractual relationship with the user's bank. Something has to carry the proof package from the relying party to the issuing bank that will authorize and settle the transaction — and to define how that bank should interpret and process it. This is the role of a <strong>payment scheme</strong>. The scheme provides the rails between the merchant side and the issuing side: it transports the proof package (the signed request plus the wallet's presentation) to the issuing bank acting as Authorizing Party, and it specifies how the bank evaluates the evidence and returns a result that the merchant side can act on. In PaSO terms, the scheme is the mechanism that realises the hand-off shown above as "forward proof package": PaSO defines the package contents, the verification procedure, and a standard ingestion endpoint, while a payment scheme (or another agreed forwarding mechanism named by the applicable Transaction Data Type Rulebook) governs how the package travels across organisational boundaries and how settlement follows. This is also why a PaSO Credential used in this flow must carry the information the scheme and the issuing bank need — such as which Authorizing Party and which payment network are responsible — so the relying party knows where to send the proof and the bank can correlate and settle it. Unlike the first-party flow, the third-party flow is not mandated by regulation; it is an opportunity to use the wallet's capabilities to enhance existing payment and checkout journeys.</p>
+<h2 id="8-design-principles-in-summary">8 Design principles, in summary</h2>
+<ul>
+<li><strong>Build on existing standards.</strong> PaSO extends OpenID4VCI and OpenID4VP rather than replacing them.</li>
+<li><strong>Fill the open space precisely.</strong> It targets exactly the parts those protocols leave open for transaction authentication.</li>
+<li><strong>Govern, don't hard-code.</strong> Rulebooks and versioned type identifiers let the ecosystem evolve without protocol churn.</li>
+<li><strong>Make the proof independently verifiable and replayable.</strong> Integrity values, signed metadata, a forwarded proof package, and a user-side log are all in service of evidence that survives a later dispute.</li>
+<li><strong>Guarantee faithful, consistent display.</strong> Generic metadata-driven rendering ensures every wallet can show every transaction type clearly and comparably.</li>
+<li><strong>Enable scalable adoption through dynamic rendering.</strong> Signed, metadata-driven rendering lets a wallet support new and changing transaction types — payment and non-payment alike — without code changes, which is what makes a wallet viable as a broad SCA mechanism for existing banking interactions.</li>
+<li><strong>Stay modular and extensible.</strong> Core concepts are small; modules add capability and can be swapped where parties agree.</li>
+</ul>
+<h2 id="9-how-paso-helps-satisfy-the-regulatory-requirements">9 How PaSO helps satisfy the regulatory requirements</h2>
+<p>This section maps PaSO's mechanisms onto the principal European regulatory requirements for Strong Customer Authentication. The relevant instruments are:</p>
+<ul>
+<li><strong>PSD2</strong> — Directive (EU) 2015/2366 on payment services in the internal market. <a href="https://eur-lex.europa.eu/eli/dir/2015/2366/">https://eur-lex.europa.eu/eli/dir/2015/2366/</a></li>
+<li><strong>SCA-RTS</strong> — Commission Delegated Regulation (EU) 2018/389, the regulatory technical standards for strong customer authentication and common and secure open standards of communication. <a href="https://eur-lex.europa.eu/eli/reg_del/2018/389/">https://eur-lex.europa.eu/eli/reg_del/2018/389/</a></li>
+<li><strong>EBA Opinion</strong> — Opinion of the European Banking Authority on the elements of strong customer authentication under PSD2 (EBA-Op-2019-06, 21 June 2019). <a href="https://www.eba.europa.eu/sites/default/files/documents/10180/2622242/4bf4e536-69a5-44a5-a685-de42e292ef78/EBA%20Opinion%20on%20SCA%20elements%20under%20PSD2%20.pdf">https://www.eba.europa.eu/sites/default/files/documents/10180/2622242/4bf4e536-69a5-44a5-a685-de42e292ef78/EBA%20Opinion%20on%20SCA%20elements%20under%20PSD2%20.pdf</a></li>
+<li><strong>eIDAS 2.0</strong> — Regulation (EU) 2024/1183 amending Regulation (EU) No 910/2014 as regards establishing the European Digital Identity Framework. Article 5f(2) establishes the obligation for private relying parties subject to a strong-user-authentication requirement to also accept European Digital Identity Wallets. <a href="https://eur-lex.europa.eu/eli/reg/2024/1183/oj">https://eur-lex.europa.eu/eli/reg/2024/1183/oj</a></li>
+</ul>
+<p>PaSO is technology that helps a payment service provider <em>implement</em> these requirements; it does not change the legal obligations, and it does not by itself make any deployment compliant. Compliance always depends on the full implementation, the credential and rulebook design, and the assessment of the responsible parties. The mapping below is intended to show <em>where</em> PaSO contributes.</p>
+<h3 id="91-strong-customer-authentication-two-independent-factors">9.1 Strong Customer Authentication — two independent factors</h3>
+<p><strong>Requirement.</strong> PSD2 Article 4(30) and Article 97 require authentication based on two or more elements from the categories knowledge, possession, and inherence, which are independent so that the breach of one does not compromise the others (SCA-RTS Articles 6–9). The EBA Opinion clarifies which concrete elements qualify in each category — for example, a device-bound private key in a secure element as <em>possession</em>, a PIN or password as <em>knowledge</em>, and a fingerprint or face match as <em>inherence</em> — and sets expectations for their independence.</p>
+<p><strong>How PaSO helps.</strong> A PaSO presentation is produced with a credential whose private key is bound to the device's secure cryptographic environment (possession), released only after the user unlocks it with a PIN (knowledge) or a biometric (inherence). PaSO makes the factors that were actually used <em>explicit and evidenced</em>: the holder binding proof carries an authentication-methods (<code>amr</code>) claim, and in a payments context this claim is required to span at least two different categories. PaSO additionally distinguishes stronger from weaker biometrics with dedicated values, so an authorizing party can check the factor mix against its policy rather than assuming it. The independence expectation (SCA-RTS Article 9, EBA Opinion) is supported by the wallet's architecture — the signing key is confined to hardware-isolated storage and is usable only after a separate unlock factor.</p>
+<h3 id="92-authentication-code-sca-rts-article-4">9.2 Authentication code (SCA-RTS Article 4)</h3>
+<p><strong>Requirement.</strong> The authentication resulting from SCA must be represented by an authentication code that is accepted only once, cannot be forged, and cannot be derived or reproduced from a disclosed code.</p>
+<p><strong>How PaSO helps.</strong> The holder binding proof functions as the authentication code. It includes a fresh, unique, high-entropy identifier per presentation (which, in an SCA context, <em>is</em> the authentication code), making each authentication single-use and replay-detectable. The proof is a cryptographic signature produced by a device-bound key the user controls, so it cannot be forged without that key, and disclosure of one proof does not allow another to be derived. The verification module has the authorizing party check this identifier for uniqueness against a replay cache, and the standard ingestion endpoint defines a specific response for a replayed code.</p>
+<h3 id="93-dynamic-linking-sca-rts-article-5">9.3 Dynamic linking (SCA-RTS Article 5)</h3>
+<p><strong>Requirement.</strong> For remote electronic payments, the authentication code must be dynamically linked to a specific amount and a specific payee agreed by the payer; any change to the amount or payee must invalidate the code; and the confidentiality and integrity of the amount and payee must be protected throughout (SCA-RTS Article 5(1)–(2)). PaSO itself defines dynamic linking in these exact terms, citing PSD2 Article 97(2).</p>
+<p><strong>How PaSO helps.</strong> This is the heart of PaSO. The transaction details — at minimum the amount and the payee — travel in the transaction data, and the holder binding proof includes a hash of the exact transaction data the user consented to. Because that hash is signed together with the unique authentication-code identifier, any later change to the amount or payee yields a different hash and therefore an invalid proof — satisfying the "any change invalidates the code" requirement. The authorizing party re-computes the hash from the request and rejects the transaction on mismatch. Integrity of the request itself is separately protected: PaSO requires a signed presentation request and records an integrity value over that exact request in the proof, so the data the user acted on is tamper-evident end to end. Confidentiality is supported by the option to sign-and-encrypt the proof package to the authorizing party so that only it can read the transaction.</p>
+<h3 id="94-informed-consent-and-faithful-display">9.4 Informed consent and faithful display</h3>
+<p><strong>Requirement.</strong> Dynamic linking presupposes that the amount and payee shown to the payer are the ones agreed and authenticated; the EBA Opinion and the underlying directive expect the user to be able to give genuine, informed consent to the specific transaction. If the user cannot reliably see what they are authorizing, the link to "the amount and payee agreed by the payer" is undermined.</p>
+<p><strong>How PaSO helps.</strong> PaSO View defines how a wallet renders transaction data faithfully and consistently, driven by signed metadata, so that the amount and payee are displayed clearly before the user can confirm. Everything designated for display must be shown prior to confirmation, parties may not use labels or hints to obscure consent-relevant information, and the locale actually shown to the user is recorded in the proof. The result is that "the amount and payee the user agreed to" is not merely asserted but is reconstructable: one can show precisely what was displayed, in which language, and that it matches the signed transaction data.</p>
+<h3 id="95-confidentiality-and-integrity-of-credentials-and-data-sca-rts-articles-2227">9.5 Confidentiality and integrity of credentials and data (SCA-RTS Articles 22–27)</h3>
+<p><strong>Requirement.</strong> The RTS requires protection of the confidentiality and integrity of the payment service user's personalised security credentials and of authentication data, across creation, transmission, and storage.</p>
+<p><strong>How PaSO helps.</strong> The signing key never leaves the wallet's secure cryptographic environment, so the core credential material is not transmitted at all. The signed-and-encrypted proof package protects authentication data in transit between the relying party and the authorizing party. Signed credential metadata protects the integrity of the descriptive data the wallet relies on to display a transaction, and the proof can reference exactly which metadata was in force via an integrity value.</p>
+<h3 id="96-auditability-and-dispute-resolution">9.6 Auditability and dispute resolution</h3>
+<p><strong>Requirement.</strong> PSD2 places the burden on the payment service provider to prove that a transaction was authenticated (e.g. PSD2 Articles 72 and 97). This makes after-the-fact evidence essential, and the EBA Opinion's emphasis on well-defined, independent elements is only useful if their use can later be demonstrated.</p>
+<p><strong>How PaSO helps.</strong> PaSO is built around independently re-verifiable, replayable evidence. The proof package lets the authorizing party reconstruct and re-check every element — request signature, credential validity and revocation, holder binding proof, the dynamic-linking hash, the integrity values, the factor mix, and the displayed locale. The logging module has the wallet retain the request, the presentation, the signed metadata, and any resolved resources, so a past transaction can be replayed exactly as it occurred. Together these provide the kind of evidence a provider needs to discharge its burden of proof in a dispute.</p>
+<h3 id="97-summary-mapping">9.7 Summary mapping</h3>
+<table>
+<thead>
+<tr>
+<th>Regulatory requirement</th>
+<th>Source</th>
+<th>PaSO mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Two independent SCA factors</td>
+<td>PSD2 Art. 4(30), 97; SCA-RTS Arts. 6–9; EBA Opinion</td>
+<td>Device-bound key (possession) released by PIN/biometric (knowledge/inherence); <code>amr</code> claim records the factor categories and biometric strength</td>
+</tr>
+<tr>
+<td>Single-use, unforgeable authentication code</td>
+<td>SCA-RTS Art. 4</td>
+<td>Unique per-presentation identifier in a device-key signature; replay checking at the authorizing party</td>
+</tr>
+<tr>
+<td>Dynamic linking to amount and payee</td>
+<td>PSD2 Art. 97(2); SCA-RTS Art. 5</td>
+<td>Signed hash of the exact transaction data; any change invalidates the proof; re-checked by the authorizing party</td>
+</tr>
+<tr>
+<td>Integrity of the authenticated request</td>
+<td>SCA-RTS Art. 5(1)</td>
+<td>Signed presentation request plus a recorded request-integrity value</td>
+</tr>
+<tr>
+<td>Informed consent / faithful display</td>
+<td>PSD2; EBA Opinion</td>
+<td>Generic metadata-driven rendering; mandatory display before confirmation; recorded display locale</td>
+</tr>
+<tr>
+<td>Confidentiality/integrity of credentials and data</td>
+<td>SCA-RTS Arts. 22–27</td>
+<td>Keys confined to secure hardware; signed-and-encrypted proof package; signed credential metadata</td>
+</tr>
+<tr>
+<td>Provider's burden of proof in disputes</td>
+<td>PSD2 Arts. 72, 97</td>
+<td>Re-verifiable proof package and replayable wallet-side transaction log</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+        
+          
+          <a href="rulebooks/transaction_data/Generic/" class="md-footer__link md-footer__link--next" aria-label="Next: Generic">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Generic
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2026 Aptitude Consortium
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.footer", "navigation.sections"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
 </html>

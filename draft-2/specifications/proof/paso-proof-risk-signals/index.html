@@ -1,0 +1,2754 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-2/specifications/proof/paso-proof-risk-signals/">
+      
+      
+        <link rel="prev" href="../paso-proof-metadata/">
+      
+      
+        <link rel="next" href="../paso-proof-sd-jwt-vc-svg/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Risk Signals Module - Payment and SCA for OpenID</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#risk-signals-module" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Payment and SCA for OpenID" class="md-header__button md-logo" aria-label="Payment and SCA for OpenID" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Payment and SCA for OpenID
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Risk Signals Module
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="pink"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Payment and SCA for OpenID" class="md-nav__button md-logo" aria-label="Payment and SCA for OpenID" data-md-component="logo">
+      
+  <img src="../../../assets/logo.png" alt="logo">
+
+    </a>
+    Payment and SCA for OpenID
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rulebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rulebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Risk profiles
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Risk profiles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rulebooks/risk_profiles/Default/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Risk Signal Profile: Default
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transaction data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Transaction data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rulebooks/transaction_data/Generic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rulebooks/transaction_data/Mandate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Mandates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../rulebooks/transaction_data/Payment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Payments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specifications
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Specifications
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../paso-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PaSO Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../paso-view/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PaSO View
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proof
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Proof
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paso-proof-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paso-proof-metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metadata Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Risk Signals Module
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Risk Signals Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abstract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1 Introduction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1 Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-requirements-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Requirements Notation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-risk-signal-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2 Risk Signal Framework
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2 Risk Signal Framework">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-type-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Type Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-signal-envelope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Signal Envelope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-risk-signal-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3 Risk Signal Profiles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3 Risk Signal Profiles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Purpose
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-profile-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Profile Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-profile-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Profile Contents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-profile-entries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Profile Entries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4 Collection
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4 Collection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-signal-set-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Signal Set Resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-wallet-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Wallet Processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-freshness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Freshness
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5 Transport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5 Transport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-sd-jwt-vc-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 SD-JWT-VC Profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-mdoc-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 mdoc Profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6 Verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6 Verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-encrypted-risk-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Encrypted Risk Signals
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-encryption-of-risk-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7 Encryption of Risk Signals
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7 Encryption of Risk Signals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-encryption-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Encryption Trigger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-encryption-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Encryption Key
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-encryption-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Encryption Procedure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Formats
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.5 Formats">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#751-sd-jwt-vc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5.1 SD-JWT-VC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#752-mdoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5.2 mdoc
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 Algorithms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#77-consumer-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.7 Consumer Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#78-interaction-with-authentication-method-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.8 Interaction with Authentication-Method Signals
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8 References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#annex-a-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Annex A: Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Annex A: Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a1-risk-signals-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.1 Risk Signals Array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a2-kb-jwt-payload-sd-jwt-vc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.2 KB-JWT Payload (SD-JWT-VC)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a3-mdoc-devicesigned-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.3 mdoc DeviceSigned Namespace
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a4-metadata-declaration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.4 Metadata Declaration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a5-encrypted-risk_signals-claim-sd-jwt-vc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.5 Encrypted risk_signals Claim (SD-JWT-VC)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a6-issuer-encryption-key-and-trigger-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.6 Issuer Encryption Key and Trigger (Metadata)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a7-profile-reference-and-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.7 Profile Reference and Resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paso-proof-sd-jwt-vc-svg/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SD-JWT-VC and SVG Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paso-proof-verify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verify Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abstract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1 Introduction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1 Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-requirements-notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Requirements Notation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-risk-signal-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2 Risk Signal Framework
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2 Risk Signal Framework">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-type-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Type Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-signal-envelope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Signal Envelope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-risk-signal-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3 Risk Signal Profiles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3 Risk Signal Profiles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Purpose
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-profile-identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Profile Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-profile-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Profile Contents
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-profile-entries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Profile Entries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4 Collection
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4 Collection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-signal-set-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Signal Set Resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-wallet-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Wallet Processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-freshness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Freshness
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-transport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5 Transport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5 Transport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-sd-jwt-vc-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 SD-JWT-VC Profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-mdoc-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 mdoc Profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6 Verification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6 Verification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-encrypted-risk-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Encrypted Risk Signals
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-encryption-of-risk-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7 Encryption of Risk Signals
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7 Encryption of Risk Signals">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-encryption-trigger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Encryption Trigger
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-encryption-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Encryption Key
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-encryption-procedure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Encryption Procedure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-formats" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Formats
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.5 Formats">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#751-sd-jwt-vc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5.1 SD-JWT-VC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#752-mdoc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5.2 mdoc
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-algorithms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 Algorithms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#77-consumer-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.7 Consumer Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#78-interaction-with-authentication-method-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.8 Interaction with Authentication-Method Signals
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8 References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#annex-a-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Annex A: Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Annex A: Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a1-risk-signals-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.1 Risk Signals Array
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a2-kb-jwt-payload-sd-jwt-vc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.2 KB-JWT Payload (SD-JWT-VC)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a3-mdoc-devicesigned-namespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.3 mdoc DeviceSigned Namespace
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a4-metadata-declaration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.4 Metadata Declaration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a5-encrypted-risk_signals-claim-sd-jwt-vc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.5 Encrypted risk_signals Claim (SD-JWT-VC)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a6-issuer-encryption-key-and-trigger-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.6 Issuer Encryption Key and Trigger (Metadata)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a7-profile-reference-and-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.7 Profile Reference and Resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="risk-signals-module">Risk Signals Module</h1>
+<h2 id="abstract">Abstract</h2>
+<p>This document defines an extensible framework for <strong>risk signals</strong> in PaSO: device, environment, and behavioral observations that a Wallet collects and carries to the Authorizing Party as part of a transaction. It specifies a signal envelope, a naming scheme, risk signal profiles as the unit by which signal sets are agreed and referenced, how collection is triggered, how signals are transported in the holder binding proof, and how the Authorizing Party verifies them. Signal types themselves are defined by [PaSO Risk Signal Registry]. Risk signals are Wallet self-asserted and factual; PaSO standardises their structure and carriage but never mandates a risk decision.</p>
+<h2 id="1-introduction">1 Introduction</h2>
+<h3 id="11-overview">1.1 Overview</h3>
+<p>Fraud detection benefits from device and behavioral context — where a device is, whether the user is on a call, whether the device is being physically handled. [PaSO Core] defines the holder binding proof but carries no such signals. This module adds an extensible risk-signal framework whose signals ride the existing holder binding proof signature, so no additional signing infrastructure is required.</p>
+<p>Risk signals are <strong>self-asserted</strong> by the Wallet: they inherit the Wallet's key-binding signature and carry no independent attestation. The Authorizing Party trusts them as much as it trusts the Wallet instance. Signals are <strong>factual</strong>: the Wallet reports observable values, and the Authorizing Party alone decides what they mean.</p>
+<h3 id="12-scope">1.2 Scope</h3>
+<p>This module defines the risk-signal framework, risk signal profiles, the collection trigger, transport in the holder binding proof, and verification. It does not define signal types; those are defined by [PaSO Risk Signal Registry] and by other published catalogues. It does not define any specific profile; PaSO publishes one, the [PaSO Default Risk Signal Profile]. It does not define the Authorizing Party's risk decisioning logic, hardware or platform attestation of signals, or per-transaction user consent. User consent for signal collection is governed by the credential's terms and conditions at issuance and is out of scope for PaSO.</p>
+<h3 id="13-requirements-notation">1.3 Requirements Notation</h3>
+<p>The key words "<strong>MUST</strong>", "<strong>MUST NOT</strong>", "<strong>REQUIRED</strong>", "<strong>SHALL</strong>", "<strong>SHALL NOT</strong>", "<strong>SHOULD</strong>", "<strong>SHOULD NOT</strong>", "<strong>RECOMMENDED</strong>", "<strong>MAY</strong>", and "<strong>OPTIONAL</strong>" in this document are to be interpreted as described in [RFC2119] and [RFC8174] when, and only when, they are written in all capital letters.</p>
+<h2 id="2-risk-signal-framework">2 Risk Signal Framework</h2>
+<h3 id="21-type-identifiers">2.1 Type Identifiers</h3>
+<p>Each risk signal type is identified by a URN following this structure:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>urn:paso:risk:&lt;domain&gt;:&lt;suffix&gt;:&lt;version&gt;
+</span></code></pre></div>
+<p>Where:</p>
+<ul>
+<li><code>&lt;domain&gt;</code> is an organisation identifier in reverse domain notation (e.g., <code>com.example</code>), or <code>global</code> for signal types defined by PaSO itself,</li>
+<li><code>&lt;suffix&gt;</code> is one or more colon-separated segments identifying the signal (e.g., <code>geolocation</code>),</li>
+<li><code>&lt;version&gt;</code> is a version number (e.g., <code>1</code>).</li>
+</ul>
+<p>The Wallet identifies risk-signal types by the <code>urn:paso:risk:</code> prefix. The semantic structure of a signal type <strong>SHALL</strong> be immutable once published; changes <strong>SHALL</strong> require a new version of the type identifier.</p>
+<h3 id="22-signal-envelope">2.2 Signal Envelope</h3>
+<p>Every risk signal is a JSON object with the following members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>yes</td>
+<td>The signal type URN (Section 2.1).</td>
+</tr>
+<tr>
+<td><code>collected_at</code></td>
+<td>yes</td>
+<td>An [ISO8601] UTC timestamp indicating when the Wallet measured the signal.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>yes</td>
+<td>One of <code>ok</code>, <code>unavailable</code>, or <code>denied</code> (Section 2.3).</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>conditional</td>
+<td>The signal value. <strong>REQUIRED</strong> when <code>status</code> is <code>ok</code>; <strong>MUST</strong> be absent otherwise. Its structure is defined per signal type.</td>
+</tr>
+</tbody>
+</table>
+<p>Overall binding of the signals to the transaction is provided by the holder binding proof signature (Section 5); <code>collected_at</code> exists so the Authorizing Party can additionally assess per-signal freshness (Section 4.3, Section 6).</p>
+<h3 id="23-status">2.3 Status</h3>
+<p>The <code>status</code> member reports whether the Wallet could measure the signal:</p>
+<ul>
+<li><code>ok</code>: the signal was measured; <code>value</code> is present.</li>
+<li><code>unavailable</code>: the signal could not be measured because the sensor is absent, no measurement was obtainable (e.g., no location fix), or the Wallet does not implement this signal type; <code>value</code> is absent.</li>
+<li><code>denied</code>: the signal could not be measured because the required permission was refused; <code>value</code> is absent.</li>
+</ul>
+<p>A required signal (Section 4.1) <strong>SHALL NOT</strong> be silently omitted: if it cannot be measured, the Wallet <strong>SHALL</strong> include its envelope with <code>status</code> set to <code>unavailable</code> or <code>denied</code>. This lets the Authorizing Party apply its own policy to missing measurements.</p>
+<h2 id="3-risk-signal-profiles">3 Risk Signal Profiles</h2>
+<h3 id="31-purpose">3.1 Purpose</h3>
+<p>A <strong>risk signal profile</strong> bundles risk signal types into a single referencable set, each with a requirement flag and an optional freshness bound. Profiles exist so that an ecosystem can state its risk-signal expectations once, and have Attestation Providers and Transaction Data Type Rulebooks reference them, instead of restating an enumeration in every credential's metadata.</p>
+<p>A profile is a governance document, not part of this specification. This section defines what a profile contains and how it is identified; any organisation <strong>MAY</strong> publish one. PaSO publishes exactly one, the [PaSO Default Risk Signal Profile].</p>
+<p>No profile applies by default. A profile takes effect for a transaction data type only where it is referenced, as defined in Section 4.1.</p>
+<h3 id="32-profile-identifiers">3.2 Profile Identifiers</h3>
+<p>Each risk signal profile is identified by a URN following this structure:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>urn:paso:risk-profile:&lt;domain&gt;:&lt;suffix&gt;:&lt;version&gt;
+</span></code></pre></div>
+<p>Where:</p>
+<ul>
+<li><code>&lt;domain&gt;</code> is an organisation identifier in reverse domain notation (e.g., <code>com.example</code>), or <code>global</code> for profiles published by PaSO itself,</li>
+<li><code>&lt;suffix&gt;</code> is one or more colon-separated segments identifying the profile (e.g., <code>default</code>),</li>
+<li><code>&lt;version&gt;</code> is a version number (e.g., <code>1</code>).</li>
+</ul>
+<p>The <code>urn:paso:risk-profile:</code> prefix is distinct from the <code>urn:paso:risk:</code> prefix by which the Wallet identifies signal types (Section 2.1). A profile identifier <strong>SHALL NOT</strong> appear where a signal type URN is expected, and a signal type URN <strong>SHALL NOT</strong> appear where a profile identifier is expected.</p>
+<p>The set of signals a profile declares, together with their <code>required</code> and <code>max_age</code> constraints, constitutes its <strong>semantic structure</strong>. The semantic structure <strong>SHALL</strong> be immutable once published; changes <strong>SHALL</strong> require a new version of the profile identifier.</p>
+<h3 id="33-profile-contents">3.3 Profile Contents</h3>
+<p>A risk signal profile <strong>SHALL</strong> define:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>profile</code></td>
+<td>yes</td>
+<td>The profile URN (Section 3.2).</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>no</td>
+<td>A human-readable statement of the profile's purpose.</td>
+</tr>
+<tr>
+<td><code>encrypted</code></td>
+<td>no, default <code>false</code></td>
+<td>When <code>true</code>, encryption per Section 7 is required for every transaction data type that references this profile.</td>
+</tr>
+<tr>
+<td><code>signals</code></td>
+<td>yes</td>
+<td>An array of profile entries per Section 3.4. <strong>SHALL</strong> contain at least one entry.</td>
+</tr>
+</tbody>
+</table>
+<p>A profile <strong>SHALL</strong> publish its contents in a form an implementer can transcribe without ambiguity; a table of <code>type</code>, <code>required</code>, and <code>max_age</code> is sufficient.</p>
+<h3 id="34-profile-entries">3.4 Profile Entries</h3>
+<p>Each entry in a profile's <code>signals</code> array declares one signal type and its constraints:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>yes</td>
+<td>A signal type URN (Section 2.1). A profile <strong>SHALL</strong> reference only signal types whose definition is published, whether in [PaSO Risk Signal Registry] or another catalogue.</td>
+</tr>
+<tr>
+<td><code>required</code></td>
+<td>yes</td>
+<td>Boolean. When <code>true</code>, the Wallet <strong>SHALL</strong> include an envelope for this signal, reporting its <code>status</code> even where the value cannot be measured (Section 4.2).</td>
+</tr>
+<tr>
+<td><code>max_age</code></td>
+<td>no</td>
+<td>Integer seconds. The maximum acceptable age of this signal's <code>collected_at</code>, applied by the Wallet per Section 4.3 and by the Authorizing Party per Section 6.</td>
+</tr>
+</tbody>
+</table>
+<p>A profile <strong>SHALL NOT</strong> declare more than one entry for the same signal type.</p>
+<h2 id="4-collection">4 Collection</h2>
+<h3 id="41-signal-set-resolution">4.1 Signal Set Resolution</h3>
+<p>The Wallet <strong>SHALL</strong> resolve the <strong>effective signal set</strong> for the matched transaction data type as follows:</p>
+<ol>
+<li><strong>Collect referenced profiles.</strong> Gather every risk signal profile referenced by either source:</li>
+<li>the <code>risk_signal_profiles</code> member declared for the transaction data type in the signed credential metadata (per [PaSO Proof Metadata]), and</li>
+<li>
+<p>the profiles referenced for the transaction data type by its Transaction Data Type Rulebook (per [PaSO Core] Section 5).</p>
+</li>
+<li>
+<p><strong>Union the profile entries.</strong> The effective signal set is the union of the <code>signals</code> entries of every referenced profile. Where the same signal type appears in more than one referenced profile, <code>required</code> is the logical OR of its values and <code>max_age</code> is the minimum of the values present. The strictest constraint wins in every case.</p>
+</li>
+<li>
+<p><strong>Apply enumerations as a ratchet.</strong> Apply the <code>risk_signals</code> array declared in the signed credential metadata, and any signals enumerated directly by the Transaction Data Type Rulebook, over the unioned set. An enumeration entry <strong>MAY</strong> introduce a signal type absent from every referenced profile, promote <code>required</code> from <code>false</code> to <code>true</code>, or lower <code>max_age</code>. An enumeration entry <strong>SHALL NOT</strong> demote <code>required</code> from <code>true</code> to <code>false</code> and <strong>SHALL NOT</strong> raise <code>max_age</code>; where it specifies a looser value than a referenced profile established, the Wallet <strong>SHALL</strong> apply the stricter value.</p>
+</li>
+</ol>
+<p>A signal in the effective set whose resolved <code>required</code> is <code>true</code> is a <strong>required signal</strong>. One whose resolved <code>required</code> is <code>false</code> is an <strong>optional signal</strong>.</p>
+<p>Where neither source references a profile and neither enumerates a signal, the effective signal set is empty.</p>
+<h3 id="42-wallet-processing">4.2 Wallet Processing</h3>
+<p>When the effective signal set (Section 4.1) contains one or more required signals, the Wallet <strong>SHALL</strong> populate the <code>risk_signals</code> proof claim (Section 5) with an envelope for every required signal, each carrying its <code>status</code>. The Wallet <strong>MAY</strong> additionally include envelopes for optional signals when they are available. When the effective signal set contains no required signal, the Wallet <strong>MAY</strong> omit the <code>risk_signals</code> claim entirely.</p>
+<p>A Wallet that does not implement a signal type resolved as required <strong>SHALL</strong> include that signal's envelope with <code>status</code> set to <code>unavailable</code> (Section 2.3). The Wallet <strong>SHALL NOT</strong> treat an unimplemented required signal as rendering the <code>transaction_data</code> entry incompatible; whether to accept such a transaction is the Authorizing Party's decision.</p>
+<h3 id="43-freshness">4.3 Freshness</h3>
+<p>Where the effective signal set resolves a <code>max_age</code> for a signal, the Wallet <strong>SHALL</strong> ensure that, at the moment it produces the holder binding proof signature, that signal's <code>collected_at</code> is no older than <code>max_age</code>. A measurement that has aged out <strong>SHALL</strong> either be re-taken or have its envelope carried with <code>status</code> <code>unavailable</code>.</p>
+<p>The Authorizing Party applies the same bound against its own reference instant, as defined in Section 6. Two instants are named deliberately: the Wallet cannot know when the Authorizing Party will verify, and the Authorizing Party cannot re-measure.</p>
+<h2 id="5-transport">5 Transport</h2>
+<p>The Wallet <strong>SHALL</strong> carry risk signals in the holder binding proof as an additional SCA response claim defined by [PaSO Core] Section 6.1:</p>
+<ul>
+<li><strong><code>risk_signals</code></strong>: a JSON array of signal envelopes (Section 2.2). <strong>REQUIRED</strong> when the matched transaction data type has one or more required risk signals; otherwise absent.</li>
+</ul>
+<p>Because the claim is part of the holder binding proof, it is covered by the same signature and dynamic-linking guarantee as the other SCA response claims; no separate hash or signature is defined.</p>
+<p>When encryption is required for the matched transaction data type (Section 7), the value of the <code>risk_signals</code> claim is the encrypted structure defined in Section 7.5 instead of the plaintext array defined in this section and its profiles.</p>
+<h3 id="51-sd-jwt-vc-profile">5.1 SD-JWT-VC Profile</h3>
+<p>For PaSO Credentials in [SD-JWT-VC] format, <code>risk_signals</code> <strong>SHALL</strong> be included as a top-level claim in the Key Binding JWT payload, alongside the other SCA response claims.</p>
+<h3 id="52-mdoc-profile">5.2 mdoc Profile</h3>
+<p>For PaSO Credentials in [mdoc] format, <code>risk_signals</code> <strong>SHALL</strong> be included as a device-signed data element under the namespace <code>urn:paso:sca:1</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Data element</th>
+<th>CBOR type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>risk_signals</code></td>
+<td>array of maps</td>
+</tr>
+</tbody>
+</table>
+<p>Each envelope is encoded as a CBOR map in which <code>type</code>, <code>collected_at</code>, and <code>status</code> are <code>tstr</code>.</p>
+<p>The encoding of <code>value</code> follows its shape, as defined for that signal type by [PaSO Risk Signal Registry] or another catalogue:</p>
+<table>
+<thead>
+<tr>
+<th><code>value</code> shape</th>
+<th>CBOR encoding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object</td>
+<td>A CBOR map. String members are <code>tstr</code>; numeric members are CBOR floats; nested objects are CBOR maps, applying this table recursively.</td>
+</tr>
+<tr>
+<td>String</td>
+<td><code>tstr</code></td>
+</tr>
+<tr>
+<td>Array of strings</td>
+<td>An array of <code>tstr</code></td>
+</tr>
+<tr>
+<td>Number</td>
+<td>A CBOR float</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-verification">6 Verification</h2>
+<p>The Authorizing Party <strong>SHALL</strong> perform the following checks in addition to those in [PaSO Proof Verify], after the SCA response claims verification. When the risk signals are encrypted (Section 7), these checks apply to the decrypted array and verification responsibilities are split as defined in Section 6.1.</p>
+<ol>
+<li>
+<p><strong>Presence of required signals.</strong> Resolve the effective signal set for the matched transaction data type per Section 4.1. For every required signal, verify that an envelope with the matching <code>type</code> is present in the <code>risk_signals</code> array, with any <code>status</code>. If a required signal's envelope is missing, the Authorizing Party <strong>SHALL</strong> reject the transaction. The absence of a signal that did not resolve as required <strong>SHALL NOT</strong> be treated as a failure.</p>
+</li>
+<li>
+<p><strong>Envelope well-formedness.</strong> For each envelope, verify that <code>type</code> has the <code>urn:paso:risk:</code> prefix, <code>collected_at</code> is a valid [ISO8601] timestamp, <code>status</code> is one of <code>ok</code>, <code>unavailable</code>, or <code>denied</code>, and <code>value</code> is present if and only if <code>status</code> is <code>ok</code>. When <code>value</code> is present, verify it conforms to the schema for the signal type. If any envelope is malformed, the Authorizing Party <strong>SHALL</strong> reject the transaction.</p>
+</li>
+<li>
+<p><strong>Freshness.</strong> For each signal for which the effective signal set resolved a <code>max_age</code>, verify that <code>collected_at</code> is no older than <code>max_age</code>, measured from the time the Authorizing Party received the proof package, allowing for reasonable clock skew and forwarding delay. Where no <code>max_age</code> was resolved for a signal, the acceptable window is a matter of Transaction Data Type Rulebook or Authorizing Party policy and is not fixed by this module.</p>
+</li>
+<li>
+<p><strong>Policy evaluation.</strong> Interpreting signal values to reach a risk decision is the Authorizing Party's own policy and is out of scope for this module.</p>
+</li>
+</ol>
+<p>Envelopes for signal types the Authorizing Party does not recognise, and optional signals, <strong>MAY</strong> be ignored.</p>
+<h3 id="61-encrypted-risk-signals">6.1 Encrypted Risk Signals</h3>
+<p>When encryption is required for the matched transaction data type (Section 7.2), verification is split between the Authorizing Party and the holder of the issuer decryption key.</p>
+<p>The Authorizing Party, without access to the plaintext, <strong>SHALL</strong>:</p>
+<ol>
+<li>verify the holder binding proof signature, which covers the encrypted <code>risk_signals</code> value and binds it to the transaction; and</li>
+<li>verify that the <code>risk_signals</code> value is an encrypted structure (Section 7.5). If encryption was required but the value is plaintext, the Authorizing Party <strong>SHALL</strong> reject the transaction.</li>
+</ol>
+<p>The holder of the issuer decryption key — the issuer, which in a first-party flow ([PaSO Core] Section 3) is the Authorizing Party — <strong>SHALL</strong>:</p>
+<ol>
+<li>decrypt the <code>risk_signals</code> value using the private key referenced by the encrypted structure's key identifier; and</li>
+<li>perform the checks of this section (presence of required signals, envelope well-formedness, freshness) on the decrypted array.</li>
+</ol>
+<p>How the encrypted structure reaches the issuer in a third-party flow where the Authorizing Party is not the issuer, and the channel between them, are out of scope for this module.</p>
+<h2 id="7-encryption-of-risk-signals">7 Encryption of Risk Signals</h2>
+<h3 id="71-overview">7.1 Overview</h3>
+<p>For privacy, the risk-signals section <strong>MAY</strong> be required to be encrypted so that a Relying Party forwarding the proof package in a third-party flow ([PaSO Core] Section 3) cannot read the user's device and behavioral data. When encryption is required, the Wallet encrypts the entire <code>risk_signals</code> array to the issuer's public key. Only the holder of the corresponding private key — the issuer, which is or feeds the Authorizing Party — can decrypt and read the signals.</p>
+<h3 id="72-encryption-trigger">7.2 Encryption Trigger</h3>
+<p>Encryption is <strong>required</strong> for a transaction data type when <strong>any</strong> of the following mandates it:</p>
+<ol>
+<li>the applicable Transaction Data Type Rulebook,</li>
+<li>the issuer's credential metadata, via the <code>encrypted</code> flag on the <code>transaction_data_types</code> entry (per [PaSO Proof Metadata]), or</li>
+<li>any risk signal profile referenced for the transaction data type, via its <code>encrypted</code> member (Section 3.3).</li>
+</ol>
+<p>If any source requires encryption, the Wallet <strong>SHALL</strong> encrypt. Encryption applies to the entire <code>risk_signals</code> array for that transaction data type; individual signals are not encrypted separately.</p>
+<h3 id="73-encryption-key">7.3 Encryption Key</h3>
+<p>The Wallet <strong>SHALL</strong> obtain the issuer encryption key from the credential's signed credential metadata JWT, which is the authoritative source for a PaSO Credential's metadata (per [PaSO Proof Metadata] Section 3). For PaSO Credentials in [SD-JWT-VC] format, the Wallet <strong>MAY</strong> obtain the key from integrity-verified [SD-JWT-VC] Type Metadata as an equal-integrity alternative, mirroring the display relaxation in [PaSO Proof SD-JWT-VC and SVG] Section 2. A key that is not integrity-verified <strong>SHALL</strong> be treated as absent.</p>
+<p>The issuer publishes one or more encryption keys under the <code>risk_signals_encryption_keys</code> metadata member, each with a key identifier and its intended key-management algorithm:</p>
+<ul>
+<li>For [SD-JWT-VC], as a JWK Set per [RFC7517], each JWK with <code>use</code> set to <code>enc</code>, a <code>kid</code>, and an <code>alg</code>.</li>
+<li>For [mdoc], as one or more <code>COSE_Key</code> structures per [RFC9052], each with a key identifier and algorithm.</li>
+</ul>
+<p>When multiple keys are published, the Wallet <strong>SHALL</strong> select one and reference its key identifier in the encrypted structure's header.</p>
+<p>If encryption is required and no integrity-verified issuer encryption key is available, the Wallet <strong>SHALL NOT</strong> send the risk signals in plaintext. The Wallet <strong>SHALL</strong> treat the <code>transaction_data</code> entry as incompatible, cease processing it, and inform the user.</p>
+<h3 id="74-encryption-procedure">7.4 Encryption Procedure</h3>
+<p>The Wallet <strong>SHALL</strong> encrypt before signing the holder binding proof ("encrypt-then-sign"):</p>
+<ol>
+<li>Serialise the plaintext <code>risk_signals</code> array (Section 2.2).</li>
+<li>Encrypt it to the selected issuer key, producing a single encrypted structure.</li>
+<li>Place the encrypted structure as the value of the <code>risk_signals</code> claim.</li>
+<li>Produce the holder binding proof signature (Key Binding JWT for [SD-JWT-VC], device authentication for [mdoc]) over the proof including the encrypted <code>risk_signals</code> value.</li>
+</ol>
+<p>The holder binding proof signature therefore authenticates the ciphertext and binds it to the transaction; no separate hash of the risk signals is defined.</p>
+<h3 id="75-formats">7.5 Formats</h3>
+<h4 id="751-sd-jwt-vc">7.5.1 SD-JWT-VC</h4>
+<p>The <code>risk_signals</code> claim value <strong>SHALL</strong> be a [JWE] in compact serialization (a string) instead of the JSON array of Section 5.1. The JWE protected header <strong>SHALL</strong> include <code>alg</code> (key management), <code>enc</code> (content encryption), and <code>kid</code> (the selected issuer key).</p>
+<h4 id="752-mdoc">7.5.2 mdoc</h4>
+<p>The <code>risk_signals</code> device-signed element <strong>SHALL</strong> be a <code>COSE_Encrypt</code> structure per [RFC9052] instead of the array of maps of Section 5.2. The COSE headers <strong>SHALL</strong> identify the key and the algorithms.</p>
+<h3 id="76-algorithms">7.6 Algorithms</h3>
+<p>The Wallet and the decryptor <strong>SHALL</strong> support the following baseline:</p>
+<ul>
+<li><strong>[SD-JWT-VC] / JOSE</strong>: <code>ECDH-ES</code> key agreement using the <code>P-256</code> curve with <code>A256GCM</code> content encryption, per [RFC7518].</li>
+<li><strong>[mdoc] / COSE</strong>: the equivalent <code>ECDH-ES</code> key agreement with <code>A256GCM</code> content encryption, per [RFC9052].</li>
+</ul>
+<p>Other algorithms <strong>MAY</strong> be used when the published issuer key declares them. The baseline guarantees a common denominator between the Wallet and the decryptor.</p>
+<h3 id="77-consumer-detection">7.7 Consumer Detection</h3>
+<p>When encryption is required for the matched transaction data type, the consumer <strong>SHALL</strong> expect the <code>risk_signals</code> value to be an encrypted structure — a [JWE] compact string ([SD-JWT-VC]) or a <code>COSE_Encrypt</code> ([mdoc]) — rather than the plaintext structure of Section 5. A plaintext <code>risk_signals</code> value where encryption was required <strong>SHALL</strong> be rejected (Section 6.1).</p>
+<h3 id="78-interaction-with-authentication-method-signals">7.8 Interaction with Authentication-Method Signals</h3>
+<p>Encryption covers the entire <code>risk_signals</code> array, including transaction-fact signals such as <code>urn:paso:risk:global:amr:1</code>. Under Section 6.1 the Authorizing Party can then verify only that the value is an encrypted structure; the checks on the signals themselves move to the holder of the issuer decryption key.</p>
+<p>An ecosystem <strong>SHOULD NOT</strong> combine a profile that requires <code>urn:paso:risk:global:amr:1</code> with encryption for a transaction data type used in a third-party flow ([PaSO Core] Section 3). An Authorizing Party that is not the issuer would be unable to confirm how the user authenticated, which is precisely the check a Strong Customer Authentication policy depends on.</p>
+<h2 id="8-references">8 References</h2>
+<table>
+<thead>
+<tr>
+<th>Reference</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[PaSO Core]</td>
+<td><a href="../../paso-core/">PaSO Core</a></td>
+</tr>
+<tr>
+<td>[PaSO Proof Metadata]</td>
+<td><a href="../paso-proof-metadata/">PaSO Proof: Metadata Module</a></td>
+</tr>
+<tr>
+<td>[PaSO Proof Verify]</td>
+<td><a href="../paso-proof-verify/">PaSO Proof: Verify Module</a></td>
+</tr>
+<tr>
+<td>[PaSO Proof SD-JWT-VC and SVG]</td>
+<td><a href="../paso-proof-sd-jwt-vc-svg/">PaSO Proof: SD-JWT-VC and SVG Module</a></td>
+</tr>
+<tr>
+<td>[PaSO Risk Signal Registry]</td>
+<td><a href="paso-proof-risk-signal-registry.md">PaSO Proof: Risk Signal Registry</a></td>
+</tr>
+<tr>
+<td>[PaSO Default Risk Signal Profile]</td>
+<td><a href="../../../rulebooks/risk_profiles/Default/">Default Risk Signal Profile</a></td>
+</tr>
+<tr>
+<td>[RFC2119]</td>
+<td><a href="https://www.rfc-editor.org/rfc/rfc2119.html">RFC 2119 — Key words for use in RFCs</a></td>
+</tr>
+<tr>
+<td>[RFC8174]</td>
+<td><a href="https://www.rfc-editor.org/rfc/rfc8174.html">RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</a></td>
+</tr>
+<tr>
+<td>[SD-JWT-VC]</td>
+<td><a href="https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/">SD-JWT-based Verifiable Credentials</a></td>
+</tr>
+<tr>
+<td>[mdoc]</td>
+<td><a href="https://www.iso.org/standard/69084.html">ISO/IEC 18013-5:2021 — Mobile driving licence application</a></td>
+</tr>
+<tr>
+<td>[JWE]</td>
+<td><a href="https://www.rfc-editor.org/rfc/rfc7516.html">RFC 7516 — JSON Web Encryption (JWE)</a></td>
+</tr>
+<tr>
+<td>[RFC7517]</td>
+<td><a href="https://www.rfc-editor.org/rfc/rfc7517.html">RFC 7517 — JSON Web Key (JWK)</a></td>
+</tr>
+<tr>
+<td>[RFC7518]</td>
+<td><a href="https://www.rfc-editor.org/rfc/rfc7518.html">RFC 7518 — JSON Web Algorithms (JWA)</a></td>
+</tr>
+<tr>
+<td>[RFC9052]</td>
+<td><a href="https://www.rfc-editor.org/rfc/rfc9052.html">RFC 9052 — CBOR Object Signing and Encryption (COSE)</a></td>
+</tr>
+<tr>
+<td>[ISO8601]</td>
+<td><a href="https://www.iso.org/iso-8601-date-and-time-format.html">ISO 8601 — Date and time format</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="annex-a-examples">Annex A: Examples</h2>
+<p><em><strong>Note</strong>: This annex is <strong>informative</strong>.</em></p>
+<h3 id="a1-risk-signals-array">A.1 Risk Signals Array</h3>
+<p>A <code>risk_signals</code> array for a transaction whose effective signal set required <code>response_mode</code>, geolocation, and call activity, and listed device motion as optional:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">[</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:response_mode:1"</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct_post.jwt"</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:geolocation:1"</span><span class="p">,</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">      </span><span class="nt">"lat"</span><span class="p">:</span><span class="w"> </span><span class="mf">52.5200</span><span class="p">,</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">      </span><span class="nt">"lon"</span><span class="p">:</span><span class="w"> </span><span class="mf">13.4050</span><span class="p">,</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">      </span><span class="nt">"accuracy"</span><span class="p">:</span><span class="w"> </span><span class="mf">12.5</span><span class="p">,</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">      </span><span class="nt">"altitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">34.0</span><span class="p">,</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">      </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gnss"</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:call_activity:1"</span><span class="p">,</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">    </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">      </span><span class="nt">"call_state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">      </span><span class="nt">"direction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"incoming"</span><span class="p">,</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">      </span><span class="nt">"call_active_since"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:12:04Z"</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:device_motion:1"</span><span class="p">,</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">    </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">      </span><span class="nt">"window_ms"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">      </span><span class="nt">"orientation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"pitch"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.2</span><span class="p">,</span><span class="w"> </span><span class="nt">"roll"</span><span class="p">:</span><span class="w"> </span><span class="mf">-1.8</span><span class="p">,</span><span class="w"> </span><span class="nt">"yaw"</span><span class="p">:</span><span class="w"> </span><span class="mf">120.0</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">      </span><span class="nt">"acceleration"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"rms"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.12</span><span class="p">,</span><span class="w"> </span><span class="nt">"max"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.45</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">      </span><span class="nt">"rotation_rate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"rms"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.03</span><span class="p">,</span><span class="w"> </span><span class="nt">"max"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.11</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="p">]</span>
+</span></code></pre></div>
+<h3 id="a2-kb-jwt-payload-sd-jwt-vc">A.2 KB-JWT Payload (SD-JWT-VC)</h3>
+<p>The <code>risk_signals</code> claim as a top-level KB-JWT claim, shown alongside selected SCA response claims:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">"nonce"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bUtJdjJESWdmTWNjb011YQ"</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">"sd_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY"</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">"jti"</span><span class="p">:</span><span class="w"> </span><span class="s2">"deeec2b0-3bea-4477-bd5d-e3462a709481"</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">"display_locale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">"transaction_data_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q"</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">"transaction_data_hash_alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha-256"</span><span class="p">,</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">"risk_signals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:amr:1"</span><span class="p">,</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">      </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"pin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"hwk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bio_strong"</span><span class="p">,</span><span class="w"> </span><span class="s2">"face"</span><span class="p">]</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:geolocation:1"</span><span class="p">,</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">      </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"lat"</span><span class="p">:</span><span class="w"> </span><span class="mf">52.5200</span><span class="p">,</span><span class="w"> </span><span class="nt">"lon"</span><span class="p">:</span><span class="w"> </span><span class="mf">13.4050</span><span class="p">,</span><span class="w"> </span><span class="nt">"accuracy"</span><span class="p">:</span><span class="w"> </span><span class="mf">12.5</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="a3-mdoc-devicesigned-namespace">A.3 mdoc DeviceSigned Namespace</h3>
+<p>CBOR diagnostic notation for the <code>risk_signals</code> element under <code>urn:paso:sca:1</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>"urn:paso:sca:1" : {
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  "risk_signals" : [
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    {
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>      "type" : "urn:paso:risk:global:geolocation:1",
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>      "collected_at" : "2026-07-24T10:15:30Z",
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>      "status" : "ok",
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>      "value" : { "lat" : 52.5200, "lon" : 13.4050, "accuracy" : 12.5 }
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    }
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  ]
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>}
+</span></code></pre></div>
+<h3 id="a4-metadata-declaration">A.4 Metadata Declaration</h3>
+<p>A <code>transaction_data_types</code> entry that references the default profile and tightens it: a shorter freshness bound is imposed on geolocation, and a signal absent from the profile is added (per [PaSO Proof Metadata]).</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">"urn:paso:sca:global:payment:1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">"risk_signal_profiles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"urn:paso:risk-profile:global:default:1"</span><span class="p">],</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nt">"risk_signals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:geolocation:1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"max_age"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:amr:1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="p">]</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The default profile declares geolocation with no <code>max_age</code>, so the first enumeration entry lowers it to 60 seconds. The second adds <code>amr</code>, which the default profile deliberately omits. An entry attempting the reverse of either — raising <code>max_age</code>, or setting <code>required</code> to <code>false</code> against a profile's <code>true</code> — would have no effect, per Section 4.1 step 3.</p>
+<h3 id="a5-encrypted-risk_signals-claim-sd-jwt-vc">A.5 Encrypted <code>risk_signals</code> Claim (SD-JWT-VC)</h3>
+<p>When encryption is required, the KB-JWT <code>risk_signals</code> claim value is a JWE compact string instead of the array shown in A.2:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">"nonce"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bUtJdjJESWdmTWNjb011YQ"</span><span class="p">,</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">"sd_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY"</span><span class="p">,</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">"jti"</span><span class="p">:</span><span class="w"> </span><span class="s2">"deeec2b0-3bea-4477-bd5d-e3462a709481"</span><span class="p">,</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="nt">"display_locale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="nt">"transaction_data_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q"</span><span class="p">,</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="nt">"transaction_data_hash_alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha-256"</span><span class="p">,</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="nt">"risk_signals"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImtpZCI6Imlzc3Vlci1lbmMtMSJ9..O94i8v...ciphertext...Q.tag"</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The JWE protected header (decoded) is:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span><span class="w"> </span><span class="nt">"alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ECDH-ES"</span><span class="p">,</span><span class="w"> </span><span class="nt">"enc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A256GCM"</span><span class="p">,</span><span class="w"> </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"issuer-enc-1"</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>Any <code>amr</code> signal in the effective set is inside this ciphertext. Where the Authorizing Party is not the issuer it cannot read it — see Section 7.8.</p>
+<h3 id="a6-issuer-encryption-key-and-trigger-metadata">A.6 Issuer Encryption Key and Trigger (Metadata)</h3>
+<p>A <code>transaction_data_types</code> entry requiring encryption, with the issuer encryption key published as a JWK Set in the signed credential metadata (per [PaSO Proof Metadata]):</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">{</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">"transaction_data_types"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="nt">"urn:paso:sca:global:payment:1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">      </span><span class="nt">"risk_signals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:geolocation:1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">      </span><span class="p">],</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">      </span><span class="nt">"encrypted"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">  </span><span class="nt">"risk_signals_encryption_keys"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">    </span><span class="nt">"keys"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">      </span><span class="p">{</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">        </span><span class="nt">"kty"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EC"</span><span class="p">,</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">        </span><span class="nt">"crv"</span><span class="p">:</span><span class="w"> </span><span class="s2">"P-256"</span><span class="p">,</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">        </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU"</span><span class="p">,</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">        </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0"</span><span class="p">,</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="w">        </span><span class="nt">"use"</span><span class="p">:</span><span class="w"> </span><span class="s2">"enc"</span><span class="p">,</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="w">        </span><span class="nt">"kid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"issuer-enc-1"</span><span class="p">,</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">        </span><span class="nt">"alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ECDH-ES"</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="w">    </span><span class="p">]</span>
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="a7-profile-reference-and-resolution">A.7 Profile Reference and Resolution</h3>
+<p>The default profile published by PaSO ([PaSO Default Risk Signal Profile]) declares:</p>
+<table>
+<thead>
+<tr>
+<th><code>type</code></th>
+<th><code>required</code></th>
+<th><code>max_age</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>urn:paso:risk:global:response_mode:1</code></td>
+<td><code>true</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>urn:paso:risk:global:geolocation:1</code></td>
+<td><code>true</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>urn:paso:risk:global:call_activity:1</code></td>
+<td><code>true</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>urn:paso:risk:global:device_motion:1</code></td>
+<td><code>true</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>An ecosystem profile <code>urn:paso:risk-profile:com.example:high-value:1</code> declares:</p>
+<table>
+<thead>
+<tr>
+<th><code>type</code></th>
+<th><code>required</code></th>
+<th><code>max_age</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>urn:paso:risk:global:geolocation:1</code></td>
+<td><code>true</code></td>
+<td><code>120</code></td>
+</tr>
+<tr>
+<td><code>urn:paso:risk:global:amr:1</code></td>
+<td><code>true</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>A transaction data type referencing both profiles, with the metadata enumeration of A.4 also applied, resolves to:</p>
+<table>
+<thead>
+<tr>
+<th><code>type</code></th>
+<th><code>required</code></th>
+<th><code>max_age</code></th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>urn:paso:risk:global:response_mode:1</code></td>
+<td><code>true</code></td>
+<td>—</td>
+<td>default profile</td>
+</tr>
+<tr>
+<td><code>urn:paso:risk:global:geolocation:1</code></td>
+<td><code>true</code></td>
+<td><code>60</code></td>
+<td>both profiles; <code>max_age</code> lowered by the enumeration</td>
+</tr>
+<tr>
+<td><code>urn:paso:risk:global:call_activity:1</code></td>
+<td><code>true</code></td>
+<td>—</td>
+<td>default profile</td>
+</tr>
+<tr>
+<td><code>urn:paso:risk:global:device_motion:1</code></td>
+<td><code>true</code></td>
+<td>—</td>
+<td>default profile</td>
+</tr>
+<tr>
+<td><code>urn:paso:risk:global:amr:1</code></td>
+<td><code>true</code></td>
+<td>—</td>
+<td>ecosystem profile, and the enumeration</td>
+</tr>
+</tbody>
+</table>
+<p>Because <code>amr</code> resolved as required and neither profile sets <code>encrypted</code>, the Authorizing Party can verify the authentication methods directly. Had either profile set <code>encrypted</code> to <code>true</code>, that check would move behind decryption per Section 6.1, which Section 7.8 advises against in a third-party flow.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../paso-proof-metadata/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Metadata Module">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Metadata Module
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../paso-proof-sd-jwt-vc-svg/" class="md-footer__link md-footer__link--next" aria-label="Next: SD-JWT-VC and SVG Module">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                SD-JWT-VC and SVG Module
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2026 Aptitude Consortium
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

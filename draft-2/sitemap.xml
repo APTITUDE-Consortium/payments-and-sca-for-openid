@@ -5,6 +5,10 @@
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>
+         <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-2/rulebooks/risk_profiles/Default/</loc>
+         <lastmod>2026-08-25</lastmod>
+    </url>
+    <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-2/rulebooks/transaction_data/Generic/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
@@ -30,6 +34,10 @@
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-2/specifications/proof/paso-proof-metadata/</loc>
+         <lastmod>2026-08-25</lastmod>
+    </url>
+    <url>
+         <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-2/specifications/proof/paso-proof-risk-signals/</loc>
          <lastmod>2026-08-25</lastmod>
     </url>
     <url>

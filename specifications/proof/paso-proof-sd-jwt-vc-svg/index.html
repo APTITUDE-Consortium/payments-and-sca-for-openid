@@ -8,11 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-1/specifications/proof/paso-proof-verify/">
+        <link rel="canonical" href="https://aptitude-consortium.github.io/payments-and-sca-for-openid/specifications/proof/paso-proof-sd-jwt-vc-svg/">
       
       
-        <link rel="prev" href="../paso-proof-sd-jwt-vc-svg/">
+        <link rel="prev" href="../paso-proof-metadata/">
       
+      
+        <link rel="next" href="../paso-proof-verify/">
       
       
         
@@ -23,7 +25,7 @@
     
     
       
-        <title>Verify Module - Payment and SCA for OpenID</title>
+        <title>SD-JWT-VC and SVG Module - Payment and SCA for OpenID</title>
       
     
     
@@ -74,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#verify-module" class="md-skip">
+        <a href="#sd-jwt-vc-and-svg-module" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Verify Module
+              SD-JWT-VC and SVG Module
             
           </span>
         </div>
@@ -699,34 +701,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../paso-proof-sd-jwt-vc-svg/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    SD-JWT-VC and SVG Module
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -746,7 +720,7 @@
   <span class="md-ellipsis">
     
   
-    Verify Module
+    SD-JWT-VC and SVG Module
   
 
     
@@ -764,7 +738,7 @@
   <span class="md-ellipsis">
     
   
-    Verify Module
+    SD-JWT-VC and SVG Module
   
 
     
@@ -840,10 +814,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-proof-package" class="md-nav__link">
+  <a href="#2-metadata-source-priority" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2 Proof Package
+        2 Metadata Source Priority
       
     </span>
   </a>
@@ -851,10 +825,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-verification-procedure" class="md-nav__link">
+  <a href="#3-svg-embedded-resource-integrity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3 Verification Procedure
+        3 SVG Embedded Resource Integrity
       
     </span>
   </a>
@@ -862,60 +836,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-transaction-ingestion-endpoint" class="md-nav__link">
+  <a href="#4-references" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4 Transaction Ingestion Endpoint
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4 Transaction Ingestion Endpoint">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#41-request" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.1 Request
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#42-response" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.2 Response
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#43-encryption" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.3 Encryption
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5 References
+        4 References
       
     </span>
   </a>
@@ -926,6 +850,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paso-proof-verify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verify Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1023,10 +975,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-proof-package" class="md-nav__link">
+  <a href="#2-metadata-source-priority" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2 Proof Package
+        2 Metadata Source Priority
       
     </span>
   </a>
@@ -1034,10 +986,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-verification-procedure" class="md-nav__link">
+  <a href="#3-svg-embedded-resource-integrity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3 Verification Procedure
+        3 SVG Embedded Resource Integrity
       
     </span>
   </a>
@@ -1045,60 +997,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-transaction-ingestion-endpoint" class="md-nav__link">
+  <a href="#4-references" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4 Transaction Ingestion Endpoint
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="4 Transaction Ingestion Endpoint">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#41-request" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.1 Request
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#42-response" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.2 Response
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#43-encryption" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.3 Encryption
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5 References
+        4 References
       
     </span>
   </a>
@@ -1125,91 +1027,27 @@
   
 
 
-<h1 id="verify-module">Verify Module</h1>
+<h1 id="sd-jwt-vc-and-svg-module">SD-JWT-VC and SVG Module</h1>
 <h2 id="abstract">Abstract</h2>
-<p>This document defines how an Authorizing Party receives, verifies, and authorizes a PaSO transaction. It specifies the proof package structure forwarded by the Relying Party, the verification procedure, and a standard endpoint for ingesting transactions.</p>
+<p>This document defines how Wallets resolve display metadata for PaSO Credentials in [SD-JWT-VC] format. It establishes metadata source priority and additional integrity requirements for SVG resources beyond those defined in [SD-JWT-VC].</p>
 <h2 id="1-introduction">1 Introduction</h2>
 <h3 id="11-overview">1.1 Overview</h3>
-<p>After the Wallet produces a presentation response, the Relying Party forwards the proof package to the Authorizing Party. This module defines what the proof package contains, how the Authorizing Party verifies it, and a standard HTTP endpoint for receiving it.</p>
-<p>How the Relying Party obtains the Authorizing Party's public key and endpoint URI is out of scope of this document.</p>
+<p>[PaSO Proof Metadata] requires signed credential metadata for PaSO Credentials. For [SD-JWT-VC] credentials, the Type Metadata already provides display information with its own integrity mechanism. This module defines when and how [SD-JWT-VC] Type Metadata can be used as an alternative to signed credential metadata for display, and adds integrity requirements for resources embedded within SVG templates.</p>
 <h3 id="12-requirements-notation">1.2 Requirements Notation</h3>
 <p>The key words "<strong>MUST</strong>", "<strong>MUST NOT</strong>", "<strong>REQUIRED</strong>", "<strong>SHALL</strong>", "<strong>SHALL NOT</strong>", "<strong>SHOULD</strong>", "<strong>SHOULD NOT</strong>", "<strong>RECOMMENDED</strong>", "<strong>MAY</strong>", and "<strong>OPTIONAL</strong>" in this document are to be interpreted as described in [RFC2119] and [RFC8174] when, and only when, they are written in all capital letters.</p>
-<h2 id="2-proof-package">2 Proof Package</h2>
-<p>The Relying Party <strong>SHALL</strong> forward the following to the Authorizing Party:</p>
+<h2 id="2-metadata-source-priority">2 Metadata Source Priority</h2>
+<p>As an exception to [PaSO Proof Metadata], the Wallet <strong>MAY</strong> use integrity-verified [SD-JWT-VC] Type Metadata for display purposes without requiring a signed credential metadata JWT for the display information.</p>
+<p>When displaying a PaSO Credential in [SD-JWT-VC] format, the Wallet <strong>SHALL</strong> resolve display metadata following the priority order defined in [OID4VCI] Section 12.2.4. [SD-JWT-VC] integrity verification is always required in a PaSO context; any resource that is not integrity-verified <strong>SHALL</strong> be considered absent.</p>
+<h2 id="3-svg-embedded-resource-integrity">3 SVG Embedded Resource Integrity</h2>
+<p>SVG template retrieval, integrity verification, and placeholder substitution <strong>SHALL</strong> follow [SD-JWT-VC] Sections 7 and 8.</p>
+<p>In addition, URLs within SVG documents loaded in a PaSO context (e.g., images, fonts referenced inside the SVG markup) <strong>SHALL</strong> carry a [W3C.SRI] integrity value in the URL fragment, percent-encoded (e.g., <code>https://example.com/logo.png#sha256-abc123</code>). The Wallet <strong>SHALL</strong> verify each such resource by:</p>
 <ol>
-<li><strong>The signed [OID4VP] Authorization Request</strong> ([JAR] Request Object) as sent to the Wallet, in its compact-serialised JWT form.</li>
-<li><strong>The full <code>vp_token</code></strong> as received from the Wallet.</li>
+<li>Extracting and percent-decoding the fragment to obtain the integrity value.</li>
+<li>Fetching the resource from the URL (without the fragment).</li>
+<li>Verifying the fetched content against the integrity value.</li>
 </ol>
-<p>The Relying Party <strong>SHALL NOT</strong> modify either artefact. Section 4 defines a standard endpoint for forwarding; the applicable Transaction Data Type Rulebook <strong>MAY</strong> define alternative forwarding mechanisms.</p>
-<h2 id="3-verification-procedure">3 Verification Procedure</h2>
-<p>Upon receiving the proof package, the Authorizing Party <strong>SHALL</strong> perform the following checks:</p>
-<ol>
-<li>
-<p><strong>Request verification</strong>: Verify the signed Authorization Request JWT signature. Verify the Relying Party's identity from the request.</p>
-</li>
-<li>
-<p><strong>Credential verification</strong>: Verify the PaSO Credential in the <code>vp_token</code>:</p>
-</li>
-<li>Validate the credential signature.</li>
-<li>Verify the credential has not expired.</li>
-<li>
-<p>Verify the credential has not been revoked.</p>
-</li>
-<li>
-<p><strong>Holder binding proof verification</strong>: Verify the holder binding proof (KB-JWT for [SD-JWT-VC], DeviceAuthentication for [mdoc]).</p>
-</li>
-<li>
-<p><strong>SCA response claims verification</strong> per [PaSO Core] Section 6.1:</p>
-</li>
-<li><code>transaction_data_hash</code>: recompute the hash from the <code>transaction_data</code> entry in the Authorization Request and verify it matches.</li>
-<li><code>transaction_data_hash_alg</code>: verify the algorithm is acceptable.</li>
-<li><code>request_integrity</code>: recompute the [W3C.SRI] integrity value of the signed Authorization Request JWT and verify it matches.</li>
-<li><code>metadata_integrity</code>: if present, verify it matches the [W3C.SRI] integrity value of the Attestation Provider's current signed credential metadata JWT for this credential.</li>
-<li><code>amr</code>: verify the authentication methods meet the requirements of the applicable Transaction Data Type Rulebook.</li>
-<li><code>display_locale</code>: verify that the locale matches a locale for which the credential metadata provides complete <code>display</code> entries.</li>
-<li>
-<p><code>jti</code>: verify uniqueness (the Authorizing Party <strong>SHOULD</strong> maintain a replay cache).</p>
-</li>
-<li>
-<p><strong>Payload verification</strong>: Verify that the <code>transaction_data</code> entry's <code>payload</code> conforms to the applicable Transaction Data Type Rulebook. The specific checks are defined by the rulebook.</p>
-</li>
-</ol>
-<p>If any check fails, the Authorizing Party <strong>SHALL</strong> reject the transaction.</p>
-<h2 id="4-transaction-ingestion-endpoint">4 Transaction Ingestion Endpoint</h2>
-<p>The Authorizing Party <strong>MAY</strong> expose an HTTP endpoint for receiving proof packages.</p>
-<h3 id="41-request">4.1 Request</h3>
-<p>The Relying Party <strong>SHALL</strong> send an HTTP <code>POST</code> request to the endpoint with:</p>
-<ul>
-<li><strong>Content-Type</strong>: <code>application/jose</code> when encrypted per Section 4.3, or <code>application/json</code> otherwise.</li>
-<li><strong>Body</strong>: The proof package as defined below.</li>
-</ul>
-<p>When the body is <code>application/json</code>, it <strong>SHALL</strong> have the following structure:</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">"signed_request"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;compact-serialised Authorization Request JWT&gt;"</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">"vp_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;vp_token as received from the Wallet&gt;"</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">}</span>
-</span></code></pre></div>
-<ul>
-<li><strong><code>signed_request</code></strong>: <strong>REQUIRED</strong>. The signed [OID4VP] Authorization Request in compact JWT serialisation.</li>
-<li><strong><code>vp_token</code></strong>: <strong>REQUIRED</strong>. The <code>vp_token</code> as received from the Wallet.</li>
-</ul>
-<h3 id="42-response">4.2 Response</h3>
-<p>The endpoint <strong>SHALL</strong> respond with:</p>
-<ul>
-<li><code>200 OK</code> — the transaction was accepted.</li>
-<li><code>400 Bad Request</code> — the proof package is malformed or a verification check failed. The response body <strong>SHOULD</strong> be a JSON object with an <code>error</code> field describing the failure.</li>
-<li><code>401 Unauthorized</code> — the Relying Party could not be authenticated.</li>
-<li><code>409 Conflict</code> — the <code>jti</code> has already been processed (replay).</li>
-</ul>
-<h3 id="43-encryption">4.3 Encryption</h3>
-<p>The Relying Party <strong>SHOULD</strong> encrypt the proof package as a [JWE] compact serialisation. The JWE <strong>SHALL</strong> be:</p>
-<ul>
-<li>signed by the Relying Party using its trust chain,</li>
-<li>encrypted to the Authorizing Party's public key, so that only the Authorizing Party can decrypt it.</li>
-</ul>
-<p>The JWE payload is the JSON proof package defined in Section 4.1. The JOSE header <strong>SHALL</strong> include the Relying Party's certificate chain in the <code>x5c</code> parameter.</p>
-<p>How the Relying Party obtains the Authorizing Party's public key is out of scope of this document.</p>
-<h2 id="5-references">5 References</h2>
+<p>If the fragment is missing, invalid, or verification fails, the SVG document <strong>SHALL</strong> be discarded and the Wallet <strong>SHALL</strong> use an available fallback. If no fallback is available, the resource <strong>SHALL</strong> be considered invalid.</p>
+<h2 id="4-references">4 References</h2>
 <table>
 <thead>
 <tr>
@@ -1227,24 +1065,12 @@
 <td><a href="../paso-proof-metadata/">PaSO Proof: Metadata Module</a></td>
 </tr>
 <tr>
-<td>[OID4VP]</td>
-<td><a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html">OpenID for Verifiable Presentations 1.0</a></td>
-</tr>
-<tr>
-<td>[JAR]</td>
-<td><a href="https://www.rfc-editor.org/rfc/rfc9101.html">RFC 9101 — JWT-Secured Authorization Request</a></td>
-</tr>
-<tr>
-<td>[JWE]</td>
-<td><a href="https://www.rfc-editor.org/rfc/rfc7516.html">RFC 7516 — JSON Web Encryption</a></td>
+<td>[OID4VCI]</td>
+<td><a href="https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html">OpenID for Verifiable Credential Issuance 1.0</a></td>
 </tr>
 <tr>
 <td>[SD-JWT-VC]</td>
 <td><a href="https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/">SD-JWT-based Verifiable Credentials</a></td>
-</tr>
-<tr>
-<td>[mdoc]</td>
-<td><a href="https://www.iso.org/standard/69084.html">ISO/IEC 18013-5:2021 — Mobile driving licence application</a></td>
 </tr>
 <tr>
 <td>[RFC2119]</td>
@@ -1289,7 +1115,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../paso-proof-sd-jwt-vc-svg/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SD-JWT-VC and SVG Module">
+          <a href="../paso-proof-metadata/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Metadata Module">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1299,11 +1125,27 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                SD-JWT-VC and SVG Module
+                Metadata Module
               </div>
             </div>
           </a>
         
+        
+          
+          <a href="../paso-proof-verify/" class="md-footer__link md-footer__link--next" aria-label="Next: Verify Module">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Verify Module
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
         
       </nav>
     

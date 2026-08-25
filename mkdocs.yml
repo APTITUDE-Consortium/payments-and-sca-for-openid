@@ -1,5 +1,6 @@
 site_name: Payment and SCA for OpenID
 site_url: https://aptitude-consortium.github.io/payments-and-sca-for-openid/
+repo_url: https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid
 theme:
   name: material
   
@@ -28,7 +29,7 @@ theme:
 extra:
   version:
     provider: mike
-    default: stable
+    default: draft-1
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid

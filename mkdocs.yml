@@ -2,8 +2,25 @@ site_name: Payment and SCA for OpenID
 site_url: https://aptitude-consortium.github.io/payments-and-sca-for-openid/
 theme:
   name: material
+  
   palette:
-    primary: black
+
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: pink
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: pink
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   features:
     - navigation.footer
     - navigation.sections

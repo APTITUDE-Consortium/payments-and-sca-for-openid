@@ -1,10 +1,5 @@
 [
   {
-    "version": "help",
-    "title": "help",
-    "aliases": []
-  },
-  {
     "version": "draft-1",
     "title": "draft-1",
     "aliases": [

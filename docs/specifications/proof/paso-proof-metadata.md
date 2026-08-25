@@ -114,8 +114,9 @@ PaSO extends the [OID4VP] `transaction_data` entry with the following parameter,
 The ad-hoc metadata JWT **SHALL** have the following structure:
 
 - The JOSE header **SHALL** include:
-  - `x5c`: the Attestation Provider's certificate chain.
   - `typ`: set to `adhoc-transaction-metadata+jwt`.
+  - `x5c`: **REQUIRED** when the credential's issuer keys are published as an x5c certificate chain. The Attestation Provider's certificate chain.
+  - `kid`: **REQUIRED** when the credential's issuer keys are instead published in a key set resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata). Identifies the signing key within that key set. In this case, `x5c` **SHALL NOT** be used.
 - The JWT payload **SHALL** include:
   - `iss`: **REQUIRED**. The Credential Issuer Identifier.
   - `sub`: **REQUIRED**. The credential type identifier as defined by the credential format: the `vct` claim value for [SD-JWT-VC], or the `docType` value of the mobile security object (MSO) for [mdoc].
@@ -124,7 +125,7 @@ The ad-hoc metadata JWT **SHALL** have the following structure:
   - `exp`: **REQUIRED**. Expiration time. The Attestation Provider **SHOULD** choose a validity period that bounds how long Relying Parties can cache and reuse the JWT.
   - `transaction_data_type`: **REQUIRED**. The transaction data type identifier the metadata applies to, following the structure defined in [PaSO Core] Section 5.2. It **SHALL** equal the `type` of the enclosing `transaction_data` entry.
   - `metadata`: **REQUIRED**. An object with the same structure as a single `transaction_data_types` entry value as defined in Section 3, i.e. containing `claims` per Section 3.1, `ui_labels` per Section 3.2 where applicable, and any additional parameters. The requirements of Sections 3.1 and 3.2 apply unchanged.
-- The JWT **SHALL** be signed using an algorithm appropriate for the key in the `x5c` leaf certificate.
+- The JWT **SHALL** be signed using an algorithm appropriate for the signing key: the key in the `x5c` leaf certificate, or the key set key identified by `kid`.
 
 The credential type identifier bound by `sub` is unrelated to the device-signed namespace `urn:paso:sca:1` defined in [PaSO Core] Section 6.3: that namespace identifies where the SCA response claims are placed within an mdoc presentation and is not a credential type identifier. For an [mdoc] PaSO Credential, `sub` carries the credential's `docType` and `format` is `mso_mdoc`.
 
@@ -134,7 +135,9 @@ When a PaSO-targeted `transaction_data` entry contains a `metadata` parameter, t
 
 1. Verify that the `typ` JOSE header parameter is `adhoc-transaction-metadata+jwt`.
 2. Verify the JWT signature.
-3. Verify the `x5c` certificate chain in the JOSE header against the Wallet's trust store.
+3. Verify the signing key trust:
+   - When the credential's issuer keys are x5c-based, verify the `x5c` certificate chain in the JOSE header against the Wallet's trust store.
+   - Otherwise, verify that the JWT is signed by a key from the credential issuer's published key set, identified by the `kid` JOSE header parameter and resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata).
 4. Verify that the `iss` claim matches the Credential Issuer Identifier of the targeted PaSO Credential.
 5. Verify that the `exp` claim has not passed.
 6. Verify the credential binding as defined in Section 7 step 6.
@@ -157,14 +160,16 @@ The Wallet **SHALL NOT** persist ad-hoc metadata JWTs beyond the processing of t
 
 _**Note**: This section is **informative**._
 
-The ad-hoc metadata JWT is delivered by the Relying Party, an untrusted channel; the verification in Section 5.3 is what establishes that the metadata originates from the credential's issuer. The guarantee rests on the credential binding (step 6), not on the signature alone:
+The ad-hoc metadata JWT is delivered by the Relying Party, an untrusted channel; the verification in Section 5.3 is what establishes that the metadata originates from the credential's issuer. The guarantee rests on the credential binding (step 6), not on the signature alone. When the credential's issuer keys are x5c-based:
 
 - The signature (step 2) only proves possession of the private key matching the leaf certificate in the JWT's `x5c` header; the trust store check (step 3) only narrows the signer to an entity vetted by a trusted CA.
 - The credential binding pins the signer to this credential's issuer: the JWT's certificate chain must terminate in the same root CA as the credential's own chain, and the Subject of the JWT's leaf certificate must match the Subject of the credential's leaf certificate. Since the credential's chain was verified at issuance, it serves as the anchor for the issuer's identity.
 
 To forge ad-hoc metadata, an attacker would need a certificate issued under the same trusted root CA with the same Subject as the issuer's credential-signing certificate. A trusted root CA issuing a same-Subject certificate to a different entity constitutes a CA compromise, at which point the credential itself would be equally forgeable; the ad-hoc channel therefore adds no trust assumptions beyond those already made for the signed credential metadata JWT (Section 7 step 6).
 
-The binding deliberately does not require the same key as the credential: the Attestation Provider may use a dedicated metadata-signing key, provided its certificate is issued under the same root CA with the same Subject. The `iss` claim check (step 4) is a consistency check on top of the certificate binding, not a substitute for it.
+When the credential's issuer keys are instead published in a key set, the binding rests on the key-set branch of Section 7 step 6: the JWT must verify under a key from the same issuer key set that verifies the credential itself. Forging ad-hoc metadata then requires inserting a key into the issuer's published key set, at which point the credential itself would be equally forgeable; this path likewise adds no trust assumptions beyond those already made for the credential.
+
+The binding deliberately does not require the same key as the credential: the Attestation Provider may use a dedicated metadata-signing key, provided its certificate is issued under the same root CA with the same Subject (x5c case) or the key is published in the same issuer key set (key set case). The `iss` claim check (step 4) is a consistency check on top of the key binding, not a substitute for it.
 
 ## 6 Storage and Handling
 

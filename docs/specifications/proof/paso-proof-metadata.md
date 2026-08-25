@@ -24,7 +24,7 @@ This section defines an extension to [OID4VCI] Credential Issuer Metadata for se
 
 The Attestation Provider **SHALL** include a `credential_metadata_uri` in each PaSO Credential configuration within the Credential Issuer Metadata and **SHALL** serve the credential metadata at that URI.
 
-When fetching from a `credential_metadata_uri`, the Wallet **SHALL** include an `Accept` header and an `Accept-Language` header per [OID4VCI] Section 12.2.2. If the `Accept` header is absent or does not express a preference, the Attestation Provider **SHALL** default to `application/json`. The Attestation Provider **MAY** refuse requests without an `Accept-Language` header.
+When fetching from a `credential_metadata_uri`, the Wallet **SHALL** include an `Accept` header and an `Accept-Language` header per [OID4VCI] Section 12.2.2. If the `Accept` header is absent or does not express a preference, the Attestation Provider **SHALL** default to `application/json`. The Attestation Provider **MAY** refuse requests without an `Accept-Language` header; if it does, it **SHALL** respond with HTTP status code 400 (Bad Request).
 
 - `Accept: application/json` — The Attestation Provider **SHALL** return the credential metadata as a plain JSON object, i.e. the `credential_metadata` object extended with `transaction_data_types` per Section 3, without the JWT payload structure defined in Section 4. Note that per Section 3, the Wallet cannot rely on this unsigned form for PaSO Credentials.
 - `Accept: application/jwt` — The Attestation Provider **SHALL** return the credential metadata as a signed JWT per Section 4.

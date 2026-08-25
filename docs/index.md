@@ -87,7 +87,7 @@ Every PaSO transaction data type is named by a URN of the form:
 urn:paso:sca:<domain>:<suffix>:<version>
 ```
 
-The `<domain>` identifies the organization that owns the type (or `global` for types defined by PaSO itself), `<suffix>` names the type (for example `payment`), and `<version>` is a version number. A wallet recognizes PaSO transaction data simply by the `urn:paso:sca:` prefix.
+The `<domain>` identifies the organization that owns the type (or `global` for types defined by PaSO itself), `<suffix>` names the type (for example `payment`), and `<version>` is a positive integer (always the final segment). A wallet recognizes PaSO transaction data simply by the `urn:paso:sca:` prefix.
 
 The semantic structure of a published type is immutable: once defined, it does not change. Any change requires a new version. This is what makes a versioned-fallback strategy possible — a relying party can offer a newer type first and an older type as a fallback, so that newer and older credentials can both transact.
 
@@ -309,7 +309,7 @@ PaSO is technology that helps a payment service provider *implement* these requi
 ### 9.7 Summary mapping
 
 | Regulatory requirement | Source | PaSO mechanism |
-|---|---|---|
+| --- | --- | --- |
 | Two independent SCA factors | PSD2 Art. 4(30), 97; SCA-RTS Arts. 6–9; EBA Opinion | Device-bound key (possession) released by PIN/biometric (knowledge/inherence); `amr` claim records the factor categories and biometric strength |
 | Single-use, unforgeable authentication code | SCA-RTS Art. 4 | Unique per-presentation identifier in a device-key signature; replay checking at the authorizing party |
 | Dynamic linking to amount and payee | PSD2 Art. 97(2); SCA-RTS Art. 5 | Signed hash of the exact transaction data; any change invalidates the proof; re-checked by the authorizing party |
@@ -317,4 +317,3 @@ PaSO is technology that helps a payment service provider *implement* these requi
 | Informed consent / faithful display | PSD2; EBA Opinion | Generic metadata-driven rendering; mandatory display before confirmation; recorded display locale |
 | Confidentiality/integrity of credentials and data | SCA-RTS Arts. 22–27 | Keys confined to secure hardware; signed-and-encrypted proof package; signed credential metadata |
 | Provider's burden of proof in disputes | PSD2 Arts. 72, 97 | Re-verifiable proof package and replayable wallet-side transaction log |
-

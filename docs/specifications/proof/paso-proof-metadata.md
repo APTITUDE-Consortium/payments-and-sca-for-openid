@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This document specifies how Attestation Providers serve verifiable credential metadata for PaSO Credentials, and how Wallets retrieve, verify, store, and renew it. It defines the `credential_metadata_uri` extension to [OID4VCI], the signed credential metadata JWT format, the `transaction_data_types` structure within credential metadata, and the claims metadata structure used to describe transaction data payloads.
+This document specifies how Attestation Providers serve verifiable credential metadata for PaSO Credentials, and how Wallets retrieve, verify, store, and renew it. It defines the `credential_metadata_uri` extension to [OID4VCI], the signed credential metadata JWT format, the `transaction_data_types` structure within credential metadata, and the claims metadata structure used to describe transaction data payloads. It further defines an ad-hoc mechanism by which the same transaction data type metadata can alternatively be supplied within a `transaction_data` entry itself, as a JWT signed by the credential's issuer.
 
 ## 1 Introduction
 
@@ -11,6 +11,8 @@ This document specifies how Attestation Providers serve verifiable credential me
 [OID4VCI] serves credential metadata as unsigned JSON from the Credential Issuer Metadata endpoint. Unsigned metadata cannot be used as evidence in dispute resolution, and the Wallet cannot verify that it has not been tampered with. This module defines a mechanism for serving credential metadata as a signed JWT from a dedicated URI, binding the metadata to the credential and its issuer.
 
 The signed credential metadata is the mechanism by which the Wallet determines which transaction data types a PaSO Credential supports, as required by [PaSO Core] Section 7.
+
+In addition, this module defines an ad-hoc channel (Section 5) by which the metadata for a single transaction data type can be supplied within the `transaction_data` entry itself, as a JWT signed by the Attestation Provider. This allows an Attestation Provider to supply transaction-specific or updated metadata without rotating the signed credential metadata JWT.
 
 ### 1.2 Requirements Notation
 
@@ -40,7 +42,7 @@ The credential metadata for a PaSO Credential **SHALL** include the following pa
   - **`ui_labels`**: **REQUIRED** when the credential is issued to a Wallet that does not have a dedicated UI for the transaction data type; **OPTIONAL** otherwise. Object providing localised strings for the consent UI per Section 3.2.
   - Additional parameters **MAY** be defined and used. The Wallet **MUST** ignore any unrecognised parameters.
 
-A PaSO Credential **SHALL NOT** be accepted by the Wallet unless its credential metadata was obtained as a signed JWT from the `credential_metadata_uri` and successfully verified per Section 6. The signed credential metadata JWT is the sole authoritative source for the credential metadata; the Wallet **SHALL NOT** use unsigned credential metadata from the Credential Issuer Metadata endpoint for PaSO Credentials.
+A PaSO Credential **SHALL NOT** be accepted by the Wallet unless its credential metadata was obtained as a signed JWT from the `credential_metadata_uri` and successfully verified per Section 7. The signed credential metadata JWT is the authoritative source for the credential metadata, except that ad-hoc transaction data metadata supplied per Section 5 takes precedence for the individual transaction it accompanies; the Wallet **SHALL NOT** use unsigned credential metadata from the Credential Issuer Metadata endpoint for PaSO Credentials.
 
 If, during issuance, the Wallet determines that a credential is a PaSO Credential but does not hold a validly signed credential metadata JWT for it, the Wallet **SHALL** reject the issuance and inform the user.
 
@@ -96,13 +98,78 @@ The Attestation Provider **SHALL** rotate signed credential metadata JWTs before
 
 The Wallet **MAY** refuse issuance if the returned metadata does not contain any locale compatible with its locale priority list.
 
-## 5 Storage and Handling
+## 5 Ad-hoc Transaction Data Metadata
 
-The Wallet **SHALL** persist signed credential metadata JWTs in their signed form and **SHALL NOT** persist the decoded credential metadata. The Wallet **MAY** store multiple signed metadata JWTs per credential to cover different locales. Each time the Wallet loads a metadata JWT from storage, it **SHALL** perform the full verification procedure defined in Section 6.
+This section defines an alternative mechanism for supplying transaction data type metadata. Instead of relying solely on the corresponding entry in the signed credential metadata JWT, the metadata for a transaction data type **MAY** be supplied ad hoc within the `transaction_data` entry itself, as a JWT signed by the Attestation Provider of the targeted PaSO Credential.
 
-If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 6. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT covering the required locale is obtained.
+### 5.1 The `metadata` Parameter
 
-## 6 Verification
+PaSO extends the [OID4VP] `transaction_data` entry with the following parameter, in addition to the `payload` parameter defined in [PaSO Core] Section 7.1:
+
+- **`metadata`**: **OPTIONAL** (string). An ad-hoc metadata JWT as defined in Section 5.2, signed by the Attestation Provider of the targeted PaSO Credential. The Relying Party obtains the ad-hoc metadata JWT from the Attestation Provider; the mechanism by which it does so is out of scope of this specification.
+
+### 5.2 Ad-hoc Metadata JWT
+
+The ad-hoc metadata JWT **SHALL** have the following structure:
+
+- The JOSE header **SHALL** include:
+  - `x5c`: the Attestation Provider's certificate chain.
+  - `typ`: set to `adhoc-transaction-metadata+jwt`.
+- The JWT payload **SHALL** include:
+  - `iss`: **REQUIRED**. The Credential Issuer Identifier.
+  - `sub`: **REQUIRED**. The credential type identifier as defined by the credential format (e.g., `vct` for [SD-JWT-VC], `doctype` for [mdoc]).
+  - `format`: **REQUIRED**. The credential format identifier as defined in [OID4VCI] (e.g., `dc+sd-jwt`, `mso_mdoc`).
+  - `iat`: **REQUIRED**. Issuance time.
+  - `exp`: **REQUIRED**. Expiration time. The Attestation Provider **SHOULD** choose a validity period that bounds how long Relying Parties can cache and reuse the JWT.
+  - `transaction_data_type`: **REQUIRED**. The transaction data type identifier the metadata applies to, following the structure defined in [PaSO Core] Section 5.2. It **SHALL** equal the `type` of the enclosing `transaction_data` entry.
+  - `metadata`: **REQUIRED**. An object with the same structure as a single `transaction_data_types` entry value as defined in Section 3, i.e. containing `claims` per Section 3.1, `ui_labels` per Section 3.2 where applicable, and any additional parameters. The requirements of Sections 3.1 and 3.2 apply unchanged.
+- The JWT **SHALL** be signed using an algorithm appropriate for the key in the `x5c` leaf certificate.
+
+### 5.3 Verification
+
+When a PaSO-targeted `transaction_data` entry contains a `metadata` parameter, the Wallet **SHALL** verify the ad-hoc metadata JWT as follows before relying on it:
+
+1. Verify that the `typ` JOSE header parameter is `adhoc-transaction-metadata+jwt`.
+2. Verify the JWT signature.
+3. Verify the `x5c` certificate chain in the JOSE header against the Wallet's trust store.
+4. Verify that the `iss` claim matches the Credential Issuer Identifier of the targeted PaSO Credential.
+5. Verify that the `exp` claim has not passed.
+6. Verify the credential binding as defined in Section 7 step 6.
+7. Verify that the `transaction_data_type` claim equals the `type` of the enclosing `transaction_data` entry.
+
+If any step fails, the ad-hoc metadata JWT **SHALL** be considered invalid and the `transaction_data` entry **SHALL** be considered incompatible for the targeted credential per [PaSO Core] Section 7.4.2. The Wallet **SHALL NOT** fall back to the stored credential metadata entry for a `transaction_data` entry whose `metadata` parameter fails verification.
+
+### 5.4 Precedence and Processing
+
+A successfully verified ad-hoc metadata JWT is authoritative for the enclosing `transaction_data` entry:
+
+- Its `metadata` object **SHALL** be used in place of the corresponding `transaction_data_types` entry from the signed credential metadata JWT, for this transaction only.
+- A transaction data type covered by a valid ad-hoc metadata JWT **SHALL** be considered supported by the targeted credential for the purposes of [PaSO Core] Section 7, even if it is absent from the signed credential metadata.
+
+If the ad-hoc metadata does not contain `display` entries for any locale compatible with the Wallet's locale priority list, the Wallet **MAY** treat the `transaction_data` entry as incompatible.
+
+The Wallet **SHALL NOT** persist ad-hoc metadata JWTs beyond the processing of the transaction they accompany. Sections 6 and 8 do not apply to ad-hoc metadata JWTs. Because ad-hoc metadata is delivered within the presentation request, its use involves no additional network retrieval and is not subject to the linkability considerations of Section 8.
+
+### 5.5 Security Considerations
+
+_**Note**: This section is **informative**._
+
+The ad-hoc metadata JWT is delivered by the Relying Party, an untrusted channel; the verification in Section 5.3 is what establishes that the metadata originates from the credential's issuer. The guarantee rests on the credential binding (step 6), not on the signature alone:
+
+- The signature (step 2) only proves possession of the private key matching the leaf certificate in the JWT's `x5c` header; the trust store check (step 3) only narrows the signer to an entity vetted by a trusted CA.
+- The credential binding pins the signer to this credential's issuer: the JWT's certificate chain must terminate in the same root CA as the credential's own chain, and the Subject of the JWT's leaf certificate must match the Subject of the credential's leaf certificate. Since the credential's chain was verified at issuance, it serves as the anchor for the issuer's identity.
+
+To forge ad-hoc metadata, an attacker would need a certificate issued under the same trusted root CA with the same Subject as the issuer's credential-signing certificate. A trusted root CA issuing a same-Subject certificate to a different entity constitutes a CA compromise, at which point the credential itself would be equally forgeable; the ad-hoc channel therefore adds no trust assumptions beyond those already made for the signed credential metadata JWT (Section 7 step 6).
+
+The binding deliberately does not require the same key as the credential: the Attestation Provider may use a dedicated metadata-signing key, provided its certificate is issued under the same root CA with the same Subject. The `iss` claim check (step 4) is a consistency check on top of the certificate binding, not a substitute for it.
+
+## 6 Storage and Handling
+
+The Wallet **SHALL** persist signed credential metadata JWTs in their signed form and **SHALL NOT** persist the decoded credential metadata. The Wallet **MAY** store multiple signed metadata JWTs per credential to cover different locales. Each time the Wallet loads a metadata JWT from storage, it **SHALL** perform the full verification procedure defined in Section 7.
+
+If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 7. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT covering the required locale is obtained.
+
+## 7 Verification
 
 The Wallet **SHALL** perform the following verification each time it needs to rely on a signed credential metadata JWT:
 
@@ -118,13 +185,13 @@ The Wallet **SHALL** perform the following verification each time it needs to re
 
 If any step fails, the metadata JWT **SHALL** be considered invalid and the Wallet **SHALL** exclude the credential from further processing. During issuance, the Wallet **SHALL** reject the issuance and inform the user.
 
-## 7 Renewal and Unlinkability
+## 8 Renewal and Unlinkability
 
 The Wallet **SHALL** renew each signed credential metadata JWT before its `exp` time by re-fetching from the `credential_metadata_uri`, and **MAY** re-fetch at any other time. The Wallet **MAY** fetch additional locales by issuing separate requests with different `Accept-Language` headers during renewal.
 
 Credential metadata retrieval **SHALL NOT** be linkable to credential usage. The Wallet **SHALL NOT** fetch credential metadata immediately before or after a presentation in a pattern that would allow a network observer to correlate the two activities.
 
-## 8 References
+## 9 References
 
 | Reference   | Description                                                                                                                |
 |-------------|----------------------------------------------------------------------------------------------------------------------------|
@@ -231,4 +298,72 @@ GET /credential-metadata/BankPaymentCard HTTP/1.1
 Host: issuer.bank.example
 Accept: application/jwt
 Accept-Language: de, en;q=0.8
+```
+
+### A.4 Transaction Data Entry with Ad-hoc Metadata
+
+A decoded `transaction_data` entry carrying an ad-hoc metadata JWT (JWT abbreviated):
+
+```json
+{
+  "type": "urn:paso:sca:global:payment:1",
+  "credential_ids": ["bank_card"],
+  "payload": {
+    "transaction_id": "89d0a218-7f52-4dd0-b503-9b0146bfb0ef",
+    "amount": "EUR 45.00",
+    "payee": {
+      "name": "Merchant Ltd",
+      "id": "DE89370400440532013000"
+    }
+  },
+  "metadata": "eyJ4NWMiOlsiTUlJQi4uLiJdLCJ0eXAiOiJhZGhvYy10cmFuc2FjdGlvbi1tZXRhZGF0YStqd3QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL2lzc3Vlci5iYW5rLmV4YW1wbGUiLC4uLn0.MEUCIQ..."
+}
+```
+
+Decoded ad-hoc metadata JWT payload:
+
+```json
+{
+  "iss": "https://issuer.bank.example",
+  "sub": "https://bank.example/sca/card",
+  "format": "dc+sd-jwt",
+  "iat": 1710000000,
+  "exp": 1710604800,
+  "transaction_data_type": "urn:paso:sca:global:payment:1",
+  "metadata": {
+    "claims": [
+      {
+        "path": ["transaction_id"],
+        "mandatory": true
+      },
+      {
+        "path": ["amount"],
+        "mandatory": true,
+        "value_type": "iso_currency_amount",
+        "display": [
+          { "locale": "en", "name": "Amount" },
+          { "locale": "de", "name": "Betrag" }
+        ]
+      },
+      {
+        "path": ["payee", "name"],
+        "mandatory": true,
+        "display": [
+          { "locale": "en", "name": "Payee" },
+          { "locale": "de", "name": "Empfänger" }
+        ]
+      },
+      {
+        "path": ["payee", "id"],
+        "mandatory": true
+      }
+    ],
+    "ui_labels": {
+      "affirmative_action_label": [
+        { "locale": "en", "value": "Confirm Payment" },
+        { "locale": "de", "value": "Zahlung bestätigen" }
+      ]
+    }
+  }
+}
 ```

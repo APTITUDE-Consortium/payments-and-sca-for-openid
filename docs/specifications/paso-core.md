@@ -99,7 +99,7 @@ Where:
 
 - `<domain>` is an organisation identifier in reverse domain notation (e.g., `com.example`), or `global` for transaction data types defined by PaSO itself,
 - `<suffix>` is one or more colon-separated segments identifying the type (e.g., `payment`),
-- `<version>` is a version number (e.g., `1`).
+- `<version>` is a version number (e.g., `1`). It **SHALL** be a positive integer without leading zeros and **SHALL** be the final segment of the identifier. New versions of a transaction data type **SHALL** use monotonically increasing integers.
 
 The Wallet identifies PaSO transaction data entries by checking whether the `type` field starts with the prefix `urn:paso:sca:`.
 

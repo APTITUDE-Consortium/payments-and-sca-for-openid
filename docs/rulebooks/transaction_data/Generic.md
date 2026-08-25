@@ -127,10 +127,10 @@ In addition to the verification procedure defined in [PaSO Proof Verify], the Au
 
 | Reference             | Description                                                         |
 |-----------------------|---------------------------------------------------------------------|
-| [PaSO Core]           | [PaSO Core](../../specs/paso-core.md)                               |
-| [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](../../specs/proof/paso-proof-metadata.md) |
-| [PaSO Proof Verify]   | [PaSO Proof: Verify Module](../../specs/proof/paso-proof-verify.md) |
-| [PaSO View]           | [PaSO View](../../specs/paso-view.md)                               |
+| [PaSO Core]           | [PaSO Core](../../specifications/paso-core.md)                               |
+| [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](../../specifications/proof/paso-proof-metadata.md) |
+| [PaSO Proof Verify]   | [PaSO Proof: Verify Module](../../specifications/proof/paso-proof-verify.md) |
+| [PaSO View]           | [PaSO View](../../specifications/paso-view.md)                               |
 | [Payment]             | [Payment Rulebook](Payment.md)                                      |
 | [RFC8259]             | [RFC 8259 — The JavaScript Object Notation (JSON) Data Interchange Format](https://www.rfc-editor.org/rfc/rfc8259.html) |
 

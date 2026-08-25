@@ -77,10 +77,10 @@ In addition to the verification procedure defined in [PaSO Proof Verify], the Au
 
 | Reference           | Description                                                              |
 |---------------------|--------------------------------------------------------------------------|
-| [PaSO Core]         | [PaSO Core](../../specs/paso-core.md)                                    |
-| [PaSO Proof Verify] | [PaSO Proof: Verify Module](../../specs/proof/paso-proof-verify.md)      |
-| [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](../../specs/proof/paso-proof-metadata.md) |
-| [PaSO View]         | [PaSO View](../../specs/paso-view.md)                                    |
+| [PaSO Core]         | [PaSO Core](../../specifications/paso-core.md)                                    |
+| [PaSO Proof Verify] | [PaSO Proof: Verify Module](../../specifications/proof/paso-proof-verify.md)      |
+| [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](../../specifications/proof/paso-proof-metadata.md) |
+| [PaSO View]         | [PaSO View](../../specifications/paso-view.md)                                    |
 | [Generic]           | [Generic Rulebook](Generic.md)                                           |
 | [Payment]           | [Payment Rulebook](Payment.md)                                           |
 | [W3C.SRI]           | [Subresource Integrity](https://www.w3.org/TR/SRI/)                      |

@@ -32,6 +32,8 @@ Relying Parties and Attestation Providers **MUST NOT** use labels, payload value
 
 The Wallet **SHALL** populate the UI elements defined in [PaSO Proof Metadata] Section 3.2 with the localised labels from the credential metadata. When a `security_hint` is present, the Wallet **SHALL** display it exactly as provided.
 
+All labels are subject to the length limits and character constraints defined in [PaSO Proof Metadata] Section 3.3. The Wallet **SHALL** verify these constraints for every label it renders; for labels produced with a `template:` prefix, the verification applies to the fully interpolated result. If any label violates a constraint, the `transaction_data` entry is not compatible and the Wallet **SHALL** exclude it. The Wallet **MUST NOT** truncate, elide, or otherwise shorten a label; it **MAY** wrap a label across multiple lines provided the text remains visible in full. The Wallet **SHALL** likewise exclude a `transaction_data` entry whose formatted claim values contain the directional formatting characters prohibited by [PaSO Proof Metadata] Section 3.3.
+
 When claims contain `null` (array wildcard) in their `path`, the Wallet **SHALL** render them using the following recursive rule. For a given set of claims at a given nesting level:
 
 1. Render all claims whose remaining path contains no `null`, in declared order.
@@ -149,7 +151,7 @@ The Wallet **SHALL** resolve each placeholder by:
 
 If all locale entries for a given locale are discarded, the Wallet **SHALL** fall back to the next locale in its priority list per Section 4; if no entry survives for any locale, the `transaction_data` entry is not compatible.
 
-After interpolation, the result **SHALL** be formatted according to the inner `value_type` specified after `template:` (e.g., `template:mini_markdown` applies `mini_markdown` formatting). If a referenced claim's formatting and the inner `value_type` conflict, the inner `value_type` takes precedence.
+After interpolation, the result **SHALL** be formatted according to the inner `value_type` specified after `template:` (e.g., `template:mini_markdown` applies `mini_markdown` formatting). If a referenced claim's formatting and the inner `value_type` conflict, the inner `value_type` takes precedence. When the template is used as a `display_type`, the label constraints of [PaSO Proof Metadata] Section 3.3 apply to the fully interpolated result per Section 2.
 
 Placeholders **MUST** only reference claims whose `path` contains the same number or fewer `null` entries than the referencing claim's `path`; each `null` in the referenced claim's `path` is resolved to the same array index as the corresponding `null` in the referencing claim's `path`.
 

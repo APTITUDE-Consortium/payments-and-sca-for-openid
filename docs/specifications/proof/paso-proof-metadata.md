@@ -53,6 +53,7 @@ Each entry in `transaction_data_types` **MUST** supply metadata for each claim o
 - The `path` parameter resolves against the `transaction_data` `payload` object, not against the credential itself.
 - A `value_type` parameter (string) **MAY** be added to claim objects that have a `display` array. It indicates how the Wallet **SHALL** format the claim value for display. If omitted, the value is treated as plain text and **MUST** be a string. The `value_type` parameter **MUST NOT** be used on claims without a `display` array. The set of supported value types is defined by the applicable Transaction Data Type Rulebook or by other PaSO specifications.
 - A `display_type` parameter (string) **MAY** be added to `display` entry objects. It governs how the Wallet **SHALL** format the `name` text of that display entry, applying the same rendering rules as the corresponding `value_type` but to the label. If omitted, the label is plain text.
+- The `name` of each `display` entry is subject to the label constraints defined in Section 3.3.
 
 Claims that are relevant to the user's consent **MUST** include a `display` array with entries for the locales served in that signed JWT. Claims without a `display` array **MUST** be internal values irrelevant to the user's consent.
 
@@ -73,9 +74,31 @@ The following UI element identifiers are defined by this specification:
 - **`transaction_title`**: Title for the consent screen. If absent, the Wallet **MAY** provide its own.
 - **`security_hint`**: A security hint displayed to the user. When present, the Wallet **SHALL** display it exactly as provided and **SHALL NOT** alter or remove it.
 
+All `ui_labels` values are subject to the label constraints defined in Section 3.3.
+
 Additional UI element identifiers **MAY** be defined by Transaction Data Type Rulebooks or other PaSO specifications. The Wallet **SHALL** ignore any unrecognised UI element identifiers.
 
 As with claims, the applicable Transaction Data Type Rulebook defines the semantic meaning of each UI element identifier. A Wallet that implements a specific rulebook **MAY** replace `ui_labels` text with its own labels or visual representations, provided the meaning remains clear and unmistakable to the user. The `security_hint` is an exception: it **SHALL** always be displayed exactly as provided.
+
+### 3.3 Label Constraints
+
+The following constraints apply to all human-readable label strings in a `transaction_data_types` entry: the `name` of each claim `display` entry (Section 3.1) and the `value` of each `ui_labels` entry (Section 3.2).
+
+Label lengths are counted in extended grapheme clusters as defined in [UAX29]. Labels **MUST NOT** exceed the following maximum lengths:
+
+| Label                                | Maximum length (grapheme clusters) |
+|--------------------------------------|------------------------------------|
+| Claim `display` entry `name`         | 60                                 |
+| `transaction_title`                  | 100                                |
+| `affirmative_action_label`           | 40                                 |
+| `denial_action_label`                | 40                                 |
+| `security_hint`                      | 160                                |
+
+Specifications and Transaction Data Type Rulebooks that define additional UI element identifiers **SHALL** define a maximum length for their values; if none is defined, a maximum of 100 grapheme clusters applies.
+
+Labels **MUST NOT** contain C0 or C1 control characters; this prohibits line breaks within labels — line wrapping is a rendering decision of the Wallet. Labels and `transaction_data` `payload` string values **MUST NOT** contain the Unicode directional embedding or override characters U+202A through U+202E. The directional isolate characters U+2066 through U+2068 **MAY** be used, provided each isolate is properly terminated by U+2069.
+
+For labels whose `value_type` or `display_type` uses the `template:` prefix defined in [PaSO View], the limits apply to the fully interpolated result. The Wallet enforces these constraints at rendering time per [PaSO View] Section 2. Independent of rendering, the Wallet **SHALL** treat a transaction data type whose metadata violates these constraints as not supported by the credential.
 
 ## 4 Signed Credential Metadata JWT
 
@@ -210,12 +233,14 @@ Credential metadata retrieval **SHALL NOT** be linkable to credential usage. The
 | Reference   | Description                                                                                                                |
 |-------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core] | [PaSO Core](../paso-core.md)                                                                                               |
+| [PaSO View] | [PaSO View](../paso-view.md)                                                                                               |
 | [OID4VP]    | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |
 | [OID4VCI]   | [OpenID for Verifiable Credential Issuance 1.0](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) |
 | [RFC2119]   | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |
 | [RFC8174]   | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)        |
 | [RFC5646]   | [RFC 5646 — Tags for Identifying Languages](https://www.rfc-editor.org/rfc/rfc5646.html)                                   |
 | [SD-JWT-VC] | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
+| [UAX29]     | [Unicode Standard Annex #29 — Unicode Text Segmentation](https://www.unicode.org/reports/tr29/)                            |
 | [mdoc]      | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |
 
 ## Annex A: Examples

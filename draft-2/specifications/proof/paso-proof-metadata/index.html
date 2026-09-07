@@ -915,6 +915,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#33-label-and-structural-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Label and Structural Constraints
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1376,6 +1387,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#33-label-and-structural-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Label and Structural Constraints
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1638,6 +1660,7 @@
 <li>The <code>path</code> parameter resolves against the <code>transaction_data</code> <code>payload</code> object, not against the credential itself.</li>
 <li>A <code>value_type</code> parameter (string) <strong>MAY</strong> be added to claim objects that have a <code>display</code> array. It indicates how the Wallet <strong>SHALL</strong> format the claim value for display. If omitted, the value is treated as plain text and <strong>MUST</strong> be a string. The <code>value_type</code> parameter <strong>MUST NOT</strong> be used on claims without a <code>display</code> array. The set of supported value types is defined by the applicable Transaction Data Type Rulebook or by other PaSO specifications.</li>
 <li>A <code>display_type</code> parameter (string) <strong>MAY</strong> be added to <code>display</code> entry objects. It governs how the Wallet <strong>SHALL</strong> format the <code>name</code> text of that display entry, applying the same rendering rules as the corresponding <code>value_type</code> but to the label. If omitted, the label is plain text.</li>
+<li>The <code>name</code> of each <code>display</code> entry is subject to the label constraints defined in Section 3.3, which also restrict the permitted <code>display_type</code> values.</li>
 </ul>
 <p>Claims that are relevant to the user's consent <strong>MUST</strong> include a <code>display</code> array with entries for the locales served in that signed JWT. Claims without a <code>display</code> array <strong>MUST</strong> be internal values irrelevant to the user's consent.</p>
 <p>The <code>display</code> entries and <code>value_type</code> provide default rendering hints. The applicable Transaction Data Type Rulebook defines the semantic meaning of each claim; a Wallet that implements a specific rulebook <strong>MAY</strong> provide its own labels or visual representations in place of the metadata-supplied <code>display</code> entries, provided the meaning remains clear and unmistakable to the user.</p>
@@ -1646,17 +1669,61 @@
 <ul>
 <li><code>locale</code>: <strong>OPTIONAL</strong>. A [RFC5646] language tag. Entries without <code>locale</code> serve as defaults.</li>
 <li><code>value</code>: The localised string.</li>
-<li><code>value_type</code>: <strong>OPTIONAL</strong>. A <code>value_type</code> as defined in Section 3.1 governing how the Wallet formats the <code>value</code>. If omitted, treated as plain text.</li>
+<li><code>value_type</code>: <strong>OPTIONAL</strong>. A <code>value_type</code> as defined in Section 3.1 governing how the Wallet formats the <code>value</code>. If omitted, treated as plain text. Restricted to the text-producing value types per Section 3.3.</li>
 </ul>
 <p>The following UI element identifiers are defined by this specification:</p>
 <ul>
 <li><strong><code>affirmative_action_label</code></strong>: Label for the confirmation action (e.g., "Confirm Payment").</li>
 <li><strong><code>denial_action_label</code></strong>: Label for the denial action. If absent, the Wallet <strong>SHALL</strong> provide its own.</li>
 <li><strong><code>transaction_title</code></strong>: Title for the consent screen. If absent, the Wallet <strong>MAY</strong> provide its own.</li>
-<li><strong><code>security_hint</code></strong>: A security hint displayed to the user. When present, the Wallet <strong>SHALL</strong> display it exactly as provided and <strong>SHALL NOT</strong> alter or remove it.</li>
+<li><strong><code>security_hint</code></strong>: A security hint displayed to the user. When present, the Wallet <strong>SHALL</strong> display it exactly as provided and <strong>SHALL NOT</strong> alter or remove it. Its entries <strong>MUST NOT</strong> include a <code>value_type</code>; the value is always plain text (Section 3.3).</li>
 </ul>
+<p>All <code>ui_labels</code> values are subject to the label constraints defined in Section 3.3.</p>
 <p>Additional UI element identifiers <strong>MAY</strong> be defined by Transaction Data Type Rulebooks or other PaSO specifications. The Wallet <strong>SHALL</strong> ignore any unrecognised UI element identifiers.</p>
 <p>As with claims, the applicable Transaction Data Type Rulebook defines the semantic meaning of each UI element identifier. A Wallet that implements a specific rulebook <strong>MAY</strong> replace <code>ui_labels</code> text with its own labels or visual representations, provided the meaning remains clear and unmistakable to the user. The <code>security_hint</code> is an exception: it <strong>SHALL</strong> always be displayed exactly as provided.</p>
+<h3 id="33-label-and-structural-constraints">3.3 Label and Structural Constraints</h3>
+<p>The following constraints apply to all human-readable label strings in a <code>transaction_data_types</code> entry: the <code>name</code> of each claim <code>display</code> entry (Section 3.1) and the <code>value</code> of each <code>ui_labels</code> entry (Section 3.2).</p>
+<p>Label lengths are counted in extended grapheme clusters as defined in [UAX29]. Labels <strong>MUST NOT</strong> exceed the following maximum lengths:</p>
+<table>
+<thead>
+<tr>
+<th>Label</th>
+<th>Maximum length (grapheme clusters)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claim <code>display</code> entry <code>name</code></td>
+<td>60</td>
+</tr>
+<tr>
+<td><code>transaction_title</code></td>
+<td>100</td>
+</tr>
+<tr>
+<td><code>affirmative_action_label</code></td>
+<td>40</td>
+</tr>
+<tr>
+<td><code>denial_action_label</code></td>
+<td>40</td>
+</tr>
+<tr>
+<td><code>security_hint</code></td>
+<td>160</td>
+</tr>
+</tbody>
+</table>
+<p>Specifications and Transaction Data Type Rulebooks that define additional UI element identifiers <strong>SHALL</strong> define a maximum length for their values; if none is defined, a maximum of 100 grapheme clusters applies.</p>
+<p>The maximum lengths are chosen so that a conforming Wallet can always display a conforming label in full; the Wallet's corresponding display obligations — including the prohibition of truncation and the handling of labels that cannot be displayed in full — are defined in [PaSO View] Section 2. Attestation Providers <strong>SHOULD</strong> keep labels, in every locale, substantially shorter than the maxima: the limits are an upper bound for interoperability, not a target.</p>
+<p>Labels <strong>MUST NOT</strong> contain C0 or C1 control characters; this prohibits line breaks within labels — line wrapping is a rendering decision of the Wallet. Labels and <code>transaction_data</code> <code>payload</code> string values <strong>MUST NOT</strong> contain the Unicode directional embedding or override characters U+202A through U+202E. The directional isolate characters U+2066 through U+2068 <strong>MAY</strong> be used, provided each isolate is properly terminated by U+2069.</p>
+<p>Labels are text. A <code>display</code> entry's <code>display_type</code> and a <code>ui_labels</code> entry's <code>value_type</code> <strong>MUST</strong> be either <code>mini_markdown</code> or <code>template:mini_markdown</code> as defined in [PaSO View], or absent (plain text). Value types that produce non-textual or standalone content — in particular <code>image</code>, <code>url</code>, and <code>label_only</code> — <strong>MUST NOT</strong> be used for labels. <code>security_hint</code> values <strong>MUST</strong> be plain text: a <code>security_hint</code> entry <strong>MUST NOT</strong> carry a <code>value_type</code>.</p>
+<p>The following structural constraints apply to each <code>transaction_data_types</code> entry:</p>
+<ul>
+<li>The <code>claims</code> array <strong>MUST NOT</strong> contain two claim metadata objects with the same <code>path</code> and <strong>MUST NOT</strong> contain more than 100 claim metadata objects.</li>
+<li>A <code>display</code> array, and each <code>ui_labels</code> entry array, <strong>MUST NOT</strong> contain two entries with the same <code>locale</code> and <strong>MUST NOT</strong> contain more than one entry without a <code>locale</code>.</li>
+</ul>
+<p>For labels whose <code>value_type</code> or <code>display_type</code> uses the <code>template:</code> prefix defined in [PaSO View], the limits apply to the fully interpolated result. The Wallet enforces these constraints at rendering time per [PaSO View] Section 2. Independent of rendering, the Wallet <strong>SHALL</strong> treat a transaction data type whose metadata violates these constraints as not supported by the credential.</p>
 <h2 id="4-signed-credential-metadata-jwt">4 Signed Credential Metadata JWT</h2>
 <p>When the Wallet requests <code>Accept: application/jwt</code>, the Attestation Provider <strong>SHALL</strong> return the credential metadata as a signed JWT with the following structure:</p>
 <ul>
@@ -1774,6 +1841,10 @@
 <td><a href="../../paso-core/">PaSO Core</a></td>
 </tr>
 <tr>
+<td>[PaSO View]</td>
+<td><a href="../../paso-view/">PaSO View</a></td>
+</tr>
+<tr>
 <td>[OID4VP]</td>
 <td><a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html">OpenID for Verifiable Presentations 1.0</a></td>
 </tr>
@@ -1796,6 +1867,10 @@
 <tr>
 <td>[SD-JWT-VC]</td>
 <td><a href="https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/">SD-JWT-based Verifiable Credentials</a></td>
+</tr>
+<tr>
+<td>[UAX29]</td>
+<td><a href="https://www.unicode.org/reports/tr29/">Unicode Standard Annex #29 — Unicode Text Segmentation</a></td>
 </tr>
 <tr>
 <td>[mdoc]</td>

@@ -797,10 +797,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-references" class="md-nav__link">
+  <a href="#5-security-considerations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5 References
+        5 Security Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5 Security Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-metadata-as-an-injection-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Metadata as an Injection Channel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-why-truncation-is-prohibited" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Why Truncation Is Prohibited
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-linkability-of-remote-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Linkability of Remote Resources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-confusable-text-and-wallet-chrome-spoofing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Confusable Text and Wallet Chrome Spoofing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6 References
       
     </span>
   </a>
@@ -1158,10 +1219,71 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-references" class="md-nav__link">
+  <a href="#5-security-considerations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5 References
+        5 Security Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5 Security Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-metadata-as-an-injection-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Metadata as an Injection Channel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-why-truncation-is-prohibited" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Why Truncation Is Prohibited
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-linkability-of-remote-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Linkability of Remote Resources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-confusable-text-and-wallet-chrome-spoofing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Confusable Text and Wallet Chrome Spoofing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6 References
       
     </span>
   </a>
@@ -1202,19 +1324,22 @@
 <p>The Wallet <strong>SHALL</strong> be able to render any transaction data type generically. All claims that have a <code>display</code> array <strong>SHALL</strong> be rendered as a sequence of labelled values. Claims without a <code>display</code> array <strong>MUST</strong> be internal values irrelevant to the user's consent; the Wallet <strong>MAY</strong> omit them from the consent screen or show them in a separate detailed view.</p>
 <p>The display order <strong>SHALL</strong> be the order in which the claims appear in the <code>claims</code> array, not the order of fields in the <code>payload</code> object.</p>
 <p>Each label <strong>SHALL</strong> be formatted according to the <code>display_type</code> of its locale-matched <code>display</code> entry if present, or as plain text otherwise. Each value <strong>SHALL</strong> be formatted according to its <code>value_type</code> as defined in Section 3.</p>
-<p>The Wallet <strong>SHALL</strong> ensure that all claims with a <code>display</code> array have been displayed to the user before enabling the confirmation action.</p>
+<p>The Wallet <strong>SHALL</strong> ensure that all claims with a <code>display</code> array, and all populated UI elements — including the <code>security_hint</code> where present — have been displayed to the user before enabling the confirmation action.</p>
 <p>Relying Parties and Attestation Providers <strong>MUST NOT</strong> use labels, payload values, or hints to obfuscate information relevant to the user's consent.</p>
 <p>The Wallet <strong>SHALL</strong> populate the UI elements defined in [PaSO Proof Metadata] Section 3.2 with the localised labels from the credential metadata. When a <code>security_hint</code> is present, the Wallet <strong>SHALL</strong> display it exactly as provided.</p>
+<p>All labels are subject to the length limits and character constraints defined in [PaSO Proof Metadata] Section 3.3. The Wallet <strong>SHALL</strong> verify these constraints for every label it renders; for labels produced with a <code>template:</code> prefix, the verification applies to the fully interpolated result. If any label violates a constraint, the <code>transaction_data</code> entry is not compatible and the Wallet <strong>SHALL</strong> exclude it. The Wallet <strong>MUST NOT</strong> truncate, elide, or otherwise shorten a label; it <strong>MAY</strong> wrap a label across multiple lines provided the text remains visible in full. The Wallet <strong>SHALL</strong> likewise exclude a <code>transaction_data</code> entry whose formatted claim values contain the directional formatting characters prohibited by [PaSO Proof Metadata] Section 3.3.</p>
+<p>The Wallet <strong>SHALL</strong> be capable of displaying any label that conforms to the maximum lengths of [PaSO Proof Metadata] Section 3.3 in full, in every display configuration the Wallet supports — including platform accessibility text scaling. For action labels this <strong>MAY</strong> include wrapping the label across multiple lines, enlarging the control, or reducing the font size within the limits of legibility; the Wallet <strong>MUST NOT</strong> rely on platform default controls that truncate or ellipsize overflowing text. If, despite this, a conforming label cannot be displayed in full in the active display configuration, the Wallet <strong>SHALL NOT</strong> proceed with a partially displayed label: the <code>transaction_data</code> entry <strong>SHALL</strong> be treated as not compatible, and if no compatible entry remains, the Wallet <strong>SHALL</strong> cease processing and inform the user of the reason.</p>
 <p>When claims contain <code>null</code> (array wildcard) in their <code>path</code>, the Wallet <strong>SHALL</strong> render them using the following recursive rule. For a given set of claims at a given nesting level:</p>
 <ol>
 <li>Render all claims whose remaining path contains no <code>null</code>, in declared order.</li>
 <li>Group the remaining claims by their shared path prefix up to and including the first <code>null</code>. For each such group, in the order of its first declared claim, iterate over the array elements at the <code>null</code> position: for each element, apply this rule recursively to the group's claims with the <code>null</code> resolved to that element's index.</li>
 </ol>
 <p>The Wallet <strong>SHOULD</strong> display the complete transaction data on a single screen. Where this is not feasible, the Wallet <strong>MAY</strong> use scrolling, collapsible sections, or detailed views, provided the user can review the content in its entirety and the Wallet ensures the content has been displayed in full before enabling the confirmation action.</p>
+<p>The Wallet <strong>SHALL</strong> enforce an upper bound on the total number of rendered items — claim instances after array wildcard expansion plus UI elements. The bound is Wallet-defined but <strong>SHALL</strong> be at least 200. A <code>transaction_data</code> entry that would exceed the Wallet's bound is not compatible and the Wallet <strong>SHALL</strong> exclude it.</p>
 <h2 id="3-value-types">3 Value Types</h2>
 <p>Each claim metadata object that has a <code>display</code> array <strong>MAY</strong> include a <code>value_type</code> parameter that indicates how the Wallet <strong>SHALL</strong> format the claim value for display. If <code>value_type</code> is omitted, the value is treated as plain text and <strong>MUST</strong> be a string. The <code>value_type</code> parameter <strong>MUST NOT</strong> be used on claims without a <code>display</code> array.</p>
 <p>The Wallet <strong>SHALL</strong> support all value types defined below. A <code>transaction_data</code> entry whose displayable claims declare a <code>value_type</code> not supported by the Wallet, or whose <code>payload</code> values do not conform to the declared <code>value_type</code>, is not compatible and the Wallet <strong>SHALL</strong> exclude it.</p>
-<p>Each object in a claim's <code>display</code> array <strong>MAY</strong> include a <code>display_type</code> parameter that takes a value from the <code>value_type</code> set defined below. The <code>display_type</code> governs how the Wallet <strong>SHALL</strong> format the <code>name</code> text of that <code>display</code> entry, applying the same rendering rules as the corresponding <code>value_type</code> but to the label instead of the claim value. If <code>display_type</code> is omitted, the label is treated as plain text. A <code>display</code> entry whose <code>display_type</code> is not supported by the Wallet <strong>SHALL</strong> be excluded from the locale selection matching procedure defined in Section 4.</p>
+<p>Each object in a claim's <code>display</code> array <strong>MAY</strong> include a <code>display_type</code> parameter. Labels are subject to the label constraints of [PaSO Proof Metadata] Section 3.3: <code>display_type</code> <strong>MUST</strong> be either <code>mini_markdown</code> or <code>template:mini_markdown</code>; other value types — in particular <code>image</code>, <code>url</code>, and <code>label_only</code> — <strong>MUST NOT</strong> be used for labels. The <code>display_type</code> governs how the Wallet <strong>SHALL</strong> format the <code>name</code> text of that <code>display</code> entry, applying the same rendering rules as the corresponding <code>value_type</code> but to the label instead of the claim value. If <code>display_type</code> is omitted, the label is treated as plain text. A <code>display</code> entry whose <code>display_type</code> carries any other value, or is not supported by the Wallet, <strong>SHALL</strong> be excluded from the locale selection matching procedure defined in Section 4.</p>
 <table>
 <thead>
 <tr><th><code>value_type</code></th><th>Description</th></tr>
@@ -1242,7 +1367,11 @@ The value is a string containing a resolvable URL or a Data URL per [RFC2397] po
 
 The Wallet **SHALL** support at least PNG, JPEG, and SVG base64 formats for Data URLs. When resolving a URL, the Wallet **SHALL** send an `Accept` header listing the image media types it supports.
 
-If the URL is not a Data URL, the `payload` **MUST** contain a sibling claim at the same path suffixed with `#integrity` containing a [W3C.SRI] hash of the image content. The Wallet **SHALL** resolve the URL and verify the content against the `#integrity` value. If the resolved image is an SVG, URL integrity verification within the SVG **SHALL** follow [PaSO Proof SD-JWT-VC and SVG] Section 3. If verification fails, the `transaction_data` entry is not compatible.
+If the URL is not a Data URL, it **MUST** use the `https` scheme and the `payload` **MUST** contain a sibling claim at the same path suffixed with `#integrity` containing a [W3C.SRI] hash of the image content. The Wallet **SHALL** resolve the URL and verify the content against the `#integrity` value. When resolving, the Wallet **SHALL** enforce a fetch timeout, **SHALL** follow at most 3 redirects, and **SHALL NOT** transmit cookies, credentials, or Wallet-identifying headers. If the resolved image is an SVG, URL integrity verification within the SVG **SHALL** follow [PaSO Proof SD-JWT-VC and SVG] Section 3. If verification fails, the `transaction_data` entry is not compatible.
+
+An image — the Data URL payload or the resolved content — **MUST NOT** exceed 512 KiB in encoded size, and its decoded dimensions **MUST NOT** exceed 2048 pixels in either direction. A non-conforming image makes the `transaction_data` entry not compatible. The Wallet **SHALL** render SVG images statically: script content **SHALL NOT** be executed, external resources **SHALL NOT** be loaded except as verified per [PaSO Proof SD-JWT-VC and SVG] Section 3, and animation and interactivity **SHALL** be ignored.
+
+Because images are informational only, they **MUST NOT** convey information required for the user's consent. The Wallet **SHALL** render images contained within the consent layout; an image **SHALL NOT** overlay or displace other transaction data or Wallet controls. See Section 5 for the linkability considerations of resolving remote images.
 
 </td>
 </tr>
@@ -1298,7 +1427,11 @@ All other [CommonMark] constructs and raw HTML **MUST** be rendered as their lit
 
 The value is a string containing a navigatable URL. URLs serve an informational or illustrative purpose; the user is not required to view them to give informed consent.
 
-The Wallet **SHALL** display it as a clearly identifiable link. The Wallet **SHALL** display the full URL to the user; it **MUST NOT** replace or obscure the URL with alternative text.
+The URL **MUST** use the `https` scheme; otherwise the `transaction_data` entry is not compatible.
+
+The Wallet **SHALL** display it as a clearly identifiable link. The Wallet **SHALL** display the full URL to the user; it **MUST NOT** replace or obscure the URL with alternative text. The Wallet **SHOULD** mitigate homograph confusion, e.g. by displaying an internationalised domain name in its punycode form when it contains confusable characters.
+
+The Wallet **SHOULD NOT** make the URL navigable directly from the consent screen. If navigation is offered, it **SHALL** require an explicit user action clearly distinct from the consent actions, and the Wallet **SHOULD** indicate that the user is leaving the Wallet.
 
 </td>
 </tr>
@@ -1317,9 +1450,11 @@ The Wallet **SHALL** resolve each placeholder by:
 
 If all locale entries for a given locale are discarded, the Wallet **SHALL** fall back to the next locale in its priority list per Section 4; if no entry survives for any locale, the `transaction_data` entry is not compatible.
 
-After interpolation, the result **SHALL** be formatted according to the inner `value_type` specified after `template:` (e.g., `template:mini_markdown` applies `mini_markdown` formatting). If a referenced claim's formatting and the inner `value_type` conflict, the inner `value_type` takes precedence.
+After interpolation, the result **SHALL** be formatted according to the inner `value_type` specified after `template:` (e.g., `template:mini_markdown` applies `mini_markdown` formatting). If a referenced claim's formatting and the inner `value_type` conflict, the inner `value_type` takes precedence. When the template is used as a `display_type`, the label constraints of [PaSO Proof Metadata] Section 3.3 apply to the fully interpolated result per Section 2.
 
 Placeholders **MUST** only reference claims whose `path` contains the same number or fewer `null` entries than the referencing claim's `path`; each `null` in the referenced claim's `path` is resolved to the same array index as the corresponding `null` in the referencing claim's `path`.
+
+Interpolation is single-pass: placeholder-like sequences contained in resolved values **SHALL** be treated as literal text and **SHALL NOT** be interpolated. Placeholders **MUST NOT** reference claims whose `value_type` is `image` or `label_only`, or itself carries the `template:` prefix; a template containing such a reference makes the `transaction_data` entry not compatible. If a referenced claim has no `value_type`, the resolved value **MUST** be a string and is inserted as plain text; if it is not a string, the `transaction_data` entry is not compatible.
 
 </td>
 </tr>
@@ -1343,7 +1478,17 @@ Placeholders **MUST** only reference claims whose `path` contains the same numbe
 <p>If no locale produces a complete match, the Wallet <strong>SHALL</strong> exclude the credential from further processing.</p>
 <p>The selected locale <strong>SHALL</strong> be reported in the <code>display_locale</code> holder binding proof claim per [PaSO Core].</p>
 <p>If the transaction data cannot be presented in the Wallet's current operating language, the Wallet <strong>MAY</strong> switch its entire user interface to another language the user understands for the duration of the PaSO presentation flow.</p>
-<h2 id="5-references">5 References</h2>
+<h2 id="5-security-considerations">5 Security Considerations</h2>
+<p><em><strong>Note</strong>: This section is <strong>informative</strong>.</em></p>
+<h3 id="51-metadata-as-an-injection-channel">5.1 Metadata as an Injection Channel</h3>
+<p>Everything the Wallet renders during consent originates outside the Wallet: labels and value types from the Attestation Provider's signed metadata, and — through value formatting and <code>template:</code> interpolation — values from the Relying Party's <code>payload</code>. The constraints in this document and in [PaSO Proof Metadata] Section 3.3 (length limits, character prohibitions, text-only labels, single-pass interpolation, resource limits, rendering caps) exist to keep this channel from being usable to obfuscate or forge consent content. Wallets should treat every metadata- or payload-supplied string strictly as display data — never as markup beyond the constructs explicitly permitted by the declared value type, and never as code or instructions.</p>
+<h3 id="52-why-truncation-is-prohibited">5.2 Why Truncation Is Prohibited</h3>
+<p>Section 2 forbids truncating, eliding, or shortening labels. Attacker-influenced text truncates to attacker-chosen prefixes: a label crafted so that platform ellipsis cuts it after "Confirm payment of €1.00" hides the continuation. Divergent, implementation-defined truncation behaviour across Wallets would make such attacks reliable. Exclusion of the entire entry is therefore the only permitted failure mode for oversized content.</p>
+<h3 id="53-linkability-of-remote-resources">5.3 Linkability of Remote Resources</h3>
+<p>Resolving a remote image URL at consent time reveals the transaction timing and the Wallet's network address to the host serving the image. Attestation Providers and Relying Parties should prefer Data URLs for images. Wallets resolving remote images should be aware of this correlation channel; the considerations of [PaSO Proof Metadata] Section 8 on unlinkability apply in spirit, even though the fetch is triggered by the transaction itself.</p>
+<h3 id="54-confusable-text-and-wallet-chrome-spoofing">5.4 Confusable Text and Wallet Chrome Spoofing</h3>
+<p>The character constraints prohibit directional embedding and override characters, but cannot prevent homoglyphs or text that mimics Wallet UI (e.g., a label reading "✓ Verified by your Wallet"). Wallets should render metadata-supplied content so that it is visually attributable as transaction content and cannot be mistaken for Wallet-generated UI or system dialogs — for example, through clear containment within the consent layout and consistent, Wallet-controlled styling of its own controls.</p>
+<h2 id="6-references">6 References</h2>
 <table>
 <thead>
 <tr>

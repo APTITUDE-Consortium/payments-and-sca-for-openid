@@ -1103,6 +1103,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#a5-ad-hoc-metadata-jwt-payload-for-an-mdoc-credential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.5 Ad-hoc Metadata JWT Payload for an mdoc Credential
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1553,6 +1564,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#a5-ad-hoc-metadata-jwt-payload-for-an-mdoc-credential" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.5 Ad-hoc Metadata JWT Payload for an mdoc Credential
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1594,9 +1616,9 @@
 <li><strong><code>credential_metadata_uri</code></strong>: <strong>OPTIONAL</strong> (string). A new parameter for entries in <code>credential_configurations_supported</code> as defined in [OID4VCI] Section 12.2.4. A URL that serves the <code>credential_metadata</code> object as defined in [OID4VCI] Section 12.2.4, extended with <code>transaction_data_types</code> per Section 3.</li>
 </ul>
 <p>The Attestation Provider <strong>SHALL</strong> include a <code>credential_metadata_uri</code> in each PaSO Credential configuration within the Credential Issuer Metadata and <strong>SHALL</strong> serve the credential metadata at that URI.</p>
-<p>When fetching from a <code>credential_metadata_uri</code>, the Wallet <strong>SHALL</strong> include an <code>Accept</code> header and an <code>Accept-Language</code> header per [OID4VCI] Section 12.2.2. If the <code>Accept</code> header is absent or does not express a preference, the Attestation Provider <strong>SHALL</strong> default to <code>application/json</code>. The Attestation Provider <strong>MAY</strong> refuse requests without an <code>Accept-Language</code> header.</p>
+<p>When fetching from a <code>credential_metadata_uri</code>, the Wallet <strong>SHALL</strong> include an <code>Accept</code> header and an <code>Accept-Language</code> header per [OID4VCI] Section 12.2.2. If the <code>Accept</code> header is absent or does not express a preference, the Attestation Provider <strong>SHALL</strong> default to <code>application/json</code>. The Attestation Provider <strong>MAY</strong> refuse requests without an <code>Accept-Language</code> header; if it does, it <strong>SHALL</strong> respond with HTTP status code 400 (Bad Request).</p>
 <ul>
-<li><code>Accept: application/json</code> — The Attestation Provider <strong>SHALL</strong> return the credential metadata as a plain JSON object.</li>
+<li><code>Accept: application/json</code> — The Attestation Provider <strong>SHALL</strong> return the credential metadata as a plain JSON object, i.e. the <code>credential_metadata</code> object extended with <code>transaction_data_types</code> per Section 3, without the JWT payload structure defined in Section 4. Note that per Section 3, the Wallet cannot rely on this unsigned form for PaSO Credentials.</li>
 <li><code>Accept: application/jwt</code> — The Attestation Provider <strong>SHALL</strong> return the credential metadata as a signed JWT per Section 4.</li>
 </ul>
 <p>The Attestation Provider <strong>MAY</strong> serve one or more locales per signed JWT. The Attestation Provider <strong>SHALL</strong> include at least the first supported locale from the <code>Accept-Language</code> header and <strong>MAY</strong> include additional locales.</p>
@@ -1639,22 +1661,23 @@
 <p>When the Wallet requests <code>Accept: application/jwt</code>, the Attestation Provider <strong>SHALL</strong> return the credential metadata as a signed JWT with the following structure:</p>
 <ul>
 <li>The JOSE header <strong>SHALL</strong> include:</li>
-<li><code>x5c</code>: the Attestation Provider's certificate chain.</li>
 <li><code>typ</code>: set to <code>credential-metadata+jwt</code>.</li>
+<li><code>x5c</code>: <strong>REQUIRED</strong> when the credential's issuer keys are published as an x5c certificate chain. The Attestation Provider's certificate chain.</li>
+<li><code>kid</code>: <strong>REQUIRED</strong> when the credential's issuer keys are instead published in a key set resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata). Identifies the signing key within that key set. In this case, <code>x5c</code> <strong>SHALL NOT</strong> be used.</li>
 <li>The JWT payload <strong>SHALL</strong> include:</li>
 <li><code>iss</code>: <strong>REQUIRED</strong>. The Credential Issuer Identifier.</li>
-<li><code>sub</code>: <strong>REQUIRED</strong>. The credential type identifier as defined by the credential format (e.g., <code>vct</code> for [SD-JWT-VC], <code>doctype</code> for [mdoc]).</li>
+<li><code>sub</code>: <strong>REQUIRED</strong>. The credential type identifier as defined by the credential format: the <code>vct</code> claim value for [SD-JWT-VC], or the <code>docType</code> value of the mobile security object (MSO) for [mdoc].</li>
 <li><code>format</code>: <strong>REQUIRED</strong>. The credential format identifier as defined in [OID4VCI] (e.g., <code>dc+sd-jwt</code>, <code>mso_mdoc</code>).</li>
 <li><code>iat</code>: <strong>REQUIRED</strong>. Issuance time.</li>
 <li><code>exp</code>: <strong>REQUIRED</strong>. Expiration time. The Attestation Provider <strong>SHOULD</strong> set a validity period appropriate for the rate of metadata change.</li>
 <li><code>credential_metadata_uri</code>: <strong>REQUIRED</strong>. The URL from which this JWT was served and from which the Wallet <strong>SHALL</strong> re-fetch it upon renewal.</li>
 <li><code>credential_metadata</code>: <strong>REQUIRED</strong>. The <code>credential_metadata</code> object as defined in [OID4VCI] Section 12.2.4, extended with <code>transaction_data_types</code> per Section 3.</li>
-<li>The JWT <strong>SHALL</strong> be signed using an algorithm appropriate for the key in the <code>x5c</code> leaf certificate.</li>
+<li>The JWT <strong>SHALL</strong> be signed using an algorithm appropriate for the signing key: the key in the <code>x5c</code> leaf certificate, or the key set key identified by <code>kid</code>.</li>
 </ul>
 <p>The Attestation Provider <strong>SHALL</strong> rotate signed credential metadata JWTs before their <code>exp</code> time and <strong>SHOULD</strong> set <code>exp</code> values that balance freshness against unnecessary network traffic.</p>
 <p>The Wallet <strong>MAY</strong> refuse issuance if the returned metadata does not contain any locale compatible with its locale priority list.</p>
 <h2 id="5-ad-hoc-transaction-data-metadata">5 Ad-hoc Transaction Data Metadata</h2>
-<p>This section defines an alternative mechanism for supplying transaction data type metadata. Instead of relying solely on the corresponding entry in the signed credential metadata JWT, the metadata for a transaction data type <strong>MAY</strong> be supplied ad hoc within the <code>transaction_data</code> entry itself, as a JWT signed by the Attestation Provider of the targeted PaSO Credential.</p>
+<p>This section defines an alternative mechanism for supplying transaction data type metadata. Instead of relying solely on the corresponding entry in the signed credential metadata JWT, the metadata for a transaction data type <strong>MAY</strong> be supplied ad hoc within the <code>transaction_data</code> entry itself, as a JWT signed by the Attestation Provider of the targeted PaSO Credential. This mechanism applies to PaSO Credentials of every credential format supported by [PaSO Core], including [SD-JWT-VC] and [mdoc]; only the values of the <code>sub</code> and <code>format</code> claims (Section 5.2) are format-specific.</p>
 <h3 id="51-the-metadata-parameter">5.1 The <code>metadata</code> Parameter</h3>
 <p>PaSO extends the [OID4VP] <code>transaction_data</code> entry with the following parameter, in addition to the <code>payload</code> parameter defined in [PaSO Core] Section 7.1:</p>
 <ul>
@@ -1664,24 +1687,28 @@
 <p>The ad-hoc metadata JWT <strong>SHALL</strong> have the following structure:</p>
 <ul>
 <li>The JOSE header <strong>SHALL</strong> include:</li>
-<li><code>x5c</code>: the Attestation Provider's certificate chain.</li>
 <li><code>typ</code>: set to <code>adhoc-transaction-metadata+jwt</code>.</li>
+<li><code>x5c</code>: <strong>REQUIRED</strong> when the credential's issuer keys are published as an x5c certificate chain. The Attestation Provider's certificate chain.</li>
+<li><code>kid</code>: <strong>REQUIRED</strong> when the credential's issuer keys are instead published in a key set resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata). Identifies the signing key within that key set. In this case, <code>x5c</code> <strong>SHALL NOT</strong> be used.</li>
 <li>The JWT payload <strong>SHALL</strong> include:</li>
 <li><code>iss</code>: <strong>REQUIRED</strong>. The Credential Issuer Identifier.</li>
-<li><code>sub</code>: <strong>REQUIRED</strong>. The credential type identifier as defined by the credential format (e.g., <code>vct</code> for [SD-JWT-VC], <code>doctype</code> for [mdoc]).</li>
+<li><code>sub</code>: <strong>REQUIRED</strong>. The credential type identifier as defined by the credential format: the <code>vct</code> claim value for [SD-JWT-VC], or the <code>docType</code> value of the mobile security object (MSO) for [mdoc].</li>
 <li><code>format</code>: <strong>REQUIRED</strong>. The credential format identifier as defined in [OID4VCI] (e.g., <code>dc+sd-jwt</code>, <code>mso_mdoc</code>).</li>
 <li><code>iat</code>: <strong>REQUIRED</strong>. Issuance time.</li>
 <li><code>exp</code>: <strong>REQUIRED</strong>. Expiration time. The Attestation Provider <strong>SHOULD</strong> choose a validity period that bounds how long Relying Parties can cache and reuse the JWT.</li>
 <li><code>transaction_data_type</code>: <strong>REQUIRED</strong>. The transaction data type identifier the metadata applies to, following the structure defined in [PaSO Core] Section 5.2. It <strong>SHALL</strong> equal the <code>type</code> of the enclosing <code>transaction_data</code> entry.</li>
 <li><code>metadata</code>: <strong>REQUIRED</strong>. An object with the same structure as a single <code>transaction_data_types</code> entry value as defined in Section 3, i.e. containing <code>claims</code> per Section 3.1, <code>ui_labels</code> per Section 3.2 where applicable, and any additional parameters. The requirements of Sections 3.1 and 3.2 apply unchanged.</li>
-<li>The JWT <strong>SHALL</strong> be signed using an algorithm appropriate for the key in the <code>x5c</code> leaf certificate.</li>
+<li>The JWT <strong>SHALL</strong> be signed using an algorithm appropriate for the signing key: the key in the <code>x5c</code> leaf certificate, or the key set key identified by <code>kid</code>.</li>
 </ul>
+<p>The credential type identifier bound by <code>sub</code> is unrelated to the device-signed namespace <code>urn:paso:sca:1</code> defined in [PaSO Core] Section 6.3: that namespace identifies where the SCA response claims are placed within an mdoc presentation and is not a credential type identifier. For an [mdoc] PaSO Credential, <code>sub</code> carries the credential's <code>docType</code> and <code>format</code> is <code>mso_mdoc</code>.</p>
 <h3 id="53-verification">5.3 Verification</h3>
 <p>When a PaSO-targeted <code>transaction_data</code> entry contains a <code>metadata</code> parameter, the Wallet <strong>SHALL</strong> verify the ad-hoc metadata JWT as follows before relying on it:</p>
 <ol>
 <li>Verify that the <code>typ</code> JOSE header parameter is <code>adhoc-transaction-metadata+jwt</code>.</li>
 <li>Verify the JWT signature.</li>
-<li>Verify the <code>x5c</code> certificate chain in the JOSE header against the Wallet's trust store.</li>
+<li>Verify the signing key trust:</li>
+<li>When the credential's issuer keys are x5c-based, verify the <code>x5c</code> certificate chain in the JOSE header against the Wallet's trust store.</li>
+<li>Otherwise, verify that the JWT is signed by a key from the credential issuer's published key set, identified by the <code>kid</code> JOSE header parameter and resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata).</li>
 <li>Verify that the <code>iss</code> claim matches the Credential Issuer Identifier of the targeted PaSO Credential.</li>
 <li>Verify that the <code>exp</code> claim has not passed.</li>
 <li>Verify the credential binding as defined in Section 7 step 6.</li>
@@ -1698,13 +1725,14 @@
 <p>The Wallet <strong>SHALL NOT</strong> persist ad-hoc metadata JWTs beyond the processing of the transaction they accompany. Sections 6 and 8 do not apply to ad-hoc metadata JWTs. Because ad-hoc metadata is delivered within the presentation request, its use involves no additional network retrieval and is not subject to the linkability considerations of Section 8.</p>
 <h3 id="55-security-considerations">5.5 Security Considerations</h3>
 <p><em><strong>Note</strong>: This section is <strong>informative</strong>.</em></p>
-<p>The ad-hoc metadata JWT is delivered by the Relying Party, an untrusted channel; the verification in Section 5.3 is what establishes that the metadata originates from the credential's issuer. The guarantee rests on the credential binding (step 6), not on the signature alone:</p>
+<p>The ad-hoc metadata JWT is delivered by the Relying Party, an untrusted channel; the verification in Section 5.3 is what establishes that the metadata originates from the credential's issuer. The guarantee rests on the credential binding (step 6), not on the signature alone. When the credential's issuer keys are x5c-based:</p>
 <ul>
 <li>The signature (step 2) only proves possession of the private key matching the leaf certificate in the JWT's <code>x5c</code> header; the trust store check (step 3) only narrows the signer to an entity vetted by a trusted CA.</li>
 <li>The credential binding pins the signer to this credential's issuer: the JWT's certificate chain must terminate in the same root CA as the credential's own chain, and the Subject of the JWT's leaf certificate must match the Subject of the credential's leaf certificate. Since the credential's chain was verified at issuance, it serves as the anchor for the issuer's identity.</li>
 </ul>
 <p>To forge ad-hoc metadata, an attacker would need a certificate issued under the same trusted root CA with the same Subject as the issuer's credential-signing certificate. A trusted root CA issuing a same-Subject certificate to a different entity constitutes a CA compromise, at which point the credential itself would be equally forgeable; the ad-hoc channel therefore adds no trust assumptions beyond those already made for the signed credential metadata JWT (Section 7 step 6).</p>
-<p>The binding deliberately does not require the same key as the credential: the Attestation Provider may use a dedicated metadata-signing key, provided its certificate is issued under the same root CA with the same Subject. The <code>iss</code> claim check (step 4) is a consistency check on top of the certificate binding, not a substitute for it.</p>
+<p>When the credential's issuer keys are instead published in a key set, the binding rests on the key-set branch of Section 7 step 6: the JWT must verify under a key from the same issuer key set that verifies the credential itself. Forging ad-hoc metadata then requires inserting a key into the issuer's published key set, at which point the credential itself would be equally forgeable; this path likewise adds no trust assumptions beyond those already made for the credential.</p>
+<p>The binding deliberately does not require the same key as the credential: the Attestation Provider may use a dedicated metadata-signing key, provided its certificate is issued under the same root CA with the same Subject (x5c case) or the key is published in the same issuer key set (key set case). The <code>iss</code> claim check (step 4) is a consistency check on top of the key binding, not a substitute for it.</p>
 <h2 id="6-storage-and-handling">6 Storage and Handling</h2>
 <p>The Wallet <strong>SHALL</strong> persist signed credential metadata JWTs in their signed form and <strong>SHALL NOT</strong> persist the decoded credential metadata. The Wallet <strong>MAY</strong> store multiple signed metadata JWTs per credential to cover different locales. Each time the Wallet loads a metadata JWT from storage, it <strong>SHALL</strong> perform the full verification procedure defined in Section 7.</p>
 <p>If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet <strong>SHALL</strong> discard it and re-fetch and verify it per Section 7. The Wallet <strong>SHALL NOT</strong> proceed with any PaSO operation for that credential until a valid metadata JWT covering the required locale is obtained.</p>
@@ -1713,16 +1741,23 @@
 <ol>
 <li>Verify that the <code>typ</code> JOSE header parameter is <code>credential-metadata+jwt</code>.</li>
 <li>Verify the JWT signature.</li>
-<li>Verify the <code>x5c</code> certificate chain in the JOSE header against the Wallet's trust store.</li>
+<li>Verify the signing key trust:</li>
+<li>When the credential's issuer keys are x5c-based, verify the <code>x5c</code> certificate chain in the JOSE header against the Wallet's trust store.</li>
+<li>Otherwise, verify that the JWT is signed by a key from the credential issuer's published key set, identified by the <code>kid</code> JOSE header parameter and resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata).</li>
 <li>Verify that the <code>iss</code> claim matches the Credential Issuer Identifier.</li>
 <li>Verify that the <code>exp</code> claim has not passed.</li>
 <li>Verify the credential binding:</li>
-<li>The <code>sub</code> claim <strong>SHALL</strong> match the credential's type identifier as defined by the credential format (e.g., <code>vct</code> for [SD-JWT-VC], <code>doctype</code> for [mdoc]).</li>
-<li>The root CA in the <code>x5c</code> chain <strong>SHALL</strong> be the same as the root CA in the credential's <code>x5c</code> chain.</li>
-<li>The Subject of the leaf certificate in the <code>x5c</code> chain <strong>SHALL</strong> match the Subject of the leaf certificate in the credential's <code>x5c</code> chain.</li>
+<li>The <code>sub</code> claim <strong>SHALL</strong> match the credential's type identifier as defined by the credential format: the <code>vct</code> claim of the credential for [SD-JWT-VC], or the <code>docType</code> of the mobile security object (MSO) for [mdoc]. The device-signed namespace <code>urn:paso:sca:1</code> ([PaSO Core] Section 6.3) is not a credential type identifier and <strong>SHALL NOT</strong> be accepted as a <code>sub</code> value.</li>
+<li>When the credential carries an <code>x5c</code> certificate chain:<ul>
+<li>The root CA in the metadata JWT's <code>x5c</code> chain <strong>SHALL</strong> be the same as the root CA in the credential's <code>x5c</code> chain.</li>
+<li>The Subject of the leaf certificate in the metadata JWT's <code>x5c</code> chain <strong>SHALL</strong> match the Subject of the leaf certificate in the credential's <code>x5c</code> chain.</li>
+</ul>
+</li>
+<li>When the credential does not carry an <code>x5c</code> certificate chain, the metadata JWT <strong>SHALL</strong> have been verified per step 3 using a key from the same issuer key set that verifies the credential itself, and the <code>iss</code> claim <strong>SHALL</strong> equal the credential's issuer identifier.</li>
 </ol>
 <p>If any step fails, the metadata JWT <strong>SHALL</strong> be considered invalid and the Wallet <strong>SHALL</strong> exclude the credential from further processing. During issuance, the Wallet <strong>SHALL</strong> reject the issuance and inform the user.</p>
 <h2 id="8-renewal-and-unlinkability">8 Renewal and Unlinkability</h2>
+<p>Upon fetching a signed credential metadata JWT, the Wallet <strong>SHALL</strong> verify that the <code>credential_metadata_uri</code> claim matches the URI from which the JWT was retrieved, after following any HTTP redirects. If they do not match, the JWT <strong>SHALL</strong> be considered invalid per Section 6. The Wallet <strong>SHALL</strong> use the <code>credential_metadata_uri</code> claim of the most recently verified JWT for subsequent renewals, allowing the Attestation Provider to relocate the endpoint via HTTP redirects.</p>
 <p>The Wallet <strong>SHALL</strong> renew each signed credential metadata JWT before its <code>exp</code> time by re-fetching from the <code>credential_metadata_uri</code>, and <strong>MAY</strong> re-fetch at any other time. The Wallet <strong>MAY</strong> fetch additional locales by issuing separate requests with different <code>Accept-Language</code> headers during renewal.</p>
 <p>Credential metadata retrieval <strong>SHALL NOT</strong> be linkable to credential usage. The Wallet <strong>SHALL NOT</strong> fetch credential metadata immediately before or after a presentation in a pattern that would allow a network observer to correlate the two activities.</p>
 <h2 id="9-references">9 References</h2>
@@ -1912,6 +1947,30 @@
 </span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-4-43"><a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="a5-ad-hoc-metadata-jwt-payload-for-an-mdoc-credential">A.5 Ad-hoc Metadata JWT Payload for an mdoc Credential</h3>
+<p>The same ad-hoc mechanism targeting a PaSO Credential in <code>mso_mdoc</code> format. Only <code>sub</code> and <code>format</code> differ from A.4: <code>sub</code> carries the credential's <code>docType</code> per Section 5.2 — not a <code>vct</code>, and not the device-signed namespace <code>urn:paso:sca:1</code> from [PaSO Core] Section 6.3. The <code>transaction_data_type</code> is unchanged, since transaction data type identifiers are format-independent.</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">"iss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://issuer.bank.example"</span><span class="p">,</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">"sub"</span><span class="p">:</span><span class="w"> </span><span class="s2">"com.example.bank.paymentcard.1"</span><span class="p">,</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mso_mdoc"</span><span class="p">,</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1710000000</span><span class="p">,</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1710604800</span><span class="p">,</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="nt">"transaction_data_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:sca:global:payment:1"</span><span class="p">,</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="nt">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="nt">"claims"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">      </span><span class="p">{</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"amount"</span><span class="p">],</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">        </span><span class="nt">"mandatory"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">        </span><span class="nt">"value_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"iso_currency_amount"</span><span class="p">,</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">        </span><span class="nt">"display"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">          </span><span class="p">{</span><span class="w"> </span><span class="nt">"locale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Amount"</span><span class="w"> </span><span class="p">},</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">          </span><span class="p">{</span><span class="w"> </span><span class="nt">"locale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Betrag"</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">        </span><span class="p">]</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">    </span><span class="p">]</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="p">}</span>
 </span></code></pre></div>
 
 

@@ -1980,7 +1980,7 @@
 <ul>
 <li><code>&lt;domain&gt;</code> is an organisation identifier in reverse domain notation (e.g., <code>com.example</code>), or <code>global</code> for transaction data types defined by PaSO itself,</li>
 <li><code>&lt;suffix&gt;</code> is one or more colon-separated segments identifying the type (e.g., <code>payment</code>),</li>
-<li><code>&lt;version&gt;</code> is a version number (e.g., <code>1</code>).</li>
+<li><code>&lt;version&gt;</code> is a version number (e.g., <code>1</code>). It <strong>SHALL</strong> be a positive integer without leading zeros and <strong>SHALL</strong> be the final segment of the identifier. New versions of a transaction data type <strong>SHALL</strong> use monotonically increasing integers.</li>
 </ul>
 <p>The Wallet identifies PaSO transaction data entries by checking whether the <code>type</code> field starts with the prefix <code>urn:paso:sca:</code>.</p>
 <h3 id="53-rulebook-requirements">5.3 Rulebook Requirements</h3>

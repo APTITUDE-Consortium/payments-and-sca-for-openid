@@ -955,10 +955,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#24-response-mode" class="md-nav__link">
+  <a href="#24-device-basics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.4 Response Mode
+        2.4 Device Basics
       
     </span>
   </a>
@@ -966,10 +966,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#25-authentication-methods" class="md-nav__link">
+  <a href="#25-app-vendor-id" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.5 Authentication Methods
+        2.5 App Vendor ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-response-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 Response Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-authentication-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 Authentication Methods
       
     </span>
   </a>
@@ -1233,10 +1255,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#24-response-mode" class="md-nav__link">
+  <a href="#24-device-basics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.4 Response Mode
+        2.4 Device Basics
       
     </span>
   </a>
@@ -1244,10 +1266,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#25-authentication-methods" class="md-nav__link">
+  <a href="#25-app-vendor-id" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.5 Authentication Methods
+        2.5 App Vendor ID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-response-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 Response Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-authentication-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 Authentication Methods
       
     </span>
   </a>
@@ -1303,10 +1347,11 @@
 <p>The key words "<strong>MUST</strong>", "<strong>MUST NOT</strong>", "<strong>REQUIRED</strong>", "<strong>SHALL</strong>", "<strong>SHALL NOT</strong>", "<strong>SHOULD</strong>", "<strong>SHOULD NOT</strong>", "<strong>RECOMMENDED</strong>", "<strong>MAY</strong>", and "<strong>OPTIONAL</strong>" in this document are to be interpreted as described in [RFC2119] and [RFC8174] when, and only when, they are written in all capital letters.</p>
 <h2 id="2-signal-types">2 Signal Types</h2>
 <p>Each entry below defines a signal type URN and the structure of its <code>value</code>. The <code>value</code> is present if and only if <code>status</code> is <code>ok</code>, per [PaSO Risk Signals] Section 2.2.</p>
-<p>Signal types divide into two kinds, which differ in how <code>status</code> and <code>collected_at</code> behave:</p>
+<p>Signal types divide into three kinds, which differ in how <code>status</code> and <code>collected_at</code> behave:</p>
 <ul>
 <li><strong>Measured signals</strong> (Sections 2.1 to 2.3) report a sensor or platform observation. Measurement can fail or be refused, so <code>status</code> <strong>MAY</strong> be <code>unavailable</code> or <code>denied</code>, and <code>collected_at</code> is the time of measurement.</li>
-<li><strong>Transaction-fact signals</strong> (Sections 2.4 and 2.5) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type <strong>SHALL</strong> report <code>status</code> <code>ok</code>.</li>
+<li><strong>Device-fact signals</strong> (Sections 2.4 and 2.5) report a property of the device platform. No permission is involved, so <code>status</code> <strong>SHALL NOT</strong> be <code>denied</code>. A Wallet that implements the type <strong>SHALL</strong> report <code>status</code> <code>ok</code>, except that it <strong>MAY</strong> report <code>unavailable</code> where the platform does not expose the values. <code>collected_at</code> is the time of reading.</li>
+<li><strong>Transaction-fact signals</strong> (Sections 2.6 and 2.7) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type <strong>SHALL</strong> report <code>status</code> <code>ok</code>.</li>
 </ul>
 <h3 id="21-geolocation">2.1 Geolocation</h3>
 <p>Type: <code>urn:paso:risk:global:geolocation:1</code></p>
@@ -1410,12 +1455,73 @@
 </tr>
 </tbody>
 </table>
-<h3 id="24-response-mode">2.4 Response Mode</h3>
+<h3 id="24-device-basics">2.4 Device Basics</h3>
+<p>Type: <code>urn:paso:risk:global:device_basics:1</code></p>
+<p>A device-fact signal. The <code>value</code> is an object with the following members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>manufacturer</code></td>
+<td>yes</td>
+<td>Device manufacturer as reported by the platform (e.g., <code>Apple</code>, <code>samsung</code>, <code>Google</code>).</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>yes</td>
+<td>Platform model identifier as reported by the platform (e.g., <code>iPhone17,1</code>, <code>SM-G920F</code>, <code>Pixel 9</code>).</td>
+</tr>
+<tr>
+<td><code>os_name</code></td>
+<td>yes</td>
+<td>Operating system name (e.g., <code>iOS</code>, <code>Android</code>).</td>
+</tr>
+<tr>
+<td><code>os_version</code></td>
+<td>yes</td>
+<td>Operating system version string as reported by the platform (e.g., <code>21.0</code>, <code>17</code>).</td>
+</tr>
+</tbody>
+</table>
+<p>The Wallet <strong>SHALL</strong> report each value as provided by the platform and <strong>SHALL NOT</strong> map it to a marketing or product name (e.g., "iPhone 17 Pro"). Platforms do not expose marketing names uniformly, and such a mapping would require a curated lookup table inside the Wallet, making the value an interpretation rather than an observation. Resolving platform identifiers to product names is the Authorizing Party's concern.</p>
+<h3 id="25-app-vendor-id">2.5 App Vendor ID</h3>
+<p>Type: <code>urn:paso:risk:global:app_vendor_id:1</code></p>
+<p>A device-fact signal. The <code>value</code> is an object with the following members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>yes</td>
+<td>The platform-issued vendor-scoped app identifier: on iOS the Identifier for Vendor [Apple IDFV], on Android the App Set ID [Android ASID].</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td>no</td>
+<td>The identifier's scope where the platform reports one: <code>developer</code> or <code>app</code> (the Android App Set ID scopes).</td>
+</tr>
+</tbody>
+</table>
+<p>The value identifies the Wallet vendor's app set on this device, not the vendor globally. The identifier is resettable: the platform issues a new value when the user deletes all of the vendor's apps (iOS), on factory reset, or after prolonged non-use (Android). The Authorizing Party <strong>SHALL NOT</strong> treat it as a permanent device identifier. On iOS the platform may transiently fail to provide the identifier after a device restart before first unlock; the Wallet <strong>MAY</strong> report <code>status</code> <code>unavailable</code> in that case, per the device-fact rule in Section 2.</p>
+<p>The identifier is a stable pseudonym that enables correlation of transactions originating from the same device and Wallet vendor. An ecosystem that includes this signal type for a transaction data type used in a third-party flow ([PaSO Core] Section 3) <strong>SHOULD</strong> require encryption of the risk signals per [PaSO Risk Signals] Section 7, so that a Relying Party forwarding the proof package cannot use the value as a tracking identifier.</p>
+<h3 id="26-response-mode">2.6 Response Mode</h3>
 <p>Type: <code>urn:paso:risk:global:response_mode:1</code></p>
 <p>A transaction-fact signal. The <code>value</code> is a string: the <code>response_mode</code> parameter as given or defaulted in the [OID4VP] Authorization Request.</p>
 <p>A Wallet that implements this signal type <strong>SHALL</strong> report <code>status</code> <code>ok</code> and <strong>SHALL</strong> set <code>collected_at</code> to the time at which it processed the Authorization Request.</p>
 <p>The Authorizing Party verifies this value against the Authorization Request it received, per [PaSO Proof Verify] Section 3.</p>
-<h3 id="25-authentication-methods">2.5 Authentication Methods</h3>
+<h3 id="27-authentication-methods">2.7 Authentication Methods</h3>
 <p>Type: <code>urn:paso:risk:global:amr:1</code></p>
 <p>A transaction-fact signal. The <code>value</code> is a JSON array of strings reporting the authentication methods by which the user released the transaction.</p>
 <p>Values from the IANA "Authentication Method Reference Values" registry [RFC8176] <strong>SHALL</strong> be used where applicable. Common values include <code>pin</code>, <code>pwd</code>, <code>hwk</code>, <code>swk</code>, and <code>otp</code>.</p>
@@ -1470,6 +1576,14 @@
 <tr>
 <td>[PSD2]</td>
 <td><a href="https://eur-lex.europa.eu/eli/dir/2015/2366/">Directive (EU) 2015/2366 on payment services in the internal market</a></td>
+</tr>
+<tr>
+<td>[Apple IDFV]</td>
+<td><a href="https://developer.apple.com/documentation/uikit/uidevice/identifierforvendor">Apple Developer Documentation — identifierForVendor</a></td>
+</tr>
+<tr>
+<td>[Android ASID]</td>
+<td><a href="https://developer.android.com/identity/app-set-id">Android Developers — Identify developer-owned apps (app set ID)</a></td>
 </tr>
 <tr>
 <td>[RFC2119]</td>

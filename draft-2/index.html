@@ -1843,7 +1843,7 @@
 <p>Every PaSO transaction data type is named by a URN of the form:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>urn:paso:sca:&lt;domain&gt;:&lt;suffix&gt;:&lt;version&gt;
 </span></code></pre></div>
-<p>The <code>&lt;domain&gt;</code> identifies the organization that owns the type (or <code>global</code> for types defined by PaSO itself), <code>&lt;suffix&gt;</code> names the type (for example <code>payment</code>), and <code>&lt;version&gt;</code> is a version number. A wallet recognizes PaSO transaction data simply by the <code>urn:paso:sca:</code> prefix.</p>
+<p>The <code>&lt;domain&gt;</code> identifies the organization that owns the type (or <code>global</code> for types defined by PaSO itself), <code>&lt;suffix&gt;</code> names the type (for example <code>payment</code>), and <code>&lt;version&gt;</code> is a positive integer (always the final segment). A wallet recognizes PaSO transaction data simply by the <code>urn:paso:sca:</code> prefix.</p>
 <p>The semantic structure of a published type is immutable: once defined, it does not change. Any change requires a new version. This is what makes a versioned-fallback strategy possible — a relying party can offer a newer type first and an older type as a fallback, so that newer and older credentials can both transact.</p>
 <h2 id="4-the-proof-what-gets-produced-and-checked">4 The proof: what gets produced and checked</h2>
 <h3 id="41-holder-binding-proof">4.1 Holder binding proof</h3>

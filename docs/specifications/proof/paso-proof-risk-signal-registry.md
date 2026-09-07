@@ -24,10 +24,11 @@ The key words "**MUST**", "**MUST NOT**", "**REQUIRED**", "**SHALL**", "**SHALL 
 
 Each entry below defines a signal type URN and the structure of its `value`. The `value` is present if and only if `status` is `ok`, per [PaSO Risk Signals] Section 2.2.
 
-Signal types divide into two kinds, which differ in how `status` and `collected_at` behave:
+Signal types divide into three kinds, which differ in how `status` and `collected_at` behave:
 
 - **Measured signals** (Sections 2.1 to 2.3) report a sensor or platform observation. Measurement can fail or be refused, so `status` **MAY** be `unavailable` or `denied`, and `collected_at` is the time of measurement.
-- **Transaction-fact signals** (Sections 2.4 and 2.5) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type **SHALL** report `status` `ok`.
+- **Device-fact signals** (Section 2.4) report a property of the device platform. No permission is involved, so `status` **SHALL NOT** be `denied`. A Wallet that implements the type **SHALL** report `status` `ok`, except that it **MAY** report `unavailable` where the platform does not expose the values. `collected_at` is the time of reading.
+- **Transaction-fact signals** (Sections 2.5 and 2.6) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type **SHALL** report `status` `ok`.
 
 ### 2.1 Geolocation
 
@@ -68,7 +69,22 @@ A measured signal. The `value` reports current device orientation and a bounded 
 | `acceleration`  | yes      | Object with `rms` and `max`, each the user-acceleration magnitude in *g* over the window.               |
 | `rotation_rate` | yes      | Object with `rms` and `max`, each the gyroscope rotation-rate magnitude in radians per second over the window. |
 
-### 2.4 Response Mode
+### 2.4 Device Basics
+
+Type: `urn:paso:risk:global:device_basics:1`
+
+A device-fact signal. The `value` is an object with the following members:
+
+| Member         | Required | Description                                                                                         |
+|----------------|----------|-----------------------------------------------------------------------------------------------------|
+| `manufacturer` | yes      | Device manufacturer as reported by the platform (e.g., `Apple`, `samsung`, `Google`).               |
+| `model`        | yes      | Platform model identifier as reported by the platform (e.g., `iPhone17,1`, `SM-G920F`, `Pixel 9`).  |
+| `os_name`      | yes      | Operating system name (e.g., `iOS`, `Android`).                                                     |
+| `os_version`   | yes      | Operating system version string as reported by the platform (e.g., `21.0`, `17`).                   |
+
+The Wallet **SHALL** report each value as provided by the platform and **SHALL NOT** map it to a marketing or product name (e.g., "iPhone 17 Pro"). Platforms do not expose marketing names uniformly, and such a mapping would require a curated lookup table inside the Wallet, making the value an interpretation rather than an observation. Resolving platform identifiers to product names is the Authorizing Party's concern.
+
+### 2.5 Response Mode
 
 Type: `urn:paso:risk:global:response_mode:1`
 
@@ -78,7 +94,7 @@ A Wallet that implements this signal type **SHALL** report `status` `ok` and **S
 
 The Authorizing Party verifies this value against the Authorization Request it received, per [PaSO Proof Verify] Section 3.
 
-### 2.5 Authentication Methods
+### 2.6 Authentication Methods
 
 Type: `urn:paso:risk:global:amr:1`
 

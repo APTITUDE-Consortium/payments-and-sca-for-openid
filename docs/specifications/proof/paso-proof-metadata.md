@@ -53,7 +53,7 @@ Each entry in `transaction_data_types` **MUST** supply metadata for each claim o
 - The `path` parameter resolves against the `transaction_data` `payload` object, not against the credential itself.
 - A `value_type` parameter (string) **MAY** be added to claim objects that have a `display` array. It indicates how the Wallet **SHALL** format the claim value for display. If omitted, the value is treated as plain text and **MUST** be a string. The `value_type` parameter **MUST NOT** be used on claims without a `display` array. The set of supported value types is defined by the applicable Transaction Data Type Rulebook or by other PaSO specifications.
 - A `display_type` parameter (string) **MAY** be added to `display` entry objects. It governs how the Wallet **SHALL** format the `name` text of that display entry, applying the same rendering rules as the corresponding `value_type` but to the label. If omitted, the label is plain text.
-- The `name` of each `display` entry is subject to the label constraints defined in Section 3.3.
+- The `name` of each `display` entry is subject to the label constraints defined in Section 3.3, which also restrict the permitted `display_type` values.
 
 Claims that are relevant to the user's consent **MUST** include a `display` array with entries for the locales served in that signed JWT. Claims without a `display` array **MUST** be internal values irrelevant to the user's consent.
 
@@ -65,14 +65,14 @@ Each entry in `transaction_data_types` **MAY** include a `ui_labels` object prov
 
 - `locale`: **OPTIONAL**. A [RFC5646] language tag. Entries without `locale` serve as defaults.
 - `value`: The localised string.
-- `value_type`: **OPTIONAL**. A `value_type` as defined in Section 3.1 governing how the Wallet formats the `value`. If omitted, treated as plain text.
+- `value_type`: **OPTIONAL**. A `value_type` as defined in Section 3.1 governing how the Wallet formats the `value`. If omitted, treated as plain text. Restricted to the text-producing value types per Section 3.3.
 
 The following UI element identifiers are defined by this specification:
 
 - **`affirmative_action_label`**: Label for the confirmation action (e.g., "Confirm Payment").
 - **`denial_action_label`**: Label for the denial action. If absent, the Wallet **SHALL** provide its own.
 - **`transaction_title`**: Title for the consent screen. If absent, the Wallet **MAY** provide its own.
-- **`security_hint`**: A security hint displayed to the user. When present, the Wallet **SHALL** display it exactly as provided and **SHALL NOT** alter or remove it.
+- **`security_hint`**: A security hint displayed to the user. When present, the Wallet **SHALL** display it exactly as provided and **SHALL NOT** alter or remove it. Its entries **MUST NOT** include a `value_type`; the value is always plain text (Section 3.3).
 
 All `ui_labels` values are subject to the label constraints defined in Section 3.3.
 
@@ -80,7 +80,7 @@ Additional UI element identifiers **MAY** be defined by Transaction Data Type Ru
 
 As with claims, the applicable Transaction Data Type Rulebook defines the semantic meaning of each UI element identifier. A Wallet that implements a specific rulebook **MAY** replace `ui_labels` text with its own labels or visual representations, provided the meaning remains clear and unmistakable to the user. The `security_hint` is an exception: it **SHALL** always be displayed exactly as provided.
 
-### 3.3 Label Constraints
+### 3.3 Label and Structural Constraints
 
 The following constraints apply to all human-readable label strings in a `transaction_data_types` entry: the `name` of each claim `display` entry (Section 3.1) and the `value` of each `ui_labels` entry (Section 3.2).
 
@@ -96,7 +96,16 @@ Label lengths are counted in extended grapheme clusters as defined in [UAX29]. L
 
 Specifications and Transaction Data Type Rulebooks that define additional UI element identifiers **SHALL** define a maximum length for their values; if none is defined, a maximum of 100 grapheme clusters applies.
 
+The maximum lengths are chosen so that a conforming Wallet can always display a conforming label in full; the Wallet's corresponding display obligations — including the prohibition of truncation and the handling of labels that cannot be displayed in full — are defined in [PaSO View] Section 2. Attestation Providers **SHOULD** keep labels, in every locale, substantially shorter than the maxima: the limits are an upper bound for interoperability, not a target.
+
 Labels **MUST NOT** contain C0 or C1 control characters; this prohibits line breaks within labels — line wrapping is a rendering decision of the Wallet. Labels and `transaction_data` `payload` string values **MUST NOT** contain the Unicode directional embedding or override characters U+202A through U+202E. The directional isolate characters U+2066 through U+2068 **MAY** be used, provided each isolate is properly terminated by U+2069.
+
+Labels are text. A `display` entry's `display_type` and a `ui_labels` entry's `value_type` **MUST** be either `mini_markdown` or `template:mini_markdown` as defined in [PaSO View], or absent (plain text). Value types that produce non-textual or standalone content — in particular `image`, `url`, and `label_only` — **MUST NOT** be used for labels. `security_hint` values **MUST** be plain text: a `security_hint` entry **MUST NOT** carry a `value_type`.
+
+The following structural constraints apply to each `transaction_data_types` entry:
+
+- The `claims` array **MUST NOT** contain two claim metadata objects with the same `path` and **MUST NOT** contain more than 100 claim metadata objects.
+- A `display` array, and each `ui_labels` entry array, **MUST NOT** contain two entries with the same `locale` and **MUST NOT** contain more than one entry without a `locale`.
 
 For labels whose `value_type` or `display_type` uses the `template:` prefix defined in [PaSO View], the limits apply to the fully interpolated result. The Wallet enforces these constraints at rendering time per [PaSO View] Section 2. Independent of rendering, the Wallet **SHALL** treat a transaction data type whose metadata violates these constraints as not supported by the credential.
 

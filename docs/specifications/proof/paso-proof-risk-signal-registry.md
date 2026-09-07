@@ -27,8 +27,8 @@ Each entry below defines a signal type URN and the structure of its `value`. The
 Signal types divide into three kinds, which differ in how `status` and `collected_at` behave:
 
 - **Measured signals** (Sections 2.1 to 2.3) report a sensor or platform observation. Measurement can fail or be refused, so `status` **MAY** be `unavailable` or `denied`, and `collected_at` is the time of measurement.
-- **Device-fact signals** (Section 2.4) report a property of the device platform. No permission is involved, so `status` **SHALL NOT** be `denied`. A Wallet that implements the type **SHALL** report `status` `ok`, except that it **MAY** report `unavailable` where the platform does not expose the values. `collected_at` is the time of reading.
-- **Transaction-fact signals** (Sections 2.5 and 2.6) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type **SHALL** report `status` `ok`.
+- **Device-fact signals** (Sections 2.4 and 2.5) report a property of the device platform. No permission is involved, so `status` **SHALL NOT** be `denied`. A Wallet that implements the type **SHALL** report `status` `ok`, except that it **MAY** report `unavailable` where the platform does not expose the values. `collected_at` is the time of reading.
+- **Transaction-fact signals** (Sections 2.6 and 2.7) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type **SHALL** report `status` `ok`.
 
 ### 2.1 Geolocation
 
@@ -36,13 +36,13 @@ Type: `urn:paso:risk:global:geolocation:1`
 
 A measured signal. The `value` is an object with the following members:
 
-| Member     | Required | Description                                        |
-|------------|----------|----------------------------------------------------|
-| `lat`      | yes      | WGS84 latitude in decimal degrees.                 |
-| `lon`      | yes      | WGS84 longitude in decimal degrees.                |
-| `accuracy` | yes      | Horizontal accuracy radius in metres.              |
-| `altitude` | no       | Altitude in metres.                                |
-| `source`   | no       | One of `gnss`, `network`, or `fused`.              |
+| Member     | Required | Description                           |
+|------------|----------|---------------------------------------|
+| `lat`      | yes      | WGS84 latitude in decimal degrees.    |
+| `lon`      | yes      | WGS84 longitude in decimal degrees.   |
+| `accuracy` | yes      | Horizontal accuracy radius in metres. |
+| `altitude` | no       | Altitude in metres.                   |
+| `source`   | no       | One of `gnss`, `network`, or `fused`. |
 
 ### 2.2 Call Activity
 
@@ -51,7 +51,7 @@ Type: `urn:paso:risk:global:call_activity:1`
 A measured signal. The `value` is an object with the following members:
 
 | Member              | Required | Description                                                            |
-|---------------------|----------|-----------------------------------------------------------------------|
+|---------------------|----------|------------------------------------------------------------------------|
 | `call_state`        | yes      | One of `idle`, `ringing`, or `active`.                                 |
 | `direction`         | no       | One of `incoming`, `outgoing`, or `unknown`.                           |
 | `call_active_since` | no       | An [ISO8601] timestamp indicating when the current call became active. |
@@ -62,11 +62,11 @@ Type: `urn:paso:risk:global:device_motion:1`
 
 A measured signal. The `value` reports current device orientation and a bounded statistical summary of motion over a short sampling window. No interpretation (such as "walking") is performed by the Wallet.
 
-| Member          | Required | Description                                                                                              |
-|-----------------|----------|--------------------------------------------------------------------------------------------------------|
-| `window_ms`     | yes      | Length of the sampling window in milliseconds.                                                          |
-| `orientation`   | yes      | Object with `pitch`, `roll`, and `yaw`, each the device attitude angle in degrees.                      |
-| `acceleration`  | yes      | Object with `rms` and `max`, each the user-acceleration magnitude in *g* over the window.               |
+| Member          | Required | Description                                                                                                    |
+|-----------------|----------|----------------------------------------------------------------------------------------------------------------|
+| `window_ms`     | yes      | Length of the sampling window in milliseconds.                                                                 |
+| `orientation`   | yes      | Object with `pitch`, `roll`, and `yaw`, each the device attitude angle in degrees.                             |
+| `acceleration`  | yes      | Object with `rms` and `max`, each the user-acceleration magnitude in *g* over the window.                      |
 | `rotation_rate` | yes      | Object with `rms` and `max`, each the gyroscope rotation-rate magnitude in radians per second over the window. |
 
 ### 2.4 Device Basics
@@ -75,16 +75,31 @@ Type: `urn:paso:risk:global:device_basics:1`
 
 A device-fact signal. The `value` is an object with the following members:
 
-| Member         | Required | Description                                                                                         |
-|----------------|----------|-----------------------------------------------------------------------------------------------------|
-| `manufacturer` | yes      | Device manufacturer as reported by the platform (e.g., `Apple`, `samsung`, `Google`).               |
-| `model`        | yes      | Platform model identifier as reported by the platform (e.g., `iPhone17,1`, `SM-G920F`, `Pixel 9`).  |
-| `os_name`      | yes      | Operating system name (e.g., `iOS`, `Android`).                                                     |
-| `os_version`   | yes      | Operating system version string as reported by the platform (e.g., `21.0`, `17`).                   |
+| Member         | Required | Description                                                                                        |
+|----------------|----------|----------------------------------------------------------------------------------------------------|
+| `manufacturer` | yes      | Device manufacturer as reported by the platform (e.g., `Apple`, `samsung`, `Google`).              |
+| `model`        | yes      | Platform model identifier as reported by the platform (e.g., `iPhone17,1`, `SM-G920F`, `Pixel 9`). |
+| `os_name`      | yes      | Operating system name (e.g., `iOS`, `Android`).                                                    |
+| `os_version`   | yes      | Operating system version string as reported by the platform (e.g., `21.0`, `17`).                  |
 
 The Wallet **SHALL** report each value as provided by the platform and **SHALL NOT** map it to a marketing or product name (e.g., "iPhone 17 Pro"). Platforms do not expose marketing names uniformly, and such a mapping would require a curated lookup table inside the Wallet, making the value an interpretation rather than an observation. Resolving platform identifiers to product names is the Authorizing Party's concern.
 
-### 2.5 Response Mode
+### 2.5 App Vendor ID
+
+Type: `urn:paso:risk:global:app_vendor_id:1`
+
+A device-fact signal. The `value` is an object with the following members:
+
+| Member  | Required | Description                                                                                                                                |
+|---------|----------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`    | yes      | The platform-issued vendor-scoped app identifier: on iOS the Identifier for Vendor [Apple IDFV], on Android the App Set ID [Android ASID]. |
+| `scope` | no       | The identifier's scope where the platform reports one: `developer` or `app` (the Android App Set ID scopes).                               |
+
+The value identifies the Wallet vendor's app set on this device, not the vendor globally. The identifier is resettable: the platform issues a new value when the user deletes all of the vendor's apps (iOS), on factory reset, or after prolonged non-use (Android). The Authorizing Party **SHALL NOT** treat it as a permanent device identifier. On iOS the platform may transiently fail to provide the identifier after a device restart before first unlock; the Wallet **MAY** report `status` `unavailable` in that case, per the device-fact rule in Section 2.
+
+The identifier is a stable pseudonym that enables correlation of transactions originating from the same device and Wallet vendor. An ecosystem that includes this signal type for a transaction data type used in a third-party flow ([PaSO Core] Section 3) **SHOULD** require encryption of the risk signals per [PaSO Risk Signals] Section 7, so that a Relying Party forwarding the proof package cannot use the value as a tracking identifier.
+
+### 2.6 Response Mode
 
 Type: `urn:paso:risk:global:response_mode:1`
 
@@ -94,7 +109,7 @@ A Wallet that implements this signal type **SHALL** report `status` `ok` and **S
 
 The Authorizing Party verifies this value against the Authorization Request it received, per [PaSO Proof Verify] Section 3.
 
-### 2.6 Authentication Methods
+### 2.7 Authentication Methods
 
 Type: `urn:paso:risk:global:amr:1`
 
@@ -119,14 +134,16 @@ A Wallet that implements this signal type **SHALL** report `status` `ok` and **S
 
 ## 3 References
 
-| Reference           | Description                                                                                                         |
-|---------------------|---------------------------------------------------------------------------------------------------------------------|
-| [PaSO Core]         | [PaSO Core](../paso-core.md)                                                                                        |
-| [PaSO Risk Signals] | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                       |
-| [PaSO Proof Verify] | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                   |
-| [OID4VP]            | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)      |
-| [PSD2]              | [Directive (EU) 2015/2366 on payment services in the internal market](https://eur-lex.europa.eu/eli/dir/2015/2366/) |
-| [RFC2119]           | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                 |
-| [RFC8174]           | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html) |
-| [RFC8176]           | [RFC 8176 — Authentication Method Reference Values](https://www.rfc-editor.org/rfc/rfc8176.html)                     |
-| [ISO8601]           | [ISO 8601 — Date and time format](https://www.iso.org/iso-8601-date-and-time-format.html)                           |
+| Reference           | Description                                                                                                                         |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| [PaSO Core]         | [PaSO Core](../paso-core.md)                                                                                                        |
+| [PaSO Risk Signals] | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                                       |
+| [PaSO Proof Verify] | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                                   |
+| [OID4VP]            | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)                      |
+| [PSD2]              | [Directive (EU) 2015/2366 on payment services in the internal market](https://eur-lex.europa.eu/eli/dir/2015/2366/)                 |
+| [Apple IDFV]        | [Apple Developer Documentation — identifierForVendor](https://developer.apple.com/documentation/uikit/uidevice/identifierforvendor) |
+| [Android ASID]      | [Android Developers — Identify developer-owned apps (app set ID)](https://developer.android.com/identity/app-set-id)                |
+| [RFC2119]           | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                                 |
+| [RFC8174]           | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)                 |
+| [RFC8176]           | [RFC 8176 — Authentication Method Reference Values](https://www.rfc-editor.org/rfc/rfc8176.html)                                    |
+| [ISO8601]           | [ISO 8601 — Date and time format](https://www.iso.org/iso-8601-date-and-time-format.html)                                           |

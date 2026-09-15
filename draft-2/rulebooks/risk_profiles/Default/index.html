@@ -1113,11 +1113,11 @@
 </tr>
 <tr>
 <td><code>encrypted</code></td>
-<td>not set (defaults to <code>false</code>)</td>
+<td><code>true</code></td>
 </tr>
 <tr>
 <td><code>signals</code></td>
-<td>The six entries of Section 2.</td>
+<td>The seven entries of Section 2.</td>
 </tr>
 </tbody>
 </table>
@@ -1134,37 +1134,42 @@
 <tr>
 <td><code>urn:paso:risk:global:response_mode:1</code></td>
 <td><code>true</code></td>
-<td>—</td>
+<td><code>600</code></td>
 </tr>
 <tr>
 <td><code>urn:paso:risk:global:geolocation:1</code></td>
 <td><code>true</code></td>
-<td>—</td>
+<td><code>600</code></td>
 </tr>
 <tr>
 <td><code>urn:paso:risk:global:call_activity:1</code></td>
 <td><code>true</code></td>
-<td>—</td>
+<td><code>600</code></td>
 </tr>
 <tr>
 <td><code>urn:paso:risk:global:device_motion:1</code></td>
 <td><code>true</code></td>
-<td>—</td>
+<td><code>600</code></td>
+</tr>
+<tr>
+<td><code>urn:paso:risk:global:screen_capture:1</code></td>
+<td><code>true</code></td>
+<td><code>600</code></td>
 </tr>
 <tr>
 <td><code>urn:paso:risk:global:device_basics:1</code></td>
 <td><code>true</code></td>
-<td>—</td>
+<td><code>600</code></td>
 </tr>
 <tr>
 <td><code>urn:paso:risk:global:app_vendor_id:1</code></td>
 <td><code>true</code></td>
-<td>—</td>
+<td><code>600</code></td>
 </tr>
 </tbody>
 </table>
-<p>Every entry is <code>required</code>. A Wallet processing a transaction data type that references this profile <strong>SHALL</strong> include an envelope for all six signals, reporting <code>status</code> <code>unavailable</code> or <code>denied</code> where a value cannot be obtained, per [PaSO Risk Signals] Section 4.2. Silent omission is not permitted.</p>
-<p>No <code>max_age</code> is set. Freshness is therefore a matter of Transaction Data Type Rulebook or Authorizing Party policy, per [PaSO Risk Signals] Section 6. An Attestation Provider or Rulebook that needs a bound <strong>MAY</strong> impose one by enumeration, which tightens this profile per [PaSO Risk Signals] Section 4.1.</p>
+<p>Every entry is <code>required</code>. A Wallet processing a transaction data type that references this profile <strong>SHALL</strong> include an envelope for all seven signals, reporting <code>status</code> <code>unavailable</code> or <code>denied</code> where a value cannot be obtained, per [PaSO Risk Signals] Section 4.2. Silent omission is not permitted.</p>
+<p>Every entry carries a <code>max_age</code> of <code>600</code> seconds (10 minutes). At the moment the Wallet produces the holder binding proof signature, each signal's <code>collected_at</code> must be no older than 10 minutes; a measurement that has aged out is re-taken or carried with <code>status</code> <code>unavailable</code>, per [PaSO Risk Signals] Section 4.3. An Attestation Provider or Rulebook that needs a tighter bound <strong>MAY</strong> lower it by enumeration, per [PaSO Risk Signals] Section 4.1; an enumeration cannot raise it.</p>
 <h2 id="3-adopting-this-profile">3 Adopting This Profile</h2>
 <p>An Attestation Provider adopts this profile by referencing it for a transaction data type in the signed credential metadata:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
@@ -1173,10 +1178,11 @@
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>Adopters <strong>SHOULD</strong> weigh two consequences before referencing it:</p>
+<p>Adopters <strong>SHOULD</strong> weigh three consequences before referencing it:</p>
 <ul>
-<li><strong>Three of the six signals require device permissions.</strong> Geolocation, call activity, and device motion are measured signals; a user who refuses permission yields <code>status</code> <code>denied</code> rather than a value. Response mode, device basics, and app vendor ID involve no permission. This profile obliges the Wallet to report the refusal, not to obtain the measurement.</li>
-<li><strong>This profile does not mandate encryption.</strong> <code>encrypted</code> is unset, so the signals travel in plaintext within the holder binding proof unless encryption is required by the <code>encrypted</code> metadata flag or by the applicable Transaction Data Type Rulebook, per [PaSO Risk Signals] Section 7.2. In a third-party flow a Relying Party forwarding the proof package can read them. An ecosystem carrying location data or the stable app vendor identifier through untrusted intermediaries <strong>SHOULD</strong> require encryption.</li>
+<li><strong>Three of the seven signals require device permissions.</strong> Geolocation, call activity, and device motion are measured signals; a user who refuses permission yields <code>status</code> <code>denied</code> rather than a value. Response mode, device basics, app vendor ID, and screen capture involve no permission prompt. This profile obliges the Wallet to report the refusal, not to obtain the measurement. Screen capture is additionally OS-version-dependent: on platforms that expose no capture observation the Wallet reports <code>status</code> <code>unavailable</code>, per [PaSO Risk Signal Registry] Section 2.4.</li>
+<li><strong>This profile mandates encryption.</strong> <code>encrypted</code> is <code>true</code>, so every transaction data type that references this profile requires encryption of the risk signals per [PaSO Risk Signals] Section 7. In a third-party flow a Relying Party forwarding the proof package therefore cannot read the geolocation or use the stable app vendor identifier for tracking. The cost falls on verification: an Authorizing Party that does not hold the issuer decryption key can confirm only that the <code>risk_signals</code> value is an encrypted structure, per [PaSO Risk Signals] Section 6.1; the checks on the signals themselves move to the holder of the decryption key. Because this profile excludes <code>urn:paso:risk:global:amr:1</code>, the caution in [PaSO Risk Signals] Section 7.8 against encrypting authentication-method signals in third-party flows does not arise.</li>
+<li><strong>The 10-minute freshness bound binds the Authorizing Party too.</strong> The Authorizing Party applies the same <code>max_age</code> against its own reference instant, per [PaSO Risk Signals] Section 6. An adopter whose proofs are verified long after issuance — deferred or batch verification — will find every signal aged out at that instant; this profile assumes verification reasonably promptly after the proof is produced.</li>
 </ul>
 <h2 id="4-references">4 References</h2>
 <table>

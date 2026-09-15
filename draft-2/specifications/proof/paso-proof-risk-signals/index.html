@@ -2510,10 +2510,10 @@
 </span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>}
 </span></code></pre></div>
 <h3 id="a4-metadata-declaration">A.4 Metadata Declaration</h3>
-<p>A <code>transaction_data_types</code> entry that references the default profile and tightens it: a shorter freshness bound is imposed on geolocation, and a signal absent from the profile is added (per [PaSO Proof Metadata]).</p>
+<p>A <code>transaction_data_types</code> entry that references the baseline profile of A.7 and tightens it: a shorter freshness bound is imposed on geolocation, and a signal absent from the profile is added (per [PaSO Proof Metadata]).</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">"urn:paso:sca:global:payment:1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">"risk_signal_profiles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"urn:paso:risk-profile:global:default:1"</span><span class="p">],</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nt">"risk_signal_profiles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"urn:paso:risk-profile:com.example:baseline:1"</span><span class="p">],</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="nt">"risk_signals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:geolocation:1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"max_age"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span><span class="w"> </span><span class="p">},</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:amr:1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span>
@@ -2521,7 +2521,7 @@
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">  </span><span class="p">}</span>
 </span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>The default profile declares geolocation with no <code>max_age</code>, so the first enumeration entry lowers it to 60 seconds. The second adds <code>amr</code>, which the default profile deliberately omits. An entry attempting the reverse of either — raising <code>max_age</code>, or setting <code>required</code> to <code>false</code> against a profile's <code>true</code> — would have no effect, per Section 4.1 step 3.</p>
+<p>The baseline profile declares geolocation with no <code>max_age</code>, so the first enumeration entry lowers it to 60 seconds. The second adds <code>amr</code>, which the baseline profile omits. An entry attempting the reverse of either — raising <code>max_age</code>, or setting <code>required</code> to <code>false</code> against a profile's <code>true</code> — would have no effect, per Section 4.1 step 3.</p>
 <h3 id="a5-encrypted-risk_signals-claim-sd-jwt-vc">A.5 Encrypted <code>risk_signals</code> Claim (SD-JWT-VC)</h3>
 <p>When encryption is required, the KB-JWT <code>risk_signals</code> claim value is a JWE compact string instead of the array shown in A.2:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
@@ -2565,7 +2565,7 @@
 </span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="a7-profile-reference-and-resolution">A.7 Profile Reference and Resolution</h3>
-<p>The default profile published by PaSO ([PaSO Default Risk Signal Profile]) declares:</p>
+<p>A baseline profile <code>urn:paso:risk-profile:com.example:baseline:1</code> declares:</p>
 <table>
 <thead>
 <tr>
@@ -2634,7 +2634,7 @@
 <td><code>urn:paso:risk:global:response_mode:1</code></td>
 <td><code>true</code></td>
 <td>—</td>
-<td>default profile</td>
+<td>baseline profile</td>
 </tr>
 <tr>
 <td><code>urn:paso:risk:global:geolocation:1</code></td>
@@ -2646,13 +2646,13 @@
 <td><code>urn:paso:risk:global:call_activity:1</code></td>
 <td><code>true</code></td>
 <td>—</td>
-<td>default profile</td>
+<td>baseline profile</td>
 </tr>
 <tr>
 <td><code>urn:paso:risk:global:device_motion:1</code></td>
 <td><code>true</code></td>
 <td>—</td>
-<td>default profile</td>
+<td>baseline profile</td>
 </tr>
 <tr>
 <td><code>urn:paso:risk:global:amr:1</code></td>

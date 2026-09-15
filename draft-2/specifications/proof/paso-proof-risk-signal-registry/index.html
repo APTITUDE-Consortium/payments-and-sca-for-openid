@@ -955,10 +955,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#24-device-basics" class="md-nav__link">
+  <a href="#24-screen-capture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.4 Device Basics
+        2.4 Screen Capture
       
     </span>
   </a>
@@ -966,10 +966,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#25-app-vendor-id" class="md-nav__link">
+  <a href="#25-device-basics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.5 App Vendor ID
+        2.5 Device Basics
       
     </span>
   </a>
@@ -977,10 +977,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#26-response-mode" class="md-nav__link">
+  <a href="#26-app-vendor-id" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.6 Response Mode
+        2.6 App Vendor ID
       
     </span>
   </a>
@@ -988,10 +988,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#27-authentication-methods" class="md-nav__link">
+  <a href="#27-response-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.7 Authentication Methods
+        2.7 Response Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-authentication-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8 Authentication Methods
       
     </span>
   </a>
@@ -1255,10 +1266,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#24-device-basics" class="md-nav__link">
+  <a href="#24-screen-capture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.4 Device Basics
+        2.4 Screen Capture
       
     </span>
   </a>
@@ -1266,10 +1277,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#25-app-vendor-id" class="md-nav__link">
+  <a href="#25-device-basics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.5 App Vendor ID
+        2.5 Device Basics
       
     </span>
   </a>
@@ -1277,10 +1288,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#26-response-mode" class="md-nav__link">
+  <a href="#26-app-vendor-id" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.6 Response Mode
+        2.6 App Vendor ID
       
     </span>
   </a>
@@ -1288,10 +1299,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#27-authentication-methods" class="md-nav__link">
+  <a href="#27-response-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.7 Authentication Methods
+        2.7 Response Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#28-authentication-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8 Authentication Methods
       
     </span>
   </a>
@@ -1349,9 +1371,9 @@
 <p>Each entry below defines a signal type URN and the structure of its <code>value</code>. The <code>value</code> is present if and only if <code>status</code> is <code>ok</code>, per [PaSO Risk Signals] Section 2.2.</p>
 <p>Signal types divide into three kinds, which differ in how <code>status</code> and <code>collected_at</code> behave:</p>
 <ul>
-<li><strong>Measured signals</strong> (Sections 2.1 to 2.3) report a sensor or platform observation. Measurement can fail or be refused, so <code>status</code> <strong>MAY</strong> be <code>unavailable</code> or <code>denied</code>, and <code>collected_at</code> is the time of measurement.</li>
-<li><strong>Device-fact signals</strong> (Sections 2.4 and 2.5) report a property of the device platform. No permission is involved, so <code>status</code> <strong>SHALL NOT</strong> be <code>denied</code>. A Wallet that implements the type <strong>SHALL</strong> report <code>status</code> <code>ok</code>, except that it <strong>MAY</strong> report <code>unavailable</code> where the platform does not expose the values. <code>collected_at</code> is the time of reading.</li>
-<li><strong>Transaction-fact signals</strong> (Sections 2.6 and 2.7) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type <strong>SHALL</strong> report <code>status</code> <code>ok</code>.</li>
+<li><strong>Measured signals</strong> (Sections 2.1 to 2.4) report a sensor or platform observation. Measurement can fail or be refused, so <code>status</code> <strong>MAY</strong> be <code>unavailable</code> or <code>denied</code>, and <code>collected_at</code> is the time of measurement.</li>
+<li><strong>Device-fact signals</strong> (Sections 2.5 and 2.6) report a property of the device platform. No permission is involved, so <code>status</code> <strong>SHALL NOT</strong> be <code>denied</code>. A Wallet that implements the type <strong>SHALL</strong> report <code>status</code> <code>ok</code>, except that it <strong>MAY</strong> report <code>unavailable</code> where the platform does not expose the values. <code>collected_at</code> is the time of reading.</li>
+<li><strong>Transaction-fact signals</strong> (Sections 2.7 and 2.8) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type <strong>SHALL</strong> report <code>status</code> <code>ok</code>.</li>
 </ul>
 <h3 id="21-geolocation">2.1 Geolocation</h3>
 <p>Type: <code>urn:paso:risk:global:geolocation:1</code></p>
@@ -1455,7 +1477,44 @@
 </tr>
 </tbody>
 </table>
-<h3 id="24-device-basics">2.4 Device Basics</h3>
+<h3 id="24-screen-capture">2.4 Screen Capture</h3>
+<p>Type: <code>urn:paso:risk:global:screen_capture:1</code></p>
+<p>A measured signal. The <code>value</code> reports whether the device screen was captured — recorded, mirrored, cast, shared, or screenshotted — during an observation window. The Wallet reports platform observations only; it does not identify the capturing application or the capture destination.</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>window_ms</code></td>
+<td>yes</td>
+<td>Length of the observation window in milliseconds, ending at <code>collected_at</code>.</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td>no</td>
+<td>One of <code>active</code> or <code>inactive</code>: whether screen capture was in progress at <code>collected_at</code>.</td>
+</tr>
+<tr>
+<td><code>active_in_window</code></td>
+<td>no</td>
+<td><code>true</code> if screen capture was observed active at any point in the window, <code>false</code> if the platform reported it inactive throughout.</td>
+</tr>
+<tr>
+<td><code>screenshot_count</code></td>
+<td>no</td>
+<td>Number of screenshots the platform reported during the window.</td>
+</tr>
+</tbody>
+</table>
+<p>The observation window <strong>SHOULD</strong> cover the period during which the transaction details were displayed to the user for consent.</p>
+<p>The Wallet <strong>SHALL</strong> include an optional member only where the platform exposes the underlying observation, and <strong>SHALL</strong> omit it otherwise. An omitted member means the platform could not observe, not that no capture occurred; the Authorizing Party <strong>SHALL NOT</strong> interpret an omitted member as evidence that the screen was not captured. Where the platform exposes none of the optional members, the Wallet <strong>SHALL</strong> report <code>status</code> <code>unavailable</code>.</p>
+<p>The available member set is a function of the platform and OS version, not of the transaction. On iOS the platform reports a single capture state [Apple Screen Capture] that does not distinguish screen recording, mirroring, or sharing; the Wallet <strong>SHALL</strong> report the state as given and <strong>SHALL NOT</strong> infer the capture destination. On Android, capture state is observable from Android 15 [Android Recording Detection] and screenshot events from Android 14 [Android Screenshot Detection]; on earlier versions the corresponding members are absent. The value <strong>SHALL</strong> therefore be interpreted in the context of the platform and OS version, which the Device Basics signal (Section 2.5) reports. A risk signal profile that includes this signal type <strong>SHOULD</strong> also include <code>urn:paso:risk:global:device_basics:1</code>.</p>
+<h3 id="25-device-basics">2.5 Device Basics</h3>
 <p>Type: <code>urn:paso:risk:global:device_basics:1</code></p>
 <p>A device-fact signal. The <code>value</code> is an object with the following members:</p>
 <table>
@@ -1490,7 +1549,7 @@
 </tbody>
 </table>
 <p>The Wallet <strong>SHALL</strong> report each value as provided by the platform and <strong>SHALL NOT</strong> map it to a marketing or product name (e.g., "iPhone 17 Pro"). Platforms do not expose marketing names uniformly, and such a mapping would require a curated lookup table inside the Wallet, making the value an interpretation rather than an observation. Resolving platform identifiers to product names is the Authorizing Party's concern.</p>
-<h3 id="25-app-vendor-id">2.5 App Vendor ID</h3>
+<h3 id="26-app-vendor-id">2.6 App Vendor ID</h3>
 <p>Type: <code>urn:paso:risk:global:app_vendor_id:1</code></p>
 <p>A device-fact signal. The <code>value</code> is an object with the following members:</p>
 <table>
@@ -1516,12 +1575,12 @@
 </table>
 <p>The value identifies the Wallet vendor's app set on this device, not the vendor globally. The identifier is resettable: the platform issues a new value when the user deletes all of the vendor's apps (iOS), on factory reset, or after prolonged non-use (Android). The Authorizing Party <strong>SHALL NOT</strong> treat it as a permanent device identifier. On iOS the platform may transiently fail to provide the identifier after a device restart before first unlock; the Wallet <strong>MAY</strong> report <code>status</code> <code>unavailable</code> in that case, per the device-fact rule in Section 2.</p>
 <p>The identifier is a stable pseudonym that enables correlation of transactions originating from the same device and Wallet vendor. An ecosystem that includes this signal type for a transaction data type used in a third-party flow ([PaSO Core] Section 3) <strong>SHOULD</strong> require encryption of the risk signals per [PaSO Risk Signals] Section 7, so that a Relying Party forwarding the proof package cannot use the value as a tracking identifier.</p>
-<h3 id="26-response-mode">2.6 Response Mode</h3>
+<h3 id="27-response-mode">2.7 Response Mode</h3>
 <p>Type: <code>urn:paso:risk:global:response_mode:1</code></p>
 <p>A transaction-fact signal. The <code>value</code> is a string: the <code>response_mode</code> parameter as given or defaulted in the [OID4VP] Authorization Request.</p>
 <p>A Wallet that implements this signal type <strong>SHALL</strong> report <code>status</code> <code>ok</code> and <strong>SHALL</strong> set <code>collected_at</code> to the time at which it processed the Authorization Request.</p>
 <p>The Authorizing Party verifies this value against the Authorization Request it received, per [PaSO Proof Verify] Section 3.</p>
-<h3 id="27-authentication-methods">2.7 Authentication Methods</h3>
+<h3 id="28-authentication-methods">2.8 Authentication Methods</h3>
 <p>Type: <code>urn:paso:risk:global:amr:1</code></p>
 <p>A transaction-fact signal. The <code>value</code> is a JSON array of strings reporting the authentication methods by which the user released the transaction.</p>
 <p>Values from the IANA "Authentication Method Reference Values" registry [RFC8176] <strong>SHALL</strong> be used where applicable. Common values include <code>pin</code>, <code>pwd</code>, <code>hwk</code>, <code>swk</code>, and <code>otp</code>.</p>
@@ -1584,6 +1643,18 @@
 <tr>
 <td>[Android ASID]</td>
 <td><a href="https://developer.android.com/identity/app-set-id">Android Developers — Identify developer-owned apps (app set ID)</a></td>
+</tr>
+<tr>
+<td>[Apple Screen Capture]</td>
+<td><a href="https://developer.apple.com/documentation/uikit/uiscreen/iscaptured">Apple Developer Documentation — UIScreen.isCaptured</a></td>
+</tr>
+<tr>
+<td>[Android Recording Detection]</td>
+<td><a href="https://developer.android.com/about/versions/15/features#screen-recording-detection">Android Developers — Screen recording detection (Android 15)</a></td>
+</tr>
+<tr>
+<td>[Android Screenshot Detection]</td>
+<td><a href="https://developer.android.com/about/versions/14/features/screenshot-detection">Android Developers — Screenshot detection (Android 14)</a></td>
 </tr>
 <tr>
 <td>[RFC2119]</td>

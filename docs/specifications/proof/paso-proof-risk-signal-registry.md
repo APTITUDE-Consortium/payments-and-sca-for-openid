@@ -26,9 +26,9 @@ Each entry below defines a signal type URN and the structure of its `value`. The
 
 Signal types divide into three kinds, which differ in how `status` and `collected_at` behave:
 
-- **Measured signals** (Sections 2.1 to 2.3) report a sensor or platform observation. Measurement can fail or be refused, so `status` **MAY** be `unavailable` or `denied`, and `collected_at` is the time of measurement.
-- **Device-fact signals** (Sections 2.4 and 2.5) report a property of the device platform. No permission is involved, so `status` **SHALL NOT** be `denied`. A Wallet that implements the type **SHALL** report `status` `ok`, except that it **MAY** report `unavailable` where the platform does not expose the values. `collected_at` is the time of reading.
-- **Transaction-fact signals** (Sections 2.6 and 2.7) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type **SHALL** report `status` `ok`.
+- **Measured signals** (Sections 2.1 to 2.4) report a sensor or platform observation. Measurement can fail or be refused, so `status` **MAY** be `unavailable` or `denied`, and `collected_at` is the time of measurement.
+- **Device-fact signals** (Sections 2.5 and 2.6) report a property of the device platform. No permission is involved, so `status` **SHALL NOT** be `denied`. A Wallet that implements the type **SHALL** report `status` `ok`, except that it **MAY** report `unavailable` where the platform does not expose the values. `collected_at` is the time of reading.
+- **Transaction-fact signals** (Sections 2.7 and 2.8) report something the Wallet already knows from processing the transaction. No sensor and no permission is involved, so a Wallet that implements the type **SHALL** report `status` `ok`.
 
 ### 2.1 Geolocation
 
@@ -69,7 +69,26 @@ A measured signal. The `value` reports current device orientation and a bounded 
 | `acceleration`  | yes      | Object with `rms` and `max`, each the user-acceleration magnitude in *g* over the window.                      |
 | `rotation_rate` | yes      | Object with `rms` and `max`, each the gyroscope rotation-rate magnitude in radians per second over the window. |
 
-### 2.4 Device Basics
+### 2.4 Screen Capture
+
+Type: `urn:paso:risk:global:screen_capture:1`
+
+A measured signal. The `value` reports whether the device screen was captured — recorded, mirrored, cast, shared, or screenshotted — during an observation window. The Wallet reports platform observations only; it does not identify the capturing application or the capture destination.
+
+| Member             | Required | Description                                                                                                                       |
+|--------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `window_ms`        | yes      | Length of the observation window in milliseconds, ending at `collected_at`.                                                       |
+| `state`            | no       | One of `active` or `inactive`: whether screen capture was in progress at `collected_at`.                                          |
+| `active_in_window` | no       | `true` if screen capture was observed active at any point in the window, `false` if the platform reported it inactive throughout. |
+| `screenshot_count` | no       | Number of screenshots the platform reported during the window.                                                                    |
+
+The observation window **SHOULD** cover the period during which the transaction details were displayed to the user for consent.
+
+The Wallet **SHALL** include an optional member only where the platform exposes the underlying observation, and **SHALL** omit it otherwise. An omitted member means the platform could not observe, not that no capture occurred; the Authorizing Party **SHALL NOT** interpret an omitted member as evidence that the screen was not captured. Where the platform exposes none of the optional members, the Wallet **SHALL** report `status` `unavailable`.
+
+The available member set is a function of the platform and OS version, not of the transaction. On iOS the platform reports a single capture state [Apple Screen Capture] that does not distinguish screen recording, mirroring, or sharing; the Wallet **SHALL** report the state as given and **SHALL NOT** infer the capture destination. On Android, capture state is observable from Android 15 [Android Recording Detection] and screenshot events from Android 14 [Android Screenshot Detection]; on earlier versions the corresponding members are absent. The value **SHALL** therefore be interpreted in the context of the platform and OS version, which the Device Basics signal (Section 2.5) reports. A risk signal profile that includes this signal type **SHOULD** also include `urn:paso:risk:global:device_basics:1`.
+
+### 2.5 Device Basics
 
 Type: `urn:paso:risk:global:device_basics:1`
 
@@ -84,7 +103,7 @@ A device-fact signal. The `value` is an object with the following members:
 
 The Wallet **SHALL** report each value as provided by the platform and **SHALL NOT** map it to a marketing or product name (e.g., "iPhone 17 Pro"). Platforms do not expose marketing names uniformly, and such a mapping would require a curated lookup table inside the Wallet, making the value an interpretation rather than an observation. Resolving platform identifiers to product names is the Authorizing Party's concern.
 
-### 2.5 App Vendor ID
+### 2.6 App Vendor ID
 
 Type: `urn:paso:risk:global:app_vendor_id:1`
 
@@ -99,7 +118,7 @@ The value identifies the Wallet vendor's app set on this device, not the vendor 
 
 The identifier is a stable pseudonym that enables correlation of transactions originating from the same device and Wallet vendor. An ecosystem that includes this signal type for a transaction data type used in a third-party flow ([PaSO Core] Section 3) **SHOULD** require encryption of the risk signals per [PaSO Risk Signals] Section 7, so that a Relying Party forwarding the proof package cannot use the value as a tracking identifier.
 
-### 2.6 Response Mode
+### 2.7 Response Mode
 
 Type: `urn:paso:risk:global:response_mode:1`
 
@@ -109,7 +128,7 @@ A Wallet that implements this signal type **SHALL** report `status` `ok` and **S
 
 The Authorizing Party verifies this value against the Authorization Request it received, per [PaSO Proof Verify] Section 3.
 
-### 2.7 Authentication Methods
+### 2.8 Authentication Methods
 
 Type: `urn:paso:risk:global:amr:1`
 
@@ -134,16 +153,19 @@ A Wallet that implements this signal type **SHALL** report `status` `ok` and **S
 
 ## 3 References
 
-| Reference           | Description                                                                                                                         |
-|---------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| [PaSO Core]         | [PaSO Core](../paso-core.md)                                                                                                        |
-| [PaSO Risk Signals] | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                                       |
-| [PaSO Proof Verify] | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                                   |
-| [OID4VP]            | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)                      |
-| [PSD2]              | [Directive (EU) 2015/2366 on payment services in the internal market](https://eur-lex.europa.eu/eli/dir/2015/2366/)                 |
-| [Apple IDFV]        | [Apple Developer Documentation — identifierForVendor](https://developer.apple.com/documentation/uikit/uidevice/identifierforvendor) |
-| [Android ASID]      | [Android Developers — Identify developer-owned apps (app set ID)](https://developer.android.com/identity/app-set-id)                |
-| [RFC2119]           | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                                 |
-| [RFC8174]           | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)                 |
-| [RFC8176]           | [RFC 8176 — Authentication Method Reference Values](https://www.rfc-editor.org/rfc/rfc8176.html)                                    |
-| [ISO8601]           | [ISO 8601 — Date and time format](https://www.iso.org/iso-8601-date-and-time-format.html)                                           |
+| Reference                      | Description                                                                                                                                         |
+|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| [PaSO Core]                    | [PaSO Core](../paso-core.md)                                                                                                                        |
+| [PaSO Risk Signals]            | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                                                       |
+| [PaSO Proof Verify]            | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                                                   |
+| [OID4VP]                       | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)                                      |
+| [PSD2]                         | [Directive (EU) 2015/2366 on payment services in the internal market](https://eur-lex.europa.eu/eli/dir/2015/2366/)                                 |
+| [Apple IDFV]                   | [Apple Developer Documentation — identifierForVendor](https://developer.apple.com/documentation/uikit/uidevice/identifierforvendor)                 |
+| [Android ASID]                 | [Android Developers — Identify developer-owned apps (app set ID)](https://developer.android.com/identity/app-set-id)                                |
+| [Apple Screen Capture]         | [Apple Developer Documentation — UIScreen.isCaptured](https://developer.apple.com/documentation/uikit/uiscreen/iscaptured)                          |
+| [Android Recording Detection]  | [Android Developers — Screen recording detection (Android 15)](https://developer.android.com/about/versions/15/features#screen-recording-detection) |
+| [Android Screenshot Detection] | [Android Developers — Screenshot detection (Android 14)](https://developer.android.com/about/versions/14/features/screenshot-detection)             |
+| [RFC2119]                      | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                                                 |
+| [RFC8174]                      | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)                                 |
+| [RFC8176]                      | [RFC 8176 — Authentication Method Reference Values](https://www.rfc-editor.org/rfc/rfc8176.html)                                                    |
+| [ISO8601]                      | [ISO 8601 — Date and time format](https://www.iso.org/iso-8601-date-and-time-format.html)                                                           |

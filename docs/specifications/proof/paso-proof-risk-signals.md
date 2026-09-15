@@ -396,12 +396,12 @@ CBOR diagnostic notation for the `risk_signals` element under `urn:paso:sca:1`:
 
 ### A.4 Metadata Declaration
 
-A `transaction_data_types` entry that references the default profile and tightens it: a shorter freshness bound is imposed on geolocation, and a signal absent from the profile is added (per [PaSO Proof Metadata]).
+A `transaction_data_types` entry that references the baseline profile of A.7 and tightens it: a shorter freshness bound is imposed on geolocation, and a signal absent from the profile is added (per [PaSO Proof Metadata]).
 
 ```json
 {
   "urn:paso:sca:global:payment:1": {
-    "risk_signal_profiles": ["urn:paso:risk-profile:global:default:1"],
+    "risk_signal_profiles": ["urn:paso:risk-profile:com.example:baseline:1"],
     "risk_signals": [
       { "type": "urn:paso:risk:global:geolocation:1", "max_age": 60 },
       { "type": "urn:paso:risk:global:amr:1", "required": true }
@@ -410,7 +410,7 @@ A `transaction_data_types` entry that references the default profile and tighten
 }
 ```
 
-The default profile declares geolocation with no `max_age`, so the first enumeration entry lowers it to 60 seconds. The second adds `amr`, which the default profile deliberately omits. An entry attempting the reverse of either — raising `max_age`, or setting `required` to `false` against a profile's `true` — would have no effect, per Section 4.1 step 3.
+The baseline profile declares geolocation with no `max_age`, so the first enumeration entry lowers it to 60 seconds. The second adds `amr`, which the baseline profile omits. An entry attempting the reverse of either — raising `max_age`, or setting `required` to `false` against a profile's `true` — would have no effect, per Section 4.1 step 3.
 
 ### A.5 Encrypted `risk_signals` Claim (SD-JWT-VC)
 
@@ -468,7 +468,7 @@ A `transaction_data_types` entry requiring encryption, with the issuer encryptio
 
 ### A.7 Profile Reference and Resolution
 
-The default profile published by PaSO ([PaSO Default Risk Signal Profile]) declares:
+A baseline profile `urn:paso:risk-profile:com.example:baseline:1` declares:
 
 | `type`                                 | `required` | `max_age` |
 |----------------------------------------|------------|-----------|
@@ -488,10 +488,10 @@ A transaction data type referencing both profiles, with the metadata enumeration
 
 | `type`                                 | `required` | `max_age` | Source                                              |
 |----------------------------------------|------------|-----------|-----------------------------------------------------|
-| `urn:paso:risk:global:response_mode:1` | `true`     | —         | default profile                                     |
+| `urn:paso:risk:global:response_mode:1` | `true`     | —         | baseline profile                                    |
 | `urn:paso:risk:global:geolocation:1`   | `true`     | `60`      | both profiles; `max_age` lowered by the enumeration |
-| `urn:paso:risk:global:call_activity:1` | `true`     | —         | default profile                                     |
-| `urn:paso:risk:global:device_motion:1` | `true`     | —         | default profile                                     |
+| `urn:paso:risk:global:call_activity:1` | `true`     | —         | baseline profile                                    |
+| `urn:paso:risk:global:device_motion:1` | `true`     | —         | baseline profile                                    |
 | `urn:paso:risk:global:amr:1`           | `true`     | —         | ecosystem profile, and the enumeration              |
 
 Because `amr` resolved as required and neither profile sets `encrypted`, the Authorizing Party can verify the authentication methods directly. Had either profile set `encrypted` to `true`, that check would move behind decryption per Section 6.1, which Section 7.8 advises against in a third-party flow.

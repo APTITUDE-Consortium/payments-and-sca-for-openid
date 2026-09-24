@@ -1511,9 +1511,10 @@
 </tr>
 </tbody>
 </table>
+<p>At least one of <code>state</code>, <code>active_in_window</code>, or <code>screenshot_count</code> <strong>SHALL</strong> be present. A <code>value</code> containing only <code>window_ms</code> is not permitted: where the platform exposes none of the three observation members, the Wallet <strong>SHALL</strong> report <code>status</code> <code>unavailable</code> instead. Where the platform exposes either of <code>state</code> or <code>active_in_window</code>, it exposes both; if one is present, the other <strong>SHALL</strong> be present as well.</p>
 <p>The observation window <strong>SHOULD</strong> cover the period during which the transaction details were displayed to the user for consent.</p>
-<p>The Wallet <strong>SHALL</strong> include an optional member only where the platform exposes the underlying observation, and <strong>SHALL</strong> omit it otherwise. An omitted member means the platform could not observe, not that no capture occurred; the Authorizing Party <strong>SHALL NOT</strong> interpret an omitted member as evidence that the screen was not captured. Where the platform exposes none of the optional members, the Wallet <strong>SHALL</strong> report <code>status</code> <code>unavailable</code>.</p>
-<p>The available member set is a function of the platform and OS version, not of the transaction. On iOS the platform reports a single capture state [Apple Screen Capture] that does not distinguish screen recording, mirroring, or sharing; the Wallet <strong>SHALL</strong> report the state as given and <strong>SHALL NOT</strong> infer the capture destination. On Android, capture state is observable from Android 15 [Android Recording Detection] and screenshot events from Android 14 [Android Screenshot Detection]; on earlier versions the corresponding members are absent. The value <strong>SHALL</strong> therefore be interpreted in the context of the platform and OS version, which the Device Basics signal (Section 2.5) reports. A risk signal profile that includes this signal type <strong>SHOULD</strong> also include <code>urn:paso:risk:global:device_basics:1</code>.</p>
+<p>The Wallet <strong>SHALL</strong> include an optional member only where the platform exposes the underlying observation, and <strong>SHALL</strong> omit it otherwise. An omitted member means the platform could not observe, not that no capture occurred; the Authorizing Party <strong>SHALL NOT</strong> interpret an omitted member as evidence that the screen was not captured.</p>
+<p>The available member set is a function of the platform and OS version, not of the transaction. On iOS the platform reports a single capture state [Apple Screen Capture] that does not distinguish screen recording, mirroring, or sharing, and separately notifies the app of screenshots [Apple Screenshot Detection]; the Wallet <strong>SHALL</strong> report the state as given and <strong>SHALL NOT</strong> infer the capture destination. On Android, capture state is observable from Android 15 [Android Recording Detection] and screenshot events from Android 14 [Android Screenshot Detection]; on earlier versions the corresponding members are absent. The value <strong>SHALL</strong> therefore be interpreted in the context of the platform and OS version, which the Device Basics signal (Section 2.5) reports. A risk signal profile that includes this signal type <strong>SHOULD</strong> also include <code>urn:paso:risk:global:device_basics:1</code>.</p>
 <h3 id="25-device-basics">2.5 Device Basics</h3>
 <p>Type: <code>urn:paso:risk:global:device_basics:1</code></p>
 <p>A device-fact signal. The <code>value</code> is an object with the following members:</p>
@@ -1647,6 +1648,10 @@
 <tr>
 <td>[Apple Screen Capture]</td>
 <td><a href="https://developer.apple.com/documentation/uikit/uiscreen/iscaptured">Apple Developer Documentation — UIScreen.isCaptured</a></td>
+</tr>
+<tr>
+<td>[Apple Screenshot Detection]</td>
+<td><a href="https://developer.apple.com/documentation/uikit/uiapplication/userdidtakescreenshotnotification">Apple Developer Documentation — UIApplication.userDidTakeScreenshotNotification</a></td>
 </tr>
 <tr>
 <td>[Android Recording Detection]</td>

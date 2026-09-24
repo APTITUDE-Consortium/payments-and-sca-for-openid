@@ -82,11 +82,13 @@ A measured signal. The `value` reports whether the device screen was captured �
 | `active_in_window` | no       | `true` if screen capture was observed active at any point in the window, `false` if the platform reported it inactive throughout. |
 | `screenshot_count` | no       | Number of screenshots the platform reported during the window.                                                                    |
 
+At least one of `state`, `active_in_window`, or `screenshot_count` **SHALL** be present. A `value` containing only `window_ms` is not permitted: where the platform exposes none of the three observation members, the Wallet **SHALL** report `status` `unavailable` instead. Where the platform exposes either of `state` or `active_in_window`, it exposes both; if one is present, the other **SHALL** be present as well.
+
 The observation window **SHOULD** cover the period during which the transaction details were displayed to the user for consent.
 
-The Wallet **SHALL** include an optional member only where the platform exposes the underlying observation, and **SHALL** omit it otherwise. An omitted member means the platform could not observe, not that no capture occurred; the Authorizing Party **SHALL NOT** interpret an omitted member as evidence that the screen was not captured. Where the platform exposes none of the optional members, the Wallet **SHALL** report `status` `unavailable`.
+The Wallet **SHALL** include an optional member only where the platform exposes the underlying observation, and **SHALL** omit it otherwise. An omitted member means the platform could not observe, not that no capture occurred; the Authorizing Party **SHALL NOT** interpret an omitted member as evidence that the screen was not captured.
 
-The available member set is a function of the platform and OS version, not of the transaction. On iOS the platform reports a single capture state [Apple Screen Capture] that does not distinguish screen recording, mirroring, or sharing; the Wallet **SHALL** report the state as given and **SHALL NOT** infer the capture destination. On Android, capture state is observable from Android 15 [Android Recording Detection] and screenshot events from Android 14 [Android Screenshot Detection]; on earlier versions the corresponding members are absent. The value **SHALL** therefore be interpreted in the context of the platform and OS version, which the Device Basics signal (Section 2.5) reports. A risk signal profile that includes this signal type **SHOULD** also include `urn:paso:risk:global:device_basics:1`.
+The available member set is a function of the platform and OS version, not of the transaction. On iOS the platform reports a single capture state [Apple Screen Capture] that does not distinguish screen recording, mirroring, or sharing, and separately notifies the app of screenshots [Apple Screenshot Detection]; the Wallet **SHALL** report the state as given and **SHALL NOT** infer the capture destination. On Android, capture state is observable from Android 15 [Android Recording Detection] and screenshot events from Android 14 [Android Screenshot Detection]; on earlier versions the corresponding members are absent. The value **SHALL** therefore be interpreted in the context of the platform and OS version, which the Device Basics signal (Section 2.5) reports. A risk signal profile that includes this signal type **SHOULD** also include `urn:paso:risk:global:device_basics:1`.
 
 ### 2.5 Device Basics
 
@@ -153,19 +155,20 @@ A Wallet that implements this signal type **SHALL** report `status` `ok` and **S
 
 ## 3 References
 
-| Reference                      | Description                                                                                                                                         |
-|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| [PaSO Core]                    | [PaSO Core](../paso-core.md)                                                                                                                        |
-| [PaSO Risk Signals]            | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                                                       |
-| [PaSO Proof Verify]            | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                                                   |
-| [OID4VP]                       | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)                                      |
-| [PSD2]                         | [Directive (EU) 2015/2366 on payment services in the internal market](https://eur-lex.europa.eu/eli/dir/2015/2366/)                                 |
-| [Apple IDFV]                   | [Apple Developer Documentation — identifierForVendor](https://developer.apple.com/documentation/uikit/uidevice/identifierforvendor)                 |
-| [Android ASID]                 | [Android Developers — Identify developer-owned apps (app set ID)](https://developer.android.com/identity/app-set-id)                                |
-| [Apple Screen Capture]         | [Apple Developer Documentation — UIScreen.isCaptured](https://developer.apple.com/documentation/uikit/uiscreen/iscaptured)                          |
-| [Android Recording Detection]  | [Android Developers — Screen recording detection (Android 15)](https://developer.android.com/about/versions/15/features#screen-recording-detection) |
-| [Android Screenshot Detection] | [Android Developers — Screenshot detection (Android 14)](https://developer.android.com/about/versions/14/features/screenshot-detection)             |
-| [RFC2119]                      | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                                                 |
-| [RFC8174]                      | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)                                 |
-| [RFC8176]                      | [RFC 8176 — Authentication Method Reference Values](https://www.rfc-editor.org/rfc/rfc8176.html)                                                    |
-| [ISO8601]                      | [ISO 8601 — Date and time format](https://www.iso.org/iso-8601-date-and-time-format.html)                                                           |
+| Reference                      | Description                                                                                                                                                                        |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [PaSO Core]                    | [PaSO Core](../paso-core.md)                                                                                                                                                       |
+| [PaSO Risk Signals]            | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                                                                                      |
+| [PaSO Proof Verify]            | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                                                                                  |
+| [OID4VP]                       | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)                                                                     |
+| [PSD2]                         | [Directive (EU) 2015/2366 on payment services in the internal market](https://eur-lex.europa.eu/eli/dir/2015/2366/)                                                                |
+| [Apple IDFV]                   | [Apple Developer Documentation — identifierForVendor](https://developer.apple.com/documentation/uikit/uidevice/identifierforvendor)                                                |
+| [Android ASID]                 | [Android Developers — Identify developer-owned apps (app set ID)](https://developer.android.com/identity/app-set-id)                                                               |
+| [Apple Screen Capture]         | [Apple Developer Documentation — UIScreen.isCaptured](https://developer.apple.com/documentation/uikit/uiscreen/iscaptured)                                                         |
+| [Apple Screenshot Detection]   | [Apple Developer Documentation — UIApplication.userDidTakeScreenshotNotification](https://developer.apple.com/documentation/uikit/uiapplication/userdidtakescreenshotnotification) |
+| [Android Recording Detection]  | [Android Developers — Screen recording detection (Android 15)](https://developer.android.com/about/versions/15/features#screen-recording-detection)                                |
+| [Android Screenshot Detection] | [Android Developers — Screenshot detection (Android 14)](https://developer.android.com/about/versions/14/features/screenshot-detection)                                            |
+| [RFC2119]                      | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                                                                                |
+| [RFC8174]                      | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)                                                                |
+| [RFC8176]                      | [RFC 8176 — Authentication Method Reference Values](https://www.rfc-editor.org/rfc/rfc8176.html)                                                                                   |
+| [ISO8601]                      | [ISO 8601 — Date and time format](https://www.iso.org/iso-8601-date-and-time-format.html)                                                                                          |

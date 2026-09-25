@@ -180,11 +180,13 @@ The Wallet **SHALL** maintain a locale priority list: an ordered sequence of [RF
 
 The Wallet **SHALL** select a locale for the transaction as follows. For each locale in the priority list, in order:
 
-1. For every `display` array across all `claims` metadata and `ui_labels` entries for the matching transaction data type, apply the Lookup matching scheme defined in [RFC4647] Section 3.4, using the current locale as the language range and the `locale` values of that array's entries as the available tags. If the Lookup scheme finds no match, use the first entry without a `locale` field as the default; if no such entry exists, the result is no match for that array.
+1. For every `display` array across all `claims` metadata and `ui_labels` entries for the matching transaction data type, apply the Lookup matching scheme defined in [RFC4647] Section 3.4, using the current locale as the language range and the `locale` values of that array's entries as the available tags. If the Lookup scheme finds no match, the first entry without a `locale` field (the default entry) is the matched entry for that array; if no such entry exists, the result is no match for that array.
 
 2. If every `display` array produces a match, the current locale is selected. The Wallet **SHALL** use the matched entries for rendering and **SHALL NOT** continue to the next locale.
 
 3. If any `display` array produces no match, the Wallet **SHALL** discard all matches from the current locale and proceed to the next locale.
+
+A match produced by a default entry is a match in the sense of steps 2 and 3. The use of default entries does not affect locale selection: the current locale is selected and reported in `display_locale` even if some or all `display` arrays matched through their default entry. The Wallet **SHALL NOT** exclude a credential or treat a `transaction_data` entry as not compatible solely because default entries were used.
 
 If no locale produces a complete match, the Wallet **SHALL** exclude the credential from further processing.
 

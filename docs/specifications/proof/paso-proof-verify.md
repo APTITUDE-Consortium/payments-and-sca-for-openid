@@ -43,7 +43,7 @@ Upon receiving the proof package, the Authorizing Party **SHALL** perform the fo
    - `transaction_data_hash_alg`: verify the algorithm is acceptable.
    - `request_integrity`: recompute the [W3C.SRI] integrity value of the signed Authorization Request JWT and verify it matches.
    - `metadata_integrity`: if present, verify it matches the [W3C.SRI] integrity value of the Attestation Provider's current signed credential metadata JWT for this credential.
-   - `display_locale`: verify that the locale matches a locale for which the credential metadata provides complete `display` entries.
+   - `display_locale`: verify that applying the locale selection procedure of [PaSO View] Section 4 to the credential metadata, with `display_locale` as the only locale in the priority list, yields a complete match. Default entries (entries without a `locale`) count as matches; the Authorizing Party **SHALL NOT** reject a presentation because `display_locale` is not itself listed as a `locale` in the metadata, as long as every `display` array matches through a locale-tagged or a default entry.
    - `jti`: verify uniqueness (the Authorizing Party **SHOULD** maintain a replay cache).
 
 5. **Payload verification**: Verify that the `transaction_data` entry's `payload` conforms to the applicable Transaction Data Type Rulebook. The specific checks are defined by the rulebook.
@@ -108,6 +108,7 @@ How the Relying Party obtains the Authorizing Party's public key is out of scope
 |-----------------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core]           | [PaSO Core](../paso-core.md)                                                                                               |
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](paso-proof-metadata.md)                                                                      |
+| [PaSO View]           | [PaSO View](../paso-view.md)                                                                                               |
 | [PaSO Risk Signals]   | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                              |
 | [PaSO Risk Signal Registry] | [PaSO Proof: Risk Signal Registry](paso-proof-risk-signal-registry.md)                                                     |
 | [OID4VP]              | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |

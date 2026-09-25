@@ -170,7 +170,7 @@ PaSO extends the [OID4VP] `transaction_data` entry with the following parameter:
 
 ### 7.2 Locale Selection
 
-Locale selection **SHALL** follow the Lookup matching scheme defined in [RFC4647] Section 3.4. The locale used for selection **SHALL** be reported in the `display_locale` claim (Section 6.1).
+Locale selection **SHALL** follow the Lookup matching scheme defined in [RFC4647] Section 3.4, with `display` entries without a `locale` serving as defaults, as defined in [PaSO View] Section 4. The locale used for selection **SHALL** be reported in the `display_locale` claim (Section 6.1); it is the locale from the Wallet's priority list that was selected, regardless of whether individual `display` arrays matched through a locale-tagged or a default entry.
 
 ### 7.3 Simple Profile
 
@@ -244,6 +244,7 @@ For the PaSO-targeted entries, the Wallet **SHALL** perform the following steps:
 | [SD-JWT-VC]           | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
 | [mdoc]                | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](proof/paso-proof-metadata.md)                                                                |
+| [PaSO View]           | [PaSO View](paso-view.md)                                                                                                  |
 | [PaSO Risk Signals]   | [PaSO Proof: Risk Signals Module](proof/paso-proof-risk-signals.md)                                                         |
 | [PaSO Risk Signal Registry] | [PaSO Proof: Risk Signal Registry](proof/paso-proof-risk-signal-registry.md)                                         |
 | [JAR]                 | [RFC 9101 — JWT-Secured Authorization Request](https://www.rfc-editor.org/rfc/rfc9101.html)                                |

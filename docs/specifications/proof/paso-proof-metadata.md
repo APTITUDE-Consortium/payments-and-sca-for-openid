@@ -63,7 +63,7 @@ The `display` entries and `value_type` provide default rendering hints. The appl
 
 Each entry in `transaction_data_types` **MAY** include a `ui_labels` object providing localised strings for consent UI elements. The `ui_labels` object is a set of key-value pairs where each key is a UI element identifier and each value is an array of objects containing:
 
-- `locale`: **OPTIONAL**. A [RFC5646] language tag. Entries without `locale` serve as defaults.
+- `locale`: **OPTIONAL**. A [RFC5646] language tag. Entries without `locale` serve as defaults: the Wallet uses them when no entry matches the Wallet's locale, per [PaSO View] Section 4. The same applies to entries without `locale` in a claim's `display` array (Section 3.1). An array that provides a default entry is compatible with any Wallet locale.
 - `value`: The localised string.
 - `value_type`: **OPTIONAL**. A `value_type` as defined in Section 3.1 governing how the Wallet formats the `value`. If omitted, treated as plain text. Restricted to the text-producing value types per Section 3.3.
 
@@ -129,7 +129,7 @@ When the Wallet requests `Accept: application/jwt`, the Attestation Provider **S
 
 The Attestation Provider **SHALL** rotate signed credential metadata JWTs before their `exp` time and **SHOULD** set `exp` values that balance freshness against unnecessary network traffic.
 
-The Wallet **MAY** refuse issuance if the returned metadata does not contain any locale compatible with its locale priority list.
+The Wallet **MAY** refuse issuance if the returned metadata does not allow a complete match per [PaSO View] Section 4 for any locale in its locale priority list, taking default entries into account. Metadata whose `display` arrays match through default entries is compatible and **SHALL NOT** be refused on locale grounds.
 
 ## 5 Ad-hoc Transaction Data Metadata
 
@@ -184,7 +184,7 @@ A successfully verified ad-hoc metadata JWT is authoritative for the enclosing `
 - Its `metadata` object **SHALL** be used in place of the corresponding `transaction_data_types` entry from the signed credential metadata JWT, for this transaction only.
 - A transaction data type covered by a valid ad-hoc metadata JWT **SHALL** be considered supported by the targeted credential for the purposes of [PaSO Core] Section 7, even if it is absent from the signed credential metadata.
 
-If the ad-hoc metadata does not contain `display` entries for any locale compatible with the Wallet's locale priority list, the Wallet **MAY** treat the `transaction_data` entry as incompatible.
+If the ad-hoc metadata does not allow a complete match per [PaSO View] Section 4 for any locale in the Wallet's locale priority list, taking default entries into account, the Wallet **MAY** treat the `transaction_data` entry as incompatible. Ad-hoc metadata whose `display` arrays match through default entries is compatible and **SHALL NOT** be treated as incompatible on locale grounds.
 
 The Wallet **SHALL NOT** persist ad-hoc metadata JWTs beyond the processing of the transaction they accompany. Sections 6 and 8 do not apply to ad-hoc metadata JWTs. Because ad-hoc metadata is delivered within the presentation request, its use involves no additional network retrieval and is not subject to the linkability considerations of Section 8.
 
@@ -207,7 +207,7 @@ The binding deliberately does not require the same key as the credential: the At
 
 The Wallet **SHALL** persist signed credential metadata JWTs in their signed form and **SHALL NOT** persist the decoded credential metadata. The Wallet **MAY** store multiple signed metadata JWTs per credential to cover different locales. Each time the Wallet loads a metadata JWT from storage, it **SHALL** perform the full verification procedure defined in Section 7.
 
-If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 7. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT covering the required locale is obtained.
+If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 7. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT allowing a complete match per [PaSO View] Section 4 (taking default entries into account) is obtained.
 
 ## 7 Verification
 

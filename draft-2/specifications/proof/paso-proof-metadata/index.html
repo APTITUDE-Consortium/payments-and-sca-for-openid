@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1667,7 +1667,7 @@
 <h3 id="32-ui-labels">3.2 UI Labels</h3>
 <p>Each entry in <code>transaction_data_types</code> <strong>MAY</strong> include a <code>ui_labels</code> object providing localised strings for consent UI elements. The <code>ui_labels</code> object is a set of key-value pairs where each key is a UI element identifier and each value is an array of objects containing:</p>
 <ul>
-<li><code>locale</code>: <strong>OPTIONAL</strong>. A [RFC5646] language tag. Entries without <code>locale</code> serve as defaults.</li>
+<li><code>locale</code>: <strong>OPTIONAL</strong>. A [RFC5646] language tag. Entries without <code>locale</code> serve as defaults: the Wallet uses them when no entry matches the Wallet's locale, per [PaSO View] Section 4. The same applies to entries without <code>locale</code> in a claim's <code>display</code> array (Section 3.1). An array that provides a default entry is compatible with any Wallet locale.</li>
 <li><code>value</code>: The localised string.</li>
 <li><code>value_type</code>: <strong>OPTIONAL</strong>. A <code>value_type</code> as defined in Section 3.1 governing how the Wallet formats the <code>value</code>. If omitted, treated as plain text. Restricted to the text-producing value types per Section 3.3.</li>
 </ul>
@@ -1742,7 +1742,7 @@
 <li>The JWT <strong>SHALL</strong> be signed using an algorithm appropriate for the signing key: the key in the <code>x5c</code> leaf certificate, or the key set key identified by <code>kid</code>.</li>
 </ul>
 <p>The Attestation Provider <strong>SHALL</strong> rotate signed credential metadata JWTs before their <code>exp</code> time and <strong>SHOULD</strong> set <code>exp</code> values that balance freshness against unnecessary network traffic.</p>
-<p>The Wallet <strong>MAY</strong> refuse issuance if the returned metadata does not contain any locale compatible with its locale priority list.</p>
+<p>The Wallet <strong>MAY</strong> refuse issuance if the returned metadata does not allow a complete match per [PaSO View] Section 4 for any locale in its locale priority list, taking default entries into account. Metadata whose <code>display</code> arrays match through default entries is compatible and <strong>SHALL NOT</strong> be refused on locale grounds.</p>
 <h2 id="5-ad-hoc-transaction-data-metadata">5 Ad-hoc Transaction Data Metadata</h2>
 <p>This section defines an alternative mechanism for supplying transaction data type metadata. Instead of relying solely on the corresponding entry in the signed credential metadata JWT, the metadata for a transaction data type <strong>MAY</strong> be supplied ad hoc within the <code>transaction_data</code> entry itself, as a JWT signed by the Attestation Provider of the targeted PaSO Credential. This mechanism applies to PaSO Credentials of every credential format supported by [PaSO Core], including [SD-JWT-VC] and [mdoc]; only the values of the <code>sub</code> and <code>format</code> claims (Section 5.2) are format-specific.</p>
 <h3 id="51-the-metadata-parameter">5.1 The <code>metadata</code> Parameter</h3>
@@ -1788,7 +1788,7 @@
 <li>Its <code>metadata</code> object <strong>SHALL</strong> be used in place of the corresponding <code>transaction_data_types</code> entry from the signed credential metadata JWT, for this transaction only.</li>
 <li>A transaction data type covered by a valid ad-hoc metadata JWT <strong>SHALL</strong> be considered supported by the targeted credential for the purposes of [PaSO Core] Section 7, even if it is absent from the signed credential metadata.</li>
 </ul>
-<p>If the ad-hoc metadata does not contain <code>display</code> entries for any locale compatible with the Wallet's locale priority list, the Wallet <strong>MAY</strong> treat the <code>transaction_data</code> entry as incompatible.</p>
+<p>If the ad-hoc metadata does not allow a complete match per [PaSO View] Section 4 for any locale in the Wallet's locale priority list, taking default entries into account, the Wallet <strong>MAY</strong> treat the <code>transaction_data</code> entry as incompatible. Ad-hoc metadata whose <code>display</code> arrays match through default entries is compatible and <strong>SHALL NOT</strong> be treated as incompatible on locale grounds.</p>
 <p>The Wallet <strong>SHALL NOT</strong> persist ad-hoc metadata JWTs beyond the processing of the transaction they accompany. Sections 6 and 8 do not apply to ad-hoc metadata JWTs. Because ad-hoc metadata is delivered within the presentation request, its use involves no additional network retrieval and is not subject to the linkability considerations of Section 8.</p>
 <h3 id="55-security-considerations">5.5 Security Considerations</h3>
 <p><em><strong>Note</strong>: This section is <strong>informative</strong>.</em></p>
@@ -1802,7 +1802,7 @@
 <p>The binding deliberately does not require the same key as the credential: the Attestation Provider may use a dedicated metadata-signing key, provided its certificate is issued under the same root CA with the same Subject (x5c case) or the key is published in the same issuer key set (key set case). The <code>iss</code> claim check (step 4) is a consistency check on top of the key binding, not a substitute for it.</p>
 <h2 id="6-storage-and-handling">6 Storage and Handling</h2>
 <p>The Wallet <strong>SHALL</strong> persist signed credential metadata JWTs in their signed form and <strong>SHALL NOT</strong> persist the decoded credential metadata. The Wallet <strong>MAY</strong> store multiple signed metadata JWTs per credential to cover different locales. Each time the Wallet loads a metadata JWT from storage, it <strong>SHALL</strong> perform the full verification procedure defined in Section 7.</p>
-<p>If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet <strong>SHALL</strong> discard it and re-fetch and verify it per Section 7. The Wallet <strong>SHALL NOT</strong> proceed with any PaSO operation for that credential until a valid metadata JWT covering the required locale is obtained.</p>
+<p>If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet <strong>SHALL</strong> discard it and re-fetch and verify it per Section 7. The Wallet <strong>SHALL NOT</strong> proceed with any PaSO operation for that credential until a valid metadata JWT allowing a complete match per [PaSO View] Section 4 (taking default entries into account) is obtained.</p>
 <h2 id="7-verification">7 Verification</h2>
 <p>The Wallet <strong>SHALL</strong> perform the following verification each time it needs to rely on a signed credential metadata JWT:</p>
 <ol>
@@ -2156,10 +2156,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

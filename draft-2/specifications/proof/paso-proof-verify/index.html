@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1306,7 +1306,7 @@
 <li><code>transaction_data_hash_alg</code>: verify the algorithm is acceptable.</li>
 <li><code>request_integrity</code>: recompute the [W3C.SRI] integrity value of the signed Authorization Request JWT and verify it matches.</li>
 <li><code>metadata_integrity</code>: if present, verify it matches the [W3C.SRI] integrity value of the Attestation Provider's current signed credential metadata JWT for this credential.</li>
-<li><code>display_locale</code>: verify that the locale matches a locale for which the credential metadata provides complete <code>display</code> entries.</li>
+<li><code>display_locale</code>: verify that applying the locale selection procedure of [PaSO View] Section 4 to the credential metadata, with <code>display_locale</code> as the only locale in the priority list, yields a complete match. Default entries (entries without a <code>locale</code>) count as matches; the Authorizing Party <strong>SHALL NOT</strong> reject a presentation because <code>display_locale</code> is not itself listed as a <code>locale</code> in the metadata, as long as every <code>display</code> array matches through a locale-tagged or a default entry.</li>
 <li>
 <p><code>jti</code>: verify uniqueness (the Authorizing Party <strong>SHOULD</strong> maintain a replay cache).</p>
 </li>
@@ -1375,6 +1375,10 @@
 <tr>
 <td>[PaSO Proof Metadata]</td>
 <td><a href="../paso-proof-metadata/">PaSO Proof: Metadata Module</a></td>
+</tr>
+<tr>
+<td>[PaSO View]</td>
+<td><a href="../../paso-view/">PaSO View</a></td>
 </tr>
 <tr>
 <td>[PaSO Risk Signals]</td>
@@ -1511,10 +1515,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

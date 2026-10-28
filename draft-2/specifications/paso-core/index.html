@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -2104,7 +2104,7 @@
 <li><strong><code>payload</code></strong>: <strong>REQUIRED</strong>. A JSON object containing the transaction details. The structure is defined by the applicable Transaction Data Type Rulebook for the matching <code>type</code>.</li>
 </ul>
 <h3 id="72-locale-selection">7.2 Locale Selection</h3>
-<p>Locale selection <strong>SHALL</strong> follow the Lookup matching scheme defined in [RFC4647] Section 3.4. The locale used for selection <strong>SHALL</strong> be reported in the <code>display_locale</code> claim (Section 6.1).</p>
+<p>Locale selection <strong>SHALL</strong> follow the Lookup matching scheme defined in [RFC4647] Section 3.4, with <code>display</code> entries without a <code>locale</code> serving as defaults, as defined in [PaSO View] Section 4. The locale used for selection <strong>SHALL</strong> be reported in the <code>display_locale</code> claim (Section 6.1); it is the locale from the Wallet's priority list that was selected, regardless of whether individual <code>display</code> arrays matched through a locale-tagged or a default entry.</p>
 <h3 id="73-simple-profile">7.3 Simple Profile</h3>
 <p>The simple profile is the minimum PaSO transaction data processing mode and a minimal subset of the advanced profile. All Wallets supporting PaSO <strong>SHALL</strong> implement the simple profile. A Wallet implementing the advanced profile is fully compatible with requests made in the simple profile.</p>
 <p>In the simple profile, the presentation request contains exactly one PaSO-targeted <code>transaction_data</code> entry, identified by a <code>type</code> starting with <code>urn:paso:sca:</code>, whose <code>credential_ids</code> <strong>SHALL</strong> contain exactly one credential query identifier. When <code>credential_sets</code> are used, the PaSO-targeted credential <strong>SHALL</strong> be required in all alternatives. The Wallet <strong>MAY</strong> reject non-trivial credential set configurations.</p>
@@ -2194,6 +2194,10 @@
 <tr>
 <td>[PaSO Proof Metadata]</td>
 <td><a href="../proof/paso-proof-metadata/">PaSO Proof: Metadata Module</a></td>
+</tr>
+<tr>
+<td>[PaSO View]</td>
+<td><a href="../paso-view/">PaSO View</a></td>
 </tr>
 <tr>
 <td>[PaSO Risk Signals]</td>
@@ -2546,10 +2550,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

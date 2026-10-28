@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1466,7 +1466,7 @@ Interpolation is single-pass: placeholder-like sequences contained in resolved v
 <p>The Wallet <strong>SHALL</strong> select a locale for the transaction as follows. For each locale in the priority list, in order:</p>
 <ol>
 <li>
-<p>For every <code>display</code> array across all <code>claims</code> metadata and <code>ui_labels</code> entries for the matching transaction data type, apply the Lookup matching scheme defined in [RFC4647] Section 3.4, using the current locale as the language range and the <code>locale</code> values of that array's entries as the available tags. If the Lookup scheme finds no match, use the first entry without a <code>locale</code> field as the default; if no such entry exists, the result is no match for that array.</p>
+<p>For every <code>display</code> array across all <code>claims</code> metadata and <code>ui_labels</code> entries for the matching transaction data type, apply the Lookup matching scheme defined in [RFC4647] Section 3.4, using the current locale as the language range and the <code>locale</code> values of that array's entries as the available tags. If the Lookup scheme finds no match, the first entry without a <code>locale</code> field (the default entry) is the matched entry for that array; if no such entry exists, the result is no match for that array.</p>
 </li>
 <li>
 <p>If every <code>display</code> array produces a match, the current locale is selected. The Wallet <strong>SHALL</strong> use the matched entries for rendering and <strong>SHALL NOT</strong> continue to the next locale.</p>
@@ -1475,6 +1475,7 @@ Interpolation is single-pass: placeholder-like sequences contained in resolved v
 <p>If any <code>display</code> array produces no match, the Wallet <strong>SHALL</strong> discard all matches from the current locale and proceed to the next locale.</p>
 </li>
 </ol>
+<p>A match produced by a default entry is a match in the sense of steps 2 and 3. The use of default entries does not affect locale selection: the current locale is selected and reported in <code>display_locale</code> even if some or all <code>display</code> arrays matched through their default entry. The Wallet <strong>SHALL NOT</strong> exclude a credential or treat a <code>transaction_data</code> entry as not compatible solely because default entries were used.</p>
 <p>If no locale produces a complete match, the Wallet <strong>SHALL</strong> exclude the credential from further processing.</p>
 <p>The selected locale <strong>SHALL</strong> be reported in the <code>display_locale</code> holder binding proof claim per [PaSO Core].</p>
 <p>If the transaction data cannot be presented in the Wallet's current operating language, the Wallet <strong>MAY</strong> switch its entire user interface to another language the user understands for the duration of the PaSO presentation flow.</p>
@@ -1660,10 +1661,10 @@ Interpolation is single-pass: placeholder-like sequences contained in resolved v
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
       
     
   </body>

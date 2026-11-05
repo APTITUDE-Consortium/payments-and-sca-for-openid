@@ -160,8 +160,9 @@ The ad-hoc metadata JWT **SHALL** have the following structure:
   - `sub`: **REQUIRED**. The credential type identifier as defined by the credential format: the `vct` claim value for [SD-JWT-VC], or the `docType` value of the mobile security object (MSO) for [mdoc].
   - `format`: **REQUIRED**. The credential format identifier as defined in [OID4VCI] (e.g., `dc+sd-jwt`, `mso_mdoc`).
   - `iat`: **REQUIRED**. Issuance time.
-  - `exp`: **REQUIRED**. Expiration time. The Attestation Provider **SHOULD** choose a validity period that bounds how long Relying Parties can cache and reuse the JWT.
+  - `exp`: **REQUIRED**. Expiration time. The Attestation Provider **SHOULD** choose a validity period that bounds how long the Relying Party identified by `aud` can cache and reuse the JWT.
   - `transaction_data_type`: **REQUIRED**. The transaction data type identifier the metadata applies to, following the structure defined in [PaSO Core] Section 5.2. It **SHALL** equal the `type` of the enclosing `transaction_data` entry.
+  - `aud`: **REQUIRED**. The `client_id` per [OID4VP] of the single Relying Party permitted to use this JWT. The value **SHALL** be a single string; the array form permitted by [RFC7519] Section 4.1.3 **SHALL NOT** be used.
   - `metadata`: **REQUIRED**. An object with the same structure as a single `transaction_data_types` entry value as defined in Section 3, i.e. containing `claims` per Section 3.1, `ui_labels` per Section 3.2 where applicable, and any additional parameters. The requirements of Sections 3.1 and 3.2 apply unchanged.
 - The JWT **SHALL** be signed using an algorithm appropriate for the signing key: the key in the `x5c` leaf certificate, or the key set key identified by `kid`.
 
@@ -180,6 +181,7 @@ When a PaSO-targeted `transaction_data` entry contains a `metadata` parameter, t
 5. Verify that the `exp` claim has not passed.
 6. Verify the credential binding as defined in Section 7 step 6.
 7. Verify that the `transaction_data_type` claim equals the `type` of the enclosing `transaction_data` entry.
+8. Verify that the `aud` claim is a single string that exactly equals the `client_id` of the Authorization Request carrying the `transaction_data` entry, including any client identifier prefix.
 
 If any step fails, the ad-hoc metadata JWT **SHALL** be considered invalid and the `transaction_data` entry **SHALL** be considered incompatible for the targeted credential per [PaSO Core] Section 7.4.2. The Wallet **SHALL NOT** fall back to the stored credential metadata entry for a `transaction_data` entry whose `metadata` parameter fails verification.
 
@@ -189,6 +191,7 @@ A successfully verified ad-hoc metadata JWT is authoritative for the enclosing `
 
 - Its `metadata` object **SHALL** be used in place of the corresponding `transaction_data_types` entry from the signed credential metadata JWT, for this transaction only.
 - A transaction data type covered by a valid ad-hoc metadata JWT **SHALL** be considered supported by the targeted credential for the purposes of [PaSO Core] Section 7, even if it is absent from the signed credential metadata.
+- The signed credential metadata JWT is not used to display the transaction data; the `metadata_integrity` claim per [PaSO Core] **SHALL** therefore be omitted from the presentation.
 
 If locale selection per [PaSO View] Section 4 does not succeed for the ad-hoc metadata and the Wallet's locale priority list, the Wallet **MAY** treat the `transaction_data` entry as incompatible. Ad-hoc metadata for which selection succeeds only through default entries is compatible and **SHALL NOT** be treated as incompatible on locale grounds.
 
@@ -208,6 +211,8 @@ To forge ad-hoc metadata, an attacker would need a certificate issued under the 
 When the credential's issuer keys are instead published in a key set, the binding rests on the key-set branch of Section 7 step 6: the JWT must verify under a key from the same issuer key set that verifies the credential itself. Forging ad-hoc metadata then requires inserting a key into the issuer's published key set, at which point the credential itself would be equally forgeable; this path likewise adds no trust assumptions beyond those already made for the credential.
 
 The binding deliberately does not require the same key as the credential: the Attestation Provider may use a dedicated metadata-signing key, provided its certificate is issued under the same root CA with the same Subject (x5c case) or the key is published in the same issuer key set (key set case). The `iss` claim check (step 4) is a consistency check on top of the key binding, not a substitute for it.
+
+The `aud` claim (Section 5.3 step 8) binds each ad-hoc metadata JWT to a single Relying Party. Because the JWT reaches the Wallet through the Relying Party, without this binding any Relying Party that obtained a copy could reuse it until `exp`. With it, a copied JWT is rejected at every other Relying Party, and a short `exp` limits reuse by the bound Relying Party itself. Together with Section 3, this lets an Attestation Provider reserve transaction data types: types it does not publish in the signed credential metadata are usable only by the Relying Parties for which it issues ad-hoc metadata JWTs. A typical case is a bank acting both as Attestation Provider and as Relying Party, which uses unpublished transaction data types for its own transactions while third-party Relying Parties use the published ones.
 
 ## 6 Storage and Handling
 
@@ -254,6 +259,7 @@ Credential metadata retrieval **SHALL NOT** be linkable to credential usage. The
 | [RFC2119]   | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |
 | [RFC8174]   | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)        |
 | [RFC5646]   | [RFC 5646 — Tags for Identifying Languages](https://www.rfc-editor.org/rfc/rfc5646.html)                                   |
+| [RFC7519]   | [RFC 7519 — JSON Web Token (JWT)](https://www.rfc-editor.org/rfc/rfc7519.html)                                             |
 | [SD-JWT-VC] | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
 | [UAX29]     | [Unicode Standard Annex #29 — Unicode Text Segmentation](https://www.unicode.org/reports/tr29/)                            |
 | [mdoc]      | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |

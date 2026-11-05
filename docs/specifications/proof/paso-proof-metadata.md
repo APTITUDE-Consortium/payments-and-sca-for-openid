@@ -63,7 +63,7 @@ The `display` entries and `value_type` provide default rendering hints. The appl
 
 Each entry in `transaction_data_types` **MAY** include a `ui_labels` object providing localised strings for consent UI elements. The `ui_labels` object is a set of key-value pairs where each key is a UI element identifier and each value is an array of objects containing:
 
-- `locale`: **OPTIONAL**. A [RFC5646] language tag. Entries without `locale` serve as defaults: the Wallet uses them when no entry matches the Wallet's locale, per [PaSO View] Section 4. The same applies to entries without `locale` in a claim's `display` array (Section 3.1). An array that provides a default entry is compatible with any Wallet locale.
+- `locale`: **OPTIONAL**. A [RFC5646] language tag. An entry without `locale` is a default entry. The same applies to entries without `locale` in a claim's `display` array (Section 3.1). Default entries are used only when no locale in the Wallet's locale priority list matches, and then for every array at once, per [PaSO View] Section 4. Section 3.3 requires all arrays of a transaction data type to provide the same locales and either all or none of them to provide a default entry.
 - `value`: The localised string.
 - `value_type`: **OPTIONAL**. A `value_type` as defined in Section 3.1 governing how the Wallet formats the `value`. If omitted, treated as plain text. Restricted to the text-producing value types per Section 3.3.
 
@@ -106,6 +106,7 @@ The following structural constraints apply to each `transaction_data_types` entr
 
 - The `claims` array **MUST NOT** contain two claim metadata objects with the same `path` and **MUST NOT** contain more than 100 claim metadata objects.
 - A `display` array, and each `ui_labels` entry array, **MUST NOT** contain two entries with the same `locale` and **MUST NOT** contain more than one entry without a `locale`.
+- Every claim `display` array and every `ui_labels` entry array of the entry **MUST** contain entries for the same set of `locale` values, compared case-insensitively, and **MUST** either all contain a default entry or all contain none. This ensures that the Wallet renders the consent screen from a single locale, or entirely from default entries, per [PaSO View] Section 4.
 
 For labels whose `value_type` or `display_type` uses the `template:` prefix defined in [PaSO View], the limits apply to the fully interpolated result. The Wallet enforces these constraints at rendering time per [PaSO View] Section 2. Independent of rendering, the Wallet **SHALL** treat a transaction data type whose metadata violates these constraints as not supported by the credential.
 
@@ -129,7 +130,7 @@ When the Wallet requests `Accept: application/jwt`, the Attestation Provider **S
 
 The Attestation Provider **SHALL** rotate signed credential metadata JWTs before their `exp` time and **SHOULD** set `exp` values that balance freshness against unnecessary network traffic.
 
-The Wallet **MAY** refuse issuance if the returned metadata does not allow a complete match per [PaSO View] Section 4 for any locale in its locale priority list, taking default entries into account. Metadata whose `display` arrays match through default entries is compatible and **SHALL NOT** be refused on locale grounds.
+The Wallet **MAY** refuse issuance if locale selection per [PaSO View] Section 4 does not succeed for the returned metadata and its locale priority list. Metadata for which selection succeeds only through default entries is compatible and **SHALL NOT** be refused on locale grounds.
 
 ## 5 Ad-hoc Transaction Data Metadata
 
@@ -184,7 +185,7 @@ A successfully verified ad-hoc metadata JWT is authoritative for the enclosing `
 - Its `metadata` object **SHALL** be used in place of the corresponding `transaction_data_types` entry from the signed credential metadata JWT, for this transaction only.
 - A transaction data type covered by a valid ad-hoc metadata JWT **SHALL** be considered supported by the targeted credential for the purposes of [PaSO Core] Section 7, even if it is absent from the signed credential metadata.
 
-If the ad-hoc metadata does not allow a complete match per [PaSO View] Section 4 for any locale in the Wallet's locale priority list, taking default entries into account, the Wallet **MAY** treat the `transaction_data` entry as incompatible. Ad-hoc metadata whose `display` arrays match through default entries is compatible and **SHALL NOT** be treated as incompatible on locale grounds.
+If locale selection per [PaSO View] Section 4 does not succeed for the ad-hoc metadata and the Wallet's locale priority list, the Wallet **MAY** treat the `transaction_data` entry as incompatible. Ad-hoc metadata for which selection succeeds only through default entries is compatible and **SHALL NOT** be treated as incompatible on locale grounds.
 
 The Wallet **SHALL NOT** persist ad-hoc metadata JWTs beyond the processing of the transaction they accompany. Sections 6 and 8 do not apply to ad-hoc metadata JWTs. Because ad-hoc metadata is delivered within the presentation request, its use involves no additional network retrieval and is not subject to the linkability considerations of Section 8.
 

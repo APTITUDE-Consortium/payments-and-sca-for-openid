@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This document specifies how Attestation Providers serve verifiable credential metadata for PaSO Credentials, and how Wallets retrieve, verify, store, and renew it. It defines the `credential_metadata_uri` extension to [OID4VCI], the signed credential metadata JWT format, the `transaction_data_types` structure within credential metadata, and the claims metadata structure used to describe transaction data payloads. It further defines an ad-hoc mechanism by which the same transaction data type metadata can alternatively be supplied within a `transaction_data` entry itself, as a JWT signed by the credential's issuer.
+This document specifies how Attestation Providers serve verifiable credential metadata for PaSO Credentials, and how Wallets retrieve, verify, store, and renew it. It defines the `credential_metadata_uri` extension to [OID4VCI], the signed credential metadata JWT format, the `transaction_data_types` structure within credential metadata, and the claims metadata structure used to describe transaction data payloads. It further defines an ad-hoc mechanism by which the same transaction data type metadata can alternatively be supplied within a `transaction_data` entry itself, by a Relying Party that the credential's issuer authorises in the signed credential metadata.
 
 ## 1 Introduction
 
@@ -12,7 +12,7 @@ This document specifies how Attestation Providers serve verifiable credential me
 
 The signed credential metadata is the mechanism by which the Wallet determines which transaction data types a PaSO Credential supports, as required by [PaSO Core] Section 7.
 
-In addition, this module defines an ad-hoc channel (Section 5) by which the metadata for a single transaction data type can be supplied within the `transaction_data` entry itself, as a JWT signed by the Attestation Provider. This allows an Attestation Provider to supply transaction-specific or updated metadata without rotating the signed credential metadata JWT.
+In addition, this module defines an ad-hoc channel (Section 5) by which the metadata for a single transaction data type can be supplied within the `transaction_data` entry itself, by a Relying Party that the Attestation Provider authorises in the signed credential metadata. This allows an Attestation Provider that also acts as the Relying Party to supply transaction-specific or updated metadata without rotating the signed credential metadata JWT.
 
 ### 1.2 Requirements Notation
 
@@ -41,6 +41,10 @@ The credential metadata for a PaSO Credential **SHALL** include the following pa
   - **`claims`**: **REQUIRED**. Array of claim metadata objects per Section 3.1.
   - **`ui_labels`**: **REQUIRED** when the credential is issued to a Wallet that does not have a dedicated UI for the transaction data type; **OPTIONAL** otherwise. Object providing localised strings for the consent UI per Section 3.2.
   - Additional parameters **MAY** be defined and used. The Wallet **MUST** ignore any unrecognised parameters.
+
+The `transaction_data_types` object **MAY** be empty and **MAY** omit transaction data types that the Attestation Provider uses. A transaction data type absent from the signed credential metadata is supported by the credential only for a `transaction_data` entry that carries ad-hoc metadata valid per Section 5.3; a `transaction_data` entry of such a type without a `metadata` parameter is not supported by the credential for the purposes of [PaSO Core] Section 7. Where `transaction_data_types` is empty, locale selection per [PaSO View] Section 4 for the credential metadata, as required in Sections 4 and 6, **SHALL** be treated as succeeding.
+
+Transaction data types intended for use by third-party Relying Parties should be published in the signed credential metadata. Types the Attestation Provider does not publish are reserved for the Relying Parties it authorises to supply ad-hoc metadata (Sections 5.2 and 5.5).
 
 A PaSO Credential **SHALL NOT** be accepted by the Wallet unless its credential metadata was obtained as a signed JWT from the `credential_metadata_uri` and successfully verified per Section 7. The signed credential metadata JWT is the authoritative source for the credential metadata, except that ad-hoc transaction data metadata supplied per Section 5 takes precedence for the individual transaction it accompanies; the Wallet **SHALL NOT** use unsigned credential metadata from the Credential Issuer Metadata endpoint for PaSO Credentials.
 
@@ -135,75 +139,77 @@ The Wallet **MAY** refuse issuance if locale selection per [PaSO View] Section 4
 
 ## 5 Ad-hoc Transaction Data Metadata
 
-This section defines an alternative mechanism for supplying transaction data type metadata. Instead of relying solely on the corresponding entry in the signed credential metadata JWT, the metadata for a transaction data type **MAY** be supplied ad hoc within the `transaction_data` entry itself, as a JWT signed by the Attestation Provider of the targeted PaSO Credential. This mechanism applies to PaSO Credentials of every credential format supported by [PaSO Core], including [SD-JWT-VC] and [mdoc]; only the values of the `sub` and `format` claims (Section 5.2) are format-specific.
+This section defines an alternative mechanism for supplying transaction data type metadata. It is designed for the first-party flow ([PaSO Core] Section 3), in which the Attestation Provider also acts as the Relying Party. Instead of relying solely on the corresponding entry in the signed credential metadata JWT, the metadata for a transaction data type **MAY** be supplied ad hoc within the `transaction_data` entry itself, by a Relying Party that the Attestation Provider authorises in the signed credential metadata (Section 5.2). Ad-hoc metadata is not separately signed. Its integrity and origin are established by the signature of the Authorization Request that carries it, and the Relying Party's authority to supply it derives from the signed credential metadata. This mechanism applies to PaSO Credentials of every credential format supported by [PaSO Core].
 
 ### 5.1 The `metadata` Parameter
 
 PaSO extends the [OID4VP] `transaction_data` entry with the following parameter, in addition to the `payload` parameter defined in [PaSO Core] Section 7.1:
 
-- **`metadata`**: **OPTIONAL** (string). An ad-hoc metadata JWT as defined in Section 5.2, signed by the Attestation Provider of the targeted PaSO Credential. The Relying Party obtains the ad-hoc metadata JWT from the Attestation Provider; the mechanism by which it does so is out of scope of this specification.
+- **`metadata`**: **OPTIONAL** (object). Ad-hoc metadata for the transaction data type identified by the `type` of the enclosing `transaction_data` entry. The object has the same structure as a single `transaction_data_types` entry value as defined in Section 3, i.e. it contains `claims` per Section 3.1, `ui_labels` per Section 3.2 where applicable, and any additional parameters. The requirements of Sections 3.1, 3.2, and 3.3 apply unchanged.
 
-### 5.2 Ad-hoc Metadata JWT
+A Relying Party **SHALL NOT** include a `metadata` parameter in a `transaction_data` entry unless its `client_id` is listed in `adhoc_metadata_clients` (Section 5.2) of the signed credential metadata of every credential the entry targets.
 
-The ad-hoc metadata JWT **SHALL** have the following structure:
+### 5.2 Authorised Clients
 
-- The JOSE header **SHALL** include:
-  - `typ`: set to `adhoc-transaction-metadata+jwt`.
-  - `x5c`: **REQUIRED** when the credential's issuer keys are published as an x5c certificate chain. The Attestation Provider's certificate chain.
-  - `kid`: **REQUIRED** when the credential's issuer keys are instead published in a key set resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata). Identifies the signing key within that key set. In this case, `x5c` **SHALL NOT** be used.
-- The JWT payload **SHALL** include:
-  - `iss`: **REQUIRED**. The Credential Issuer Identifier.
-  - `sub`: **REQUIRED**. The credential type identifier as defined by the credential format: the `vct` claim value for [SD-JWT-VC], or the `docType` value of the mobile security object (MSO) for [mdoc].
-  - `format`: **REQUIRED**. The credential format identifier as defined in [OID4VCI] (e.g., `dc+sd-jwt`, `mso_mdoc`).
-  - `iat`: **REQUIRED**. Issuance time.
-  - `exp`: **REQUIRED**. Expiration time. The Attestation Provider **SHOULD** choose a validity period that bounds how long Relying Parties can cache and reuse the JWT.
-  - `transaction_data_type`: **REQUIRED**. The transaction data type identifier the metadata applies to, following the structure defined in [PaSO Core] Section 5.2. It **SHALL** equal the `type` of the enclosing `transaction_data` entry.
-  - `metadata`: **REQUIRED**. An object with the same structure as a single `transaction_data_types` entry value as defined in Section 3, i.e. containing `claims` per Section 3.1, `ui_labels` per Section 3.2 where applicable, and any additional parameters. The requirements of Sections 3.1 and 3.2 apply unchanged.
-- The JWT **SHALL** be signed using an algorithm appropriate for the signing key: the key in the `x5c` leaf certificate, or the key set key identified by `kid`.
+PaSO extends the credential metadata (Section 3) with the following parameter:
 
-The credential type identifier bound by `sub` is unrelated to the device-signed namespace `urn:paso:sca:1` defined in [PaSO Core] Section 6.3: that namespace identifies where the SCA response claims are placed within an mdoc presentation and is not a credential type identifier. For an [mdoc] PaSO Credential, `sub` carries the credential's `docType` and `format` is `mso_mdoc`.
+- **`adhoc_metadata_clients`**: **OPTIONAL** (array of strings). The Relying Parties authorised to supply ad-hoc metadata for this credential. Each element is a `client_id` per [OID4VP], including its Client Identifier Prefix. If present, the array **SHALL NOT** be empty and **SHALL NOT** contain duplicate elements. If absent, no Relying Party is authorised.
+
+Each element **SHALL** use a Client Identifier Prefix under which the Wallet authenticates the `client_id` through the signature of the Authorization Request, such as `x509_san_dns` or `x509_hash` as defined in [OID4VP]. The `redirect_uri` prefix **SHALL NOT** be used.
+
+The Attestation Provider **SHOULD** list only Relying Parties it operates itself, and **SHOULD** ensure that their request-signing keys are protected in a hardware security module (HSM) or equivalent (Section 5.5).
+
+Because `adhoc_metadata_clients` is part of the signed credential metadata JWT, it is bound to the credential and its issuer by the verification in Section 7. Changes to it take effect when the Wallet renews that JWT per Section 8.
 
 ### 5.3 Verification
 
-When a PaSO-targeted `transaction_data` entry contains a `metadata` parameter, the Wallet **SHALL** verify the ad-hoc metadata JWT as follows before relying on it:
+When a PaSO-targeted `transaction_data` entry contains a `metadata` parameter, the Wallet **SHALL** perform the following checks for each targeted credential before relying on the ad-hoc metadata:
 
-1. Verify that the `typ` JOSE header parameter is `adhoc-transaction-metadata+jwt`.
-2. Verify the JWT signature.
-3. Verify the signing key trust:
-   - When the credential's issuer keys are x5c-based, verify the `x5c` certificate chain in the JOSE header against the Wallet's trust store.
-   - Otherwise, verify that the JWT is signed by a key from the credential issuer's published key set, identified by the `kid` JOSE header parameter and resolved via the credential format's issuer-key mechanism (e.g., [SD-JWT-VC] issuer metadata).
-4. Verify that the `iss` claim matches the Credential Issuer Identifier of the targeted PaSO Credential.
-5. Verify that the `exp` claim has not passed.
-6. Verify the credential binding as defined in Section 7 step 6.
-7. Verify that the `transaction_data_type` claim equals the `type` of the enclosing `transaction_data` entry.
+1. Confirm that the signature of the Authorization Request was verified and its `client_id` authenticated per [OID4VP] for the Client Identifier Prefix in use, as required by [PaSO Core] Section 3.
+2. Verify that the signed credential metadata JWT of the targeted credential is valid per Section 7.
+3. Verify that the `client_id` of the Authorization Request exactly equals an element of `adhoc_metadata_clients` in that JWT, including the Client Identifier Prefix.
+4. Verify that the `metadata` parameter is a JSON object that conforms to Sections 3.1, 3.2, and 3.3.
 
-If any step fails, the ad-hoc metadata JWT **SHALL** be considered invalid and the `transaction_data` entry **SHALL** be considered incompatible for the targeted credential per [PaSO Core] Section 7.4.2. The Wallet **SHALL NOT** fall back to the stored credential metadata entry for a `transaction_data` entry whose `metadata` parameter fails verification.
+If any step fails, the ad-hoc metadata **SHALL** be considered invalid and the `transaction_data` entry **SHALL** be considered incompatible for the targeted credential per [PaSO Core] Section 7.4.2. The Wallet **SHALL NOT** fall back to the stored credential metadata entry for a `transaction_data` entry whose `metadata` parameter is invalid.
 
 ### 5.4 Precedence and Processing
 
-A successfully verified ad-hoc metadata JWT is authoritative for the enclosing `transaction_data` entry:
+Ad-hoc metadata that is valid per Section 5.3 is authoritative for the enclosing `transaction_data` entry:
 
-- Its `metadata` object **SHALL** be used in place of the corresponding `transaction_data_types` entry from the signed credential metadata JWT, for this transaction only.
-- A transaction data type covered by a valid ad-hoc metadata JWT **SHALL** be considered supported by the targeted credential for the purposes of [PaSO Core] Section 7, even if it is absent from the signed credential metadata.
+- It **SHALL** be used in place of the corresponding `transaction_data_types` entry from the signed credential metadata JWT, for this transaction only.
+- A transaction data type covered by valid ad-hoc metadata **SHALL** be considered supported by the targeted credential for the purposes of [PaSO Core] Section 7, even if it is absent from the signed credential metadata.
+- The `metadata_integrity` claim per [PaSO Core] Section 6.1 **SHALL** carry the integrity value of the signed credential metadata JWT against which step 3 of Section 5.3 was performed. The ad-hoc metadata itself is covered by `transaction_data_hash` and `request_integrity`. Together, these claims record both the authorisation and the metadata that was displayed.
 
 If locale selection per [PaSO View] Section 4 does not succeed for the ad-hoc metadata and the Wallet's locale priority list, the Wallet **MAY** treat the `transaction_data` entry as incompatible. Ad-hoc metadata for which selection succeeds only through default entries is compatible and **SHALL NOT** be treated as incompatible on locale grounds.
 
-The Wallet **SHALL NOT** persist ad-hoc metadata JWTs beyond the processing of the transaction they accompany. Sections 6 and 8 do not apply to ad-hoc metadata JWTs. Because ad-hoc metadata is delivered within the presentation request, its use involves no additional network retrieval and is not subject to the linkability considerations of Section 8.
+The Wallet **SHALL NOT** persist ad-hoc metadata beyond the processing of the transaction it accompanies. Sections 6 and 8 do not apply to ad-hoc metadata. Because ad-hoc metadata is delivered within the presentation request, its use involves no additional network retrieval and is not subject to the linkability considerations of Section 8.
 
 ### 5.5 Security Considerations
 
 _**Note**: This section is **informative**._
 
-The ad-hoc metadata JWT is delivered by the Relying Party, an untrusted channel; the verification in Section 5.3 is what establishes that the metadata originates from the credential's issuer. The guarantee rests on the credential binding (step 6), not on the signature alone. When the credential's issuer keys are x5c-based:
+Ad-hoc metadata determines what the user is shown at consent, including the claim labels and the confirmation action. Its authority rests on two signatures:
 
-- The signature (step 2) only proves possession of the private key matching the leaf certificate in the JWT's `x5c` header; the trust store check (step 3) only narrows the signer to an entity vetted by a trusted CA.
-- The credential binding pins the signer to this credential's issuer: the JWT's certificate chain must terminate in the same root CA as the credential's own chain, and the Subject of the JWT's leaf certificate must match the Subject of the credential's leaf certificate. Since the credential's chain was verified at issuance, it serves as the anchor for the issuer's identity.
+- The signed credential metadata JWT, verified per Section 7 and bound to the credential, establishes that the Attestation Provider has authorised the listed Relying Parties.
+- The Authorization Request signature, verified per [OID4VP], establishes that the metadata originates from one of those Relying Parties and was not altered in transit.
 
-To forge ad-hoc metadata, an attacker would need a certificate issued under the same trusted root CA with the same Subject as the issuer's credential-signing certificate. A trusted root CA issuing a same-Subject certificate to a different entity constitutes a CA compromise, at which point the credential itself would be equally forgeable; the ad-hoc channel therefore adds no trust assumptions beyond those already made for the signed credential metadata JWT (Section 7 step 6).
+Forging ad-hoc metadata therefore requires one of the following:
 
-When the credential's issuer keys are instead published in a key set, the binding rests on the key-set branch of Section 7 step 6: the JWT must verify under a key from the same issuer key set that verifies the credential itself. Forging ad-hoc metadata then requires inserting a key into the issuer's published key set, at which point the credential itself would be equally forgeable; this path likewise adds no trust assumptions beyond those already made for the credential.
+- the Attestation Provider's metadata-signing key, at which point the signed credential metadata is equally forgeable; or
+- the ability to sign Authorization Requests as an authorised client.
 
-The binding deliberately does not require the same key as the credential: the Attestation Provider may use a dedicated metadata-signing key, provided its certificate is issued under the same root CA with the same Subject (x5c case) or the key is published in the same issuer key set (key set case). The `iss` claim check (step 4) is a consistency check on top of the key binding, not a substitute for it.
+The second path is the trust assumption this mechanism adds. Authority over the consent screen moves from the issuer's metadata-signing key, which can be kept offline, to the authorised Relying Party's request-signing key, which is typically used online. This is why Section 5.2 recommends authorising only Relying Parties the Attestation Provider operates itself, and protecting their request-signing keys in an HSM.
+
+The choice of Client Identifier Prefix determines what is authorised:
+
+- With `x509_san_dns`, any certificate for the Relying Party's DNS name issued by a CA in the Wallet's trust store authenticates the client.
+- With `x509_hash`, a single certificate is pinned. Replacing that certificate then requires rotating the signed credential metadata JWT.
+
+Revoking an authorisation also requires rotating the signed credential metadata JWT. Wallets may continue to rely on a previously verified JWT until its `exp`, so that `exp` bounds how long a removed or compromised client remains authorised.
+
+Because ad-hoc metadata is part of the Authorization Request, it is bound to that request's `nonce` and cannot be replayed in another transaction. It can therefore be specific to a single transaction.
+
+Together with Section 3, this mechanism lets an Attestation Provider reserve transaction data types: types it does not publish in the signed credential metadata are usable only by the Relying Parties listed in `adhoc_metadata_clients`. A typical case is a bank acting as Attestation Provider, Relying Party, and Authorizing Party. It uses unpublished transaction data types for its own transactions, while third-party Relying Parties use the published ones. As the Authorizing Party, the bank also receives the signed Authorization Request in the proof package and can confirm which metadata was displayed.
 
 ## 6 Storage and Handling
 
@@ -352,7 +358,7 @@ Accept-Language: de, en;q=0.8
 
 ### A.4 Transaction Data Entry with Ad-hoc Metadata
 
-A decoded `transaction_data` entry carrying an ad-hoc metadata JWT (JWT abbreviated):
+A decoded `transaction_data` entry carrying ad-hoc metadata, in a signed Authorization Request whose `client_id` is `x509_san_dns:bank.example`. The Wallet accepts the metadata only if that `client_id` is listed in `adhoc_metadata_clients` of the credential's signed credential metadata, as in A.7.
 
 ```json
 {
@@ -366,20 +372,6 @@ A decoded `transaction_data` entry carrying an ad-hoc metadata JWT (JWT abbrevia
       "id": "DE89370400440532013000"
     }
   },
-  "metadata": "eyJ4NWMiOlsiTUlJQi4uLiJdLCJ0eXAiOiJhZGhvYy10cmFuc2FjdGlvbi1tZXRhZGF0YStqd3QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJodHRwczovL2lzc3Vlci5iYW5rLmV4YW1wbGUiLC4uLn0.MEUCIQ..."
-}
-```
-
-Decoded ad-hoc metadata JWT payload:
-
-```json
-{
-  "iss": "https://issuer.bank.example",
-  "sub": "https://bank.example/sca/card",
-  "format": "dc+sd-jwt",
-  "iat": 1710000000,
-  "exp": 1710604800,
-  "transaction_data_type": "urn:paso:sca:global:payment:1",
   "metadata": {
     "claims": [
       {
@@ -418,9 +410,9 @@ Decoded ad-hoc metadata JWT payload:
 }
 ```
 
-### A.5 Ad-hoc Metadata JWT Payload for an mdoc Credential
+### A.5 Signed Credential Metadata JWT Payload with Authorised Ad-hoc Metadata Clients
 
-The same ad-hoc mechanism targeting a PaSO Credential in `mso_mdoc` format. Only `sub` and `format` differ from A.4: `sub` carries the credential's `docType` per Section 5.2 — not a `vct`, and not the device-signed namespace `urn:paso:sca:1` from [PaSO Core] Section 6.3. The `transaction_data_type` is unchanged, since transaction data type identifiers are format-independent.
+A signed credential metadata JWT payload for a PaSO Credential in `mso_mdoc` format that publishes one transaction data type and authorises two Relying Parties to supply ad-hoc metadata (Section 5.2). The first is identified by DNS name; the second pins a single request-signing certificate via `x509_hash`. The ad-hoc mechanism is format-independent: the same `adhoc_metadata_clients` parameter applies to [SD-JWT-VC] credentials.
 
 ```json
 {
@@ -428,19 +420,31 @@ The same ad-hoc mechanism targeting a PaSO Credential in `mso_mdoc` format. Only
   "sub": "com.example.bank.paymentcard.1",
   "format": "mso_mdoc",
   "iat": 1710000000,
-  "exp": 1710604800,
-  "transaction_data_type": "urn:paso:sca:global:payment:1",
-  "metadata": {
-    "claims": [
-      {
-        "path": ["amount"],
-        "mandatory": true,
-        "value_type": "iso_currency_amount",
-        "display": [
-          { "locale": "en", "name": "Amount" },
-          { "locale": "de", "name": "Betrag" }
+  "exp": 1710086400,
+  "credential_metadata_uri": "https://issuer.bank.example/credential-metadata/BankPaymentCardMdoc",
+  "credential_metadata": {
+    "display": [
+      { "name": "Bank Payment Card", "locale": "en" },
+      { "name": "Bank Zahlungskarte", "locale": "de" }
+    ],
+    "transaction_data_types": {
+      "urn:paso:sca:global:payment:1": {
+        "claims": [
+          {
+            "path": ["amount"],
+            "mandatory": true,
+            "value_type": "iso_currency_amount",
+            "display": [
+              { "locale": "en", "name": "Amount" },
+              { "locale": "de", "name": "Betrag" }
+            ]
+          }
         ]
       }
+    },
+    "adhoc_metadata_clients": [
+      "x509_san_dns:bank.example",
+      "x509_hash:Uvo3HtuIxuhC92rShpgqcT3YXwrqRxWEviRiA0OZszk"
     ]
   }
 }
@@ -492,6 +496,42 @@ A `transaction_data_types` entry that serves `en`, `de`, and default entries. Ev
         { "locale": "en", "value": "Your bank will never ask you to confirm a payment by phone." },
         { "locale": "de", "value": "Ihre Bank fordert Sie niemals telefonisch zur Bestätigung einer Zahlung auf." },
         { "value": "Your bank will never ask you to confirm a payment by phone." }
+      ]
+    }
+  }
+}
+```
+
+### A.7 Signed Credential Metadata JWT Payload without Published Transaction Data Types
+
+A signed credential metadata JWT payload for an Attestation Provider that publishes no transaction data types (Section 3). Every PaSO transaction with this credential therefore requires ad-hoc metadata supplied by a Relying Party listed in `adhoc_metadata_clients` (Section 5). The JWT still carries the credential's `display` and the issuer's `risk_signals_encryption_keys`.
+
+```json
+{
+  "iss": "https://issuer.bank.example",
+  "sub": "https://bank.example/sca/card",
+  "format": "dc+sd-jwt",
+  "iat": 1710000000,
+  "exp": 1710086400,
+  "credential_metadata_uri": "https://issuer.bank.example/credential-metadata/BankPaymentCard",
+  "credential_metadata": {
+    "display": [
+      { "name": "Bank Payment Card", "locale": "en" },
+      { "name": "Bank Zahlungskarte", "locale": "de" }
+    ],
+    "transaction_data_types": {},
+    "adhoc_metadata_clients": ["x509_san_dns:bank.example"],
+    "risk_signals_encryption_keys": {
+      "keys": [
+        {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+          "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
+          "use": "enc",
+          "kid": "issuer-enc-1",
+          "alg": "ECDH-ES"
+        }
       ]
     }
   }

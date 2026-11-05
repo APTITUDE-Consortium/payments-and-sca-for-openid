@@ -132,6 +132,8 @@ A signal in the effective set whose resolved `required` is `true` is a **require
 
 Where neither source references a profile and neither enumerates a signal, the effective signal set is empty.
 
+Where the `transaction_data` entry carries ad-hoc metadata valid per [PaSO Proof Metadata] Section 5.3, the `risk_signal_profiles`, `risk_signals`, and `encrypted` members that this section and Section 7.2 take from the signed credential metadata are taken from that `metadata` object instead, per [PaSO Proof Metadata] Section 5.4. The issuer encryption key is unaffected and is obtained per Section 7.3.
+
 ### 4.2 Wallet Processing
 
 When the effective signal set (Section 4.1) contains one or more required signals, the Wallet **SHALL** populate the `risk_signals` proof claim (Section 5) with an envelope for every required signal, each carrying its `status`. The Wallet **MAY** additionally include envelopes for optional signals when they are available. When the effective signal set contains no required signal, the Wallet **MAY** omit the `risk_signals` claim entirely.

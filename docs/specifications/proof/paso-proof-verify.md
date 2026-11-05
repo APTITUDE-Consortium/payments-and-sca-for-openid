@@ -43,7 +43,7 @@ Upon receiving the proof package, the Authorizing Party **SHALL** perform the fo
    - `transaction_data_hash_alg`: verify the algorithm is acceptable.
    - `request_integrity`: recompute the [W3C.SRI] integrity value of the signed Authorization Request JWT and verify it matches.
    - `metadata_integrity`: if present, verify it matches the [W3C.SRI] integrity value of the Attestation Provider's current signed credential metadata JWT for this credential.
-   - `display_locale`: verify that applying the locale selection procedure of [PaSO View] Section 4 to the credential metadata, with `display_locale` as the only locale in the priority list, yields a complete match. Default entries (entries without a `locale`) count as matches; the Authorizing Party **SHALL NOT** reject a presentation because `display_locale` is not itself listed as a `locale` in the metadata, as long as every `display` array matches through a locale-tagged or a default entry.
+   - `display_locale`: verify that it is either the string `default` or a [RFC5646] language tag. If it is `default`, verify that every claim `display` array and every `ui_labels` entry array of the matched transaction data type in the credential metadata contains a default entry (an entry without a `locale`). Otherwise, verify that every such array contains an entry whose `locale` equals `display_locale`, compared case-insensitively.
    - `jti`: verify uniqueness (the Authorizing Party **SHOULD** maintain a replay cache).
 
 5. **Payload verification**: Verify that the `transaction_data` entry's `payload` conforms to the applicable Transaction Data Type Rulebook. The specific checks are defined by the rulebook.

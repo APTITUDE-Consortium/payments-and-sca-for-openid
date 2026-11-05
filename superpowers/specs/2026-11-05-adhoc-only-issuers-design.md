@@ -33,8 +33,8 @@ absent from stored metadata (§5.4). Two things are missing:
 - **Every ad-hoc JWT** is audience-bound to exactly one RP chosen by the
   Issuer, whether it introduces an unpublished type or overrides a
   published one.
-- No change to the trust model, Core, or Risk Signals. Verify gets one
-  clarifying sentence (change 8).
+- No change to the trust model or Core. Verify and Risk Signals each get
+  one clarifying sentence (changes 8 and 9).
 
 ## Non-goals
 
@@ -73,18 +73,19 @@ absent from stored metadata (§5.4). Two things are missing:
   This is heavy and fragile across identifier schemes, and it breaks the
   §1 use of handing updated metadata to partners.
 
-## Changes (1–7 in `paso-proof-metadata.md`, 8 in `paso-proof-verify.md`)
+## Changes (1–7 in `paso-proof-metadata.md`, 8 in `paso-proof-verify.md`, 9 in `paso-proof-risk-signals.md`)
 
 1. **§3, `transaction_data_types`:** the object **MAY** be empty and **MAY**
    omit types the Issuer uses. A type absent from it is supported only via
    a valid ad-hoc JWT (§5.4). An entry without `metadata` for such a type is
    unsupported per [PaSO Core] Section 7. Add an informative sentence:
    types intended for third-party RPs should be published.
-2. **§4, last paragraph, and §6, locale condition:** locale selection over
-   stored metadata considers only the types it contains. With `{}`,
-   selection **SHALL** be treated as succeeding. This removes the
-   vacuous-case ambiguity in [PaSO View] Section 4 and prevents §6 from
-   blocking all PaSO operations.
+2. **§3, one sentence:** with `{}`, locale selection for the credential
+   metadata (as referenced in §4 and §6) **SHALL** be treated as
+   succeeding. This removes the vacuous-case ambiguity in [PaSO View]
+   Section 4 and prevents §6 from blocking all PaSO operations. It is
+   placed in §3 so that the lines PR #7 rewrote (§4 line 134, §6 line
+   212) stay untouched.
 3. **§5.2, new claim `aud`:** **REQUIRED** (string). The `client_id` of
    the single RP permitted to use this JWT, per [OID4VP]. It narrows
    [RFC7519] Section 4.1.3: arrays **SHALL NOT** be used.
@@ -112,10 +113,20 @@ absent from stored metadata (§5.4). Two things are missing:
      metadata carried in the `transaction_data` entry's `metadata`
      parameter when it is present.
    - The Authorizing Party **SHALL** first verify that JWT per [PaSO Proof
-     Metadata] Section 5.3, with `aud` equal to its own `client_id`.
+     Metadata] Section 5.3, with the Authorization Request's `client_id`
+     as the expected `aud`. The Authorizing Party need not be the RP,
+     because the proof package may be forwarded through the ingestion
+     endpoint.
    - Without this, the `display_locale` check fails for unpublished
      types, which is exactly the bank's own use case. It also fixes the
      same pre-existing gap for ad-hoc overrides of published types.
+
+9. **Risk Signals §4.1 (one paragraph):** Risk Signals reads the per-type
+   declarations `risk_signal_profiles` and `risk_signals` (§4.1 lines 124
+   and 129) and `encrypted` (§7.2 line 221) from "the signed credential
+   metadata". When a valid ad-hoc JWT is present, these declarations come
+   from its `metadata` object instead, per Metadata §5.4. The issuer
+   encryption key (§7.3) is credential-level and stays unaffected.
 
 ## Unchanged, verified
 

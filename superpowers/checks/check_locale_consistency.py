@@ -3,7 +3,9 @@
 For every transaction data type metadata object found in a JSON code block
 (an object with a "claims" array), all claim `display` arrays and all
 `ui_labels` entry arrays must carry the same set of `locale` tags, and
-either all contain a default entry (no `locale`) or none do.
+either all contain a default entry (no `locale`) or none do. No `locale`
+value may be `default` (case-insensitive); that string is reserved for
+reporting the selection of default entries in `display_locale`.
 
 Usage: python3 -I check_locale_consistency.py <file.md> [...]
 Exit 0 when all checked objects conform, 1 otherwise.
@@ -41,10 +43,15 @@ def check(obj):
             arrays.append((f"claims{claim.get('path')}", claim["display"]))
     for key, entries in (obj.get("ui_labels") or {}).items():
         arrays.append((f"ui_labels.{key}", entries))
+    problems = [
+        f"  {name}: reserved locale value 'default'"
+        for name, entries in arrays
+        if any(str(e.get("locale", "")).lower() == "default" for e in entries)
+    ]
     sigs = {name: signature(entries) for name, entries in arrays}
-    if len(set(sigs.values())) <= 1:
-        return []
-    return [f"  {name}: tags={sorted(t)} default={d}" for name, (t, d) in sigs.items()]
+    if len(set(sigs.values())) > 1:
+        problems += [f"  {name}: tags={sorted(t)} default={d}" for name, (t, d) in sigs.items()]
+    return problems
 
 
 def main(paths):
@@ -68,7 +75,7 @@ def main(paths):
                 problems = check(obj)
                 if problems:
                     failures += 1
-                    print(f"{path}:{line}: mixed locale sets")
+                    print(f"{path}:{line}: non-conforming locales")
                     print("\n".join(problems))
     print(f"checked {checked} type metadata objects, {failures} non-conforming")
     return 1 if failures else 0

@@ -107,6 +107,7 @@ The following structural constraints apply to each `transaction_data_types` entr
 - The `claims` array **MUST NOT** contain two claim metadata objects with the same `path` and **MUST NOT** contain more than 100 claim metadata objects.
 - A `display` array, and each `ui_labels` entry array, **MUST NOT** contain two entries with the same `locale` and **MUST NOT** contain more than one entry without a `locale`.
 - Every claim `display` array and every `ui_labels` entry array of the entry **MUST** contain entries for the same set of `locale` values, compared case-insensitively, and **MUST** either all contain a default entry or all contain none. This ensures that the Wallet renders the consent screen from a single locale, or entirely from default entries, per [PaSO View] Section 4.
+- A `locale` value **MUST NOT** be `default`, compared case-insensitively. That string is reserved for reporting the selection of default entries in `display_locale` per [PaSO View] Section 4.
 
 For labels whose `value_type` or `display_type` uses the `template:` prefix defined in [PaSO View], the limits apply to the fully interpolated result. The Wallet enforces these constraints at rendering time per [PaSO View] Section 2. Independent of rendering, the Wallet **SHALL** treat a transaction data type whose metadata violates these constraints as not supported by the credential.
 

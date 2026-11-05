@@ -2,14 +2,14 @@
   {
     "version": "draft-3",
     "title": "draft-3",
-    "aliases": []
+    "aliases": [
+      "latest"
+    ]
   },
   {
     "version": "draft-2",
     "title": "draft-2",
-    "aliases": [
-      "latest"
-    ]
+    "aliases": []
   },
   {
     "version": "draft-1",

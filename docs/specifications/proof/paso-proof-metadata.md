@@ -42,6 +42,10 @@ The credential metadata for a PaSO Credential **SHALL** include the following pa
   - **`ui_labels`**: **REQUIRED** when the credential is issued to a Wallet that does not have a dedicated UI for the transaction data type; **OPTIONAL** otherwise. Object providing localised strings for the consent UI per Section 3.2.
   - Additional parameters **MAY** be defined and used. The Wallet **MUST** ignore any unrecognised parameters.
 
+The `transaction_data_types` object **MAY** be empty and **MAY** omit transaction data types that the Attestation Provider uses. A transaction data type absent from the signed credential metadata is supported by the credential only for a `transaction_data` entry that carries a valid ad-hoc metadata JWT per Section 5; a `transaction_data` entry of such a type without a `metadata` parameter is not supported by the credential for the purposes of [PaSO Core] Section 7. Where `transaction_data_types` is empty, locale selection per [PaSO View] Section 4 for the credential metadata, as required in Sections 4 and 6, **SHALL** be treated as succeeding.
+
+Transaction data types intended for use by third-party Relying Parties should be published in the signed credential metadata. Types the Attestation Provider does not publish are reserved for the Relying Parties to which it issues audience-bound ad-hoc metadata JWTs (Section 5.5).
+
 A PaSO Credential **SHALL NOT** be accepted by the Wallet unless its credential metadata was obtained as a signed JWT from the `credential_metadata_uri` and successfully verified per Section 7. The signed credential metadata JWT is the authoritative source for the credential metadata, except that ad-hoc transaction data metadata supplied per Section 5 takes precedence for the individual transaction it accompanies; the Wallet **SHALL NOT** use unsigned credential metadata from the Credential Issuer Metadata endpoint for PaSO Credentials.
 
 If, during issuance, the Wallet determines that a credential is a PaSO Credential but does not hold a validly signed credential metadata JWT for it, the Wallet **SHALL** reject the issuance and inform the user.

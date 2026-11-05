@@ -362,7 +362,7 @@ Accept-Language: de, en;q=0.8
 
 ### A.4 Transaction Data Entry with Ad-hoc Metadata
 
-A decoded `transaction_data` entry carrying an ad-hoc metadata JWT (JWT abbreviated):
+A decoded `transaction_data` entry carrying an ad-hoc metadata JWT (JWT abbreviated), in an Authorization Request whose `client_id` is `x509_san_dns:bank.example`:
 
 ```json
 {
@@ -390,6 +390,7 @@ Decoded ad-hoc metadata JWT payload:
   "iat": 1710000000,
   "exp": 1710604800,
   "transaction_data_type": "urn:paso:sca:global:payment:1",
+  "aud": "x509_san_dns:bank.example",
   "metadata": {
     "claims": [
       {
@@ -440,6 +441,7 @@ The same ad-hoc mechanism targeting a PaSO Credential in `mso_mdoc` format. Only
   "iat": 1710000000,
   "exp": 1710604800,
   "transaction_data_type": "urn:paso:sca:global:payment:1",
+  "aud": "x509_san_dns:bank.example",
   "metadata": {
     "claims": [
       {
@@ -502,6 +504,41 @@ A `transaction_data_types` entry that serves `en`, `de`, and default entries. Ev
         { "locale": "en", "value": "Your bank will never ask you to confirm a payment by phone." },
         { "locale": "de", "value": "Ihre Bank fordert Sie niemals telefonisch zur Bestätigung einer Zahlung auf." },
         { "value": "Your bank will never ask you to confirm a payment by phone." }
+      ]
+    }
+  }
+}
+```
+
+### A.7 Signed Credential Metadata JWT Payload without Published Transaction Data Types
+
+A signed credential metadata JWT payload for an Attestation Provider that publishes no transaction data types (Section 3). Every PaSO transaction with this credential requires an ad-hoc metadata JWT bound via `aud` to the requesting Relying Party (Section 5). The JWT still carries the credential's `display` and the issuer's `risk_signals_encryption_keys`.
+
+```json
+{
+  "iss": "https://issuer.bank.example",
+  "sub": "https://bank.example/sca/card",
+  "format": "dc+sd-jwt",
+  "iat": 1710000000,
+  "exp": 1710086400,
+  "credential_metadata_uri": "https://issuer.bank.example/credential-metadata/BankPaymentCard",
+  "credential_metadata": {
+    "display": [
+      { "name": "Bank Payment Card", "locale": "en" },
+      { "name": "Bank Zahlungskarte", "locale": "de" }
+    ],
+    "transaction_data_types": {},
+    "risk_signals_encryption_keys": {
+      "keys": [
+        {
+          "kty": "EC",
+          "crv": "P-256",
+          "x": "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+          "y": "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
+          "use": "enc",
+          "kid": "issuer-enc-1",
+          "alg": "ECDH-ES"
+        }
       ]
     }
   }

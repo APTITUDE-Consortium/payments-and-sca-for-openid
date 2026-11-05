@@ -42,10 +42,10 @@ Upon receiving the proof package, the Authorizing Party **SHALL** perform the fo
    - `transaction_data_hash`: recompute the hash from the `transaction_data` entry in the Authorization Request and verify it matches.
    - `transaction_data_hash_alg`: verify the algorithm is acceptable.
    - `request_integrity`: recompute the [W3C.SRI] integrity value of the signed Authorization Request JWT and verify it matches.
-   - `metadata_integrity`: if present, verify it matches the [W3C.SRI] integrity value of the Attestation Provider's current signed credential metadata JWT for this credential.
+   - `metadata_integrity`: verify it matches the [W3C.SRI] integrity value of the Attestation Provider's current signed credential metadata JWT for this credential.
    - `display_locale`: verify that it is either the string `default` or a [RFC5646] language tag. If it is `default`, verify that every claim `display` array and every `ui_labels` entry array of the matched transaction data type in the credential metadata contains a default entry (an entry without a `locale`). Otherwise, verify that every such array contains an entry whose `locale` equals `display_locale`, compared case-insensitively.
    - `jti`: verify uniqueness (the Authorizing Party **SHOULD** maintain a replay cache).
-   - Ad-hoc metadata: where this step refers to the credential metadata of the matched transaction data type and the `transaction_data` entry in the Authorization Request carries a `metadata` parameter, the Authorizing Party **SHALL** instead use the `metadata` object of that ad-hoc metadata JWT, after verifying the JWT per [PaSO Proof Metadata] Section 5.3 with the `client_id` of the Authorization Request as the expected `aud`.
+   - Ad-hoc metadata: where this step refers to the credential metadata of the matched transaction data type and the `transaction_data` entry in the Authorization Request carries a `metadata` parameter, the Authorizing Party **SHALL** instead use that `metadata` object. Before doing so, it **SHALL** verify, per [PaSO Proof Metadata] Section 5.3, that the `client_id` of the Authorization Request is listed in `adhoc_metadata_clients` of the signed credential metadata JWT identified by `metadata_integrity`, and that the `metadata` object conforms to [PaSO Proof Metadata] Sections 3.1 to 3.3.
 
 5. **Payload verification**: Verify that the `transaction_data` entry's `payload` conforms to the applicable Transaction Data Type Rulebook. The specific checks are defined by the rulebook.
 

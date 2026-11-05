@@ -132,7 +132,7 @@ A signal in the effective set whose resolved `required` is `true` is a **require
 
 Where neither source references a profile and neither enumerates a signal, the effective signal set is empty.
 
-Where the `transaction_data` entry carries a valid ad-hoc metadata JWT per [PaSO Proof Metadata] Section 5, the `risk_signal_profiles`, `risk_signals`, and `encrypted` members that this section and Section 7.2 take from the signed credential metadata are taken from that JWT's `metadata` object instead, per [PaSO Proof Metadata] Section 5.4. The issuer encryption key is unaffected and is obtained per Section 7.3.
+Where the `transaction_data` entry carries ad-hoc metadata valid per [PaSO Proof Metadata] Section 5.3, the `risk_signal_profiles`, `risk_signals`, and `encrypted` members that this section and Section 7.2 take from the signed credential metadata are taken from that `metadata` object instead, per [PaSO Proof Metadata] Section 5.4. The issuer encryption key is unaffected and is obtained per Section 7.3.
 
 ### 4.2 Wallet Processing
 

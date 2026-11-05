@@ -231,3 +231,24 @@ The character constraints prohibit directional embedding and override characters
 | [CommonMark]                   | [CommonMark Specification](https://spec.commonmark.org/)                                                                   |
 | [ISO8601]                      | [ISO 8601 — Date and time format](https://www.iso.org/iso-8601-date-and-time-format.html)                                  |
 | [ISO4217]                      | [ISO 4217 — Currency codes](https://www.iso.org/iso-4217-currency-codes.html)                                              |
+
+## Annex A: Examples
+
+_**Note**: This annex is **informative**._
+
+### A.1 Locale Selection
+
+The following examples apply Section 4 to the transaction data type of [PaSO Proof Metadata] Annex A.6. Every array in that metadata carries entries for `en` and `de` and a default entry, so the available tags are `en` and `de`, and the default entries are available as a fallback.
+
+| Wallet locale priority list | Lookup                                     | Entries rendered | `display_locale` |
+|-----------------------------|--------------------------------------------|------------------|------------------|
+| `de`, `en`                  | `de` matches `de`                          | `de`             | `de`             |
+| `de-CH`                     | `de-CH` truncates to `de`, which matches   | `de`             | `de`             |
+| `fr`, `de`                  | `fr` no match; `de` matches                | `de`             | `de`             |
+| `fr`                        | no match                                   | default          | `default`        |
+
+In the third row, German is shown although the first preference, `fr`, is unavailable: a locale-tagged match anywhere in the priority list takes precedence over the default entries. In the fourth row, the user sees the issuer's fallback text, and the proof says so: `display_locale` is `default`, not `fr`.
+
+If the same metadata carried no default entries, the fourth row would produce no selection, and the Wallet would exclude the credential.
+
+Suppose instead that the `de` entry of the `amount` `display` array carried a `display_type` the Wallet does not support. That entry is excluded, so `de` is not an available tag. With the priority list `de`, `en`, the Wallet renders all `en` entries and reports `en`. It does not render `amount` in English and the other labels in German.

@@ -374,7 +374,8 @@ Corresponding `transaction_data_types` entry — note that the embedded `payment
         { "locale": "de", "value": "Mandat erteilen" }
       ],
       "security_hint": [
-        { "locale": "en", "value": "Streaming Co. will be able to collect up to the amount shown each month for up to 24 months." }
+        { "locale": "en", "value": "Streaming Co. will be able to collect up to the amount shown each month for up to 24 months." },
+        { "locale": "de", "value": "Streaming Co. kann bis zu 24 Monate lang jeden Monat bis zum angezeigten Betrag einziehen." }
       ]
     }
   }

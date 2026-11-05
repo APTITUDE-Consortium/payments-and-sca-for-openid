@@ -444,3 +444,55 @@ The same ad-hoc mechanism targeting a PaSO Credential in `mso_mdoc` format. Only
   }
 }
 ```
+
+### A.6 Transaction Data Type with Default Entries
+
+A `transaction_data_types` entry that serves `en`, `de`, and default entries. Every `display` array and every `ui_labels` entry array carries the same locales and a default entry, as required by Section 3.3. Here the default entries carry the issuer's fallback text in English; a default entry has no `locale`, so the Wallet cannot know its language and reports `default` when it is shown (see [PaSO View] Annex A).
+
+```json
+{
+  "urn:paso:sca:global:payment:1": {
+    "claims": [
+      {
+        "path": ["transaction_id"],
+        "mandatory": true
+      },
+      {
+        "path": ["amount"],
+        "mandatory": true,
+        "value_type": "iso_currency_amount",
+        "display": [
+          { "locale": "en", "name": "Amount" },
+          { "locale": "de", "name": "Betrag" },
+          { "name": "Amount" }
+        ]
+      },
+      {
+        "path": ["payee", "name"],
+        "mandatory": true,
+        "display": [
+          { "locale": "en", "name": "Payee" },
+          { "locale": "de", "name": "Empfänger" },
+          { "name": "Payee" }
+        ]
+      },
+      {
+        "path": ["payee", "id"],
+        "mandatory": true
+      }
+    ],
+    "ui_labels": {
+      "affirmative_action_label": [
+        { "locale": "en", "value": "Confirm Payment" },
+        { "locale": "de", "value": "Zahlung bestätigen" },
+        { "value": "Confirm Payment" }
+      ],
+      "security_hint": [
+        { "locale": "en", "value": "Your bank will never ask you to confirm a payment by phone." },
+        { "locale": "de", "value": "Ihre Bank fordert Sie niemals telefonisch zur Bestätigung einer Zahlung auf." },
+        { "value": "Your bank will never ask you to confirm a payment by phone." }
+      ]
+    }
+  }
+}
+```

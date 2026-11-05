@@ -161,7 +161,7 @@ The Wallet **SHALL** resolve each placeholder by:
 3. Formatting the resolved value according to the claim's `value_type`.
 4. Inserting the formatted value into the string, replacing the placeholder.
 
-If all locale entries for a given locale are discarded, the Wallet **SHALL** fall back to the next locale in its priority list per Section 4; if no entry survives for any locale, the `transaction_data` entry is not compatible.
+A discarded entry is excluded from locale selection per Section 4. If it leaves an array without an entry for a tag, that tag is not available, and selection continues with the next locale in the priority list or with the default entries. If locale selection does not succeed as a result, the `transaction_data` entry is not compatible.
 
 After interpolation, the result **SHALL** be formatted according to the inner `value_type` specified after `template:` (e.g., `template:mini_markdown` applies `mini_markdown` formatting). If a referenced claim's formatting and the inner `value_type` conflict, the inner `value_type` takes precedence. When the template is used as a `display_type`, the label constraints of [PaSO Proof Metadata] Section 3.3 apply to the fully interpolated result per Section 2.
 
@@ -178,19 +178,19 @@ Interpolation is single-pass: placeholder-like sequences contained in resolved v
 
 The Wallet **SHALL** maintain a locale priority list: an ordered sequence of [RFC5646] language tags representing the user's language preferences, in decreasing order of priority.
 
-The Wallet **SHALL** select a locale for the transaction as follows. For each locale in the priority list, in order:
+The Wallet **SHALL** render all `display` entries and `ui_labels` entries of a transaction either from a single locale or entirely from default entries (entries without a `locale`). It **SHALL NOT** combine entries of different locales, or locale-tagged and default entries, on one consent screen.
 
-1. For every `display` array across all `claims` metadata and `ui_labels` entries for the matching transaction data type, apply the Lookup matching scheme defined in [RFC4647] Section 3.4, using the current locale as the language range and the `locale` values of that array's entries as the available tags. If the Lookup scheme finds no match, the first entry without a `locale` field (the default entry) is the matched entry for that array; if no such entry exists, the result is no match for that array.
+The arrays considered are the `display` arrays of all `claims` metadata objects that have one, together with all `ui_labels` entry arrays, for the matching transaction data type. Entries excluded under Section 3 do not take part in selection. These are entries whose `display_type` is not permitted or not supported, and `template:` entries discarded during interpolation. The available tags are the `locale` values for which every considered array has a non-excluded entry, compared case-insensitively.
 
-2. If every `display` array produces a match, the current locale is selected. The Wallet **SHALL** use the matched entries for rendering and **SHALL NOT** continue to the next locale.
+The Wallet **SHALL** select the locale as follows:
 
-3. If any `display` array produces no match, the Wallet **SHALL** discard all matches from the current locale and proceed to the next locale.
+1. For each locale in the priority list, in order, apply the Lookup matching scheme defined in [RFC4647] Section 3.4, using that locale as the language range and the available tags as the set of language tags to match against. On the first match, the matched tag is selected. The Wallet **SHALL** render every considered array from its entry with that tag and **SHALL NOT** continue.
+2. If no locale in the priority list produced a match, and every considered array has a non-excluded default entry, the default entries are selected. The Wallet **SHALL** render every considered array from its default entry.
+3. Otherwise, the Wallet **SHALL** exclude the credential from further processing.
 
-A match produced by a default entry is a match in the sense of steps 2 and 3. The use of default entries does not affect locale selection: the current locale is selected and reported in `display_locale` even if some or all `display` arrays matched through their default entry. The Wallet **SHALL NOT** exclude a credential or treat a `transaction_data` entry as not compatible solely because default entries were used.
+A locale-tagged match for any locale in the priority list takes precedence over the default entries. The Wallet **SHALL NOT** exclude a credential, or treat a `transaction_data` entry as not compatible, solely because the default entries were selected.
 
-If no locale produces a complete match, the Wallet **SHALL** exclude the credential from further processing.
-
-The selected locale **SHALL** be reported in the `display_locale` holder binding proof claim per [PaSO Core].
+The Wallet **SHALL** report the selection in the `display_locale` holder binding proof claim per [PaSO Core]. The reported value is the selected tag as it appears in the metadata `locale` values, or the string `default` if the default entries were selected. It is not the priority-list locale used as the language range.
 
 If the transaction data cannot be presented in the Wallet's current operating language, the Wallet **MAY** switch its entire user interface to another language the user understands for the duration of the PaSO presentation flow.
 

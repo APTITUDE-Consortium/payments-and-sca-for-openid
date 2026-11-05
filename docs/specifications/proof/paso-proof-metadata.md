@@ -208,7 +208,7 @@ The binding deliberately does not require the same key as the credential: the At
 
 The Wallet **SHALL** persist signed credential metadata JWTs in their signed form and **SHALL NOT** persist the decoded credential metadata. The Wallet **MAY** store multiple signed metadata JWTs per credential to cover different locales. Each time the Wallet loads a metadata JWT from storage, it **SHALL** perform the full verification procedure defined in Section 7.
 
-If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 7. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT allowing a complete match per [PaSO View] Section 4 (taking default entries into account) is obtained.
+If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 7. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT is obtained for which locale selection per [PaSO View] Section 4 succeeds.
 
 ## 7 Verification
 

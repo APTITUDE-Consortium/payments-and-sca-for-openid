@@ -106,7 +106,7 @@ Labels are plain text. `display` entries and `ui_labels` entries carry no format
 
 The following structural constraints apply to each `transaction_data_types` entry:
 
-- The `claims` array **MUST NOT** contain two claim metadata objects with the same `path` and **MUST NOT** contain more than 100 claim metadata objects.
+- The `claims` array **MUST NOT** contain two claim metadata objects with the same `path`, **MUST NOT** contain more than 100 claim metadata objects, and **MUST NOT** contain more than 10 claim metadata objects with a `display` array. The limit on displayed claim values in a `transaction_data` entry, after array wildcard expansion, is defined in [PaSO View] Section 2.
 - A `display` array, and each `ui_labels` entry array, **MUST NOT** contain two entries with the same `locale` and **MUST NOT** contain more than one entry without a `locale`.
 - Every claim `display` array and every `ui_labels` entry array of the entry **MUST** contain entries for the same set of `locale` values, compared case-insensitively, and **MUST** either all contain a default entry or all contain none. This ensures that the Wallet renders the consent screen from a single locale, or entirely from default entries, per [PaSO View] Section 4.
 - A `locale` value **MUST NOT** be `default`, compared case-insensitively. That string is reserved for reporting the selection of default entries in `display_locale` per [PaSO View] Section 4.

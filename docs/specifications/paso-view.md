@@ -152,7 +152,7 @@ The arrays considered are the `display` arrays of all `claims` metadata objects 
 The Wallet **SHALL** select the locale as follows:
 
 1. For each locale in the priority list, in order, apply the Lookup matching scheme defined in [RFC4647] Section 3.4, using that locale as the language range and the available tags as the set of language tags to match against. On the first match, the matched tag is selected. The Wallet **SHALL** render every considered array from its entry with that tag and **SHALL NOT** continue.
-2. If no locale in the priority list produced a match, and every considered array has a non-excluded default entry, the default entries are selected. The Wallet **SHALL** render every considered array from its default entry.
+2. If no locale in the priority list produced a match, and every considered array has a default entry, the default entries are selected. The Wallet **SHALL** render every considered array from its default entry.
 3. Otherwise, the Wallet **SHALL** exclude the credential from further processing.
 
 A locale-tagged match for any locale in the priority list takes precedence over the default entries. The Wallet **SHALL NOT** exclude a credential, or treat a `transaction_data` entry as not compatible, solely because the default entries were selected.

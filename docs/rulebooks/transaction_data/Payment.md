@@ -14,7 +14,7 @@ Attestation Providers **SHALL** use the claims exactly as specified below. Attes
 | `["amount"]`                  | true        | `iso_currency_amount` | yes       | Amount and currency of the payment (e.g., `"49.99 EUR"`).                                                            |
 | `["payee", "name"]`           | true        | _(text)_              | yes       | Name of the Payee to whom the payment is being made.                                                                 |
 | `["payee", "id"]`             | true        | _(text)_              | no        | The Payee's national tax identifier or business registry number. Payment networks must accept and verify both forms. |
-| `["payee", "logo"]`           | false       | `image`               | yes       | Logo of the Payee. A dedicated UI **MAY** choose to not display it.                                                  |
+| `["payee", "logo"]`           | false       | `image`               | yes       | Logo of the Payee. **MAY** be omitted in static rendering (Section 3).                                               |
 | `["payee", "logo#integrity"]` | false       | _(text)_              | no        | [W3C.SRI] hash of the logo content. **MUST** be present if `payee.logo` is a resolvable URL.                         |
 
 ## 2 Authorizing Party Verification
@@ -25,7 +25,29 @@ In addition to the verification procedure defined in [PaSO Proof Verify], the Au
 2. The `amount` conforms to the payment network's rules (e.g., valid currency, supported amount range).
 3. If a `transaction_id` is present, the Authorizing Party may use it for end-to-end correlation with the Relying Party's systems.
 
-## 3 References
+## 3 Static Presentation
+
+This transaction data type supports static rendering per [PaSO View] Section 5. This section is the Static Presentation section required by [PaSO Core] Section 5.3.
+
+### 3.1 Displayed Claims
+
+| Claim                  | Static rendering  | Display obligations                                                                                                                             |
+|------------------------|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| `amount`               | **SHALL** display | Formatted per `iso_currency_amount` ([PaSO View] Section 3), with the full amount and currency. The most prominent value on the consent screen. |
+| `payee.name`           | **SHALL** display | Shown in full and clearly identified as the recipient of the payment.                                                                           |
+| `payee.logo`           | **MAY** display   | If displayed, the `image` rules of [PaSO View] Section 3 apply. The logo **MUST NOT** replace or obscure `payee.name`.                          |
+| `transaction_id`       | not displayed     | —                                                                                                                                               |
+| `payee.id`             | not displayed     | —                                                                                                                                               |
+| `payee.logo#integrity` | not displayed     | —                                                                                                                                               |
+
+The `amount` and `payee.name` **SHALL** be visible on the same screen as the affirmative action.
+
+### 3.2 Actions
+
+- **Affirmative action**: the User authorises a one-time payment of `amount` to the Payee identified by `payee.name`. The Wallet's label for this action **SHALL** convey that a payment is being made (e.g., "Pay").
+- **Denial action**: the User declines the payment.
+
+## 4 References
 
 | Reference           | Description                                                         |
 |---------------------|---------------------------------------------------------------------|
@@ -134,4 +156,33 @@ The Wallet renders, in claim order: **Amount** — €49.99, **Payee** — Acme 
 │       [ Cancel ]        [ Pay ]            │
 │                                            │
 └────────────────────────────────────────────┘
+```
+
+### A.2 Static Rendering
+
+The same transaction as in A.1, rendered by a Wallet that implements this rulebook and uses static rendering per [PaSO View] Section 5. The Wallet's user interface language is French, which the credential metadata does not serve. Because the metadata of A.1 provides no `security_hint`, the Wallet uses its own French labels and layout and omits the optional logo:
+
+```text
+┌────────────────────────────────────────────┐
+│                                            │
+│            Confirmer le paiement           │
+│                                            │
+│                 49,99 €                    │
+│                                            │
+│      à  Acme Store                         │
+│                                            │
+├────────────────────────────────────────────┤
+│                                            │
+│       [ Annuler ]       [ Payer ]          │
+│                                            │
+└────────────────────────────────────────────┘
+```
+
+The corresponding SCA response claims include, among others:
+
+```json
+{
+  "display_locale": "fr",
+  "render_mode": "static"
+}
 ```

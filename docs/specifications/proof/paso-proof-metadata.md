@@ -56,8 +56,7 @@ Each entry in `transaction_data_types` **MUST** supply metadata for each claim o
 
 - The `path` parameter resolves against the `transaction_data` `payload` object, not against the credential itself.
 - A `value_type` parameter (string) **MAY** be added to claim objects that have a `display` array. It indicates how the Wallet **SHALL** format the claim value for display. If omitted, the value is treated as plain text and **MUST** be a string. The `value_type` parameter **MUST NOT** be used on claims without a `display` array. The set of supported value types is defined by the applicable Transaction Data Type Rulebook or by other PaSO specifications.
-- A `display_type` parameter (string) **MAY** be added to `display` entry objects. It governs how the Wallet **SHALL** format the `name` text of that display entry, applying the same rendering rules as the corresponding `value_type` but to the label. If omitted, the label is plain text.
-- The `name` of each `display` entry is subject to the label constraints defined in Section 3.3, which also restrict the permitted `display_type` values.
+- The `name` of each `display` entry is subject to the label constraints defined in Section 3.3.
 
 Claims that are relevant to the user's consent **MUST** include a `display` array with entries for the locales served in that signed JWT. Claims without a `display` array **MUST** be internal values irrelevant to the user's consent.
 
@@ -69,14 +68,13 @@ Each entry in `transaction_data_types` **MAY** include a `ui_labels` object prov
 
 - `locale`: **OPTIONAL**. A [RFC5646] language tag. An entry without `locale` is a default entry. The same applies to entries without `locale` in a claim's `display` array (Section 3.1). Default entries are used only when no locale in the Wallet's locale priority list matches, and then for every array at once, per [PaSO View] Section 4. Section 3.3 requires all arrays of a transaction data type to provide the same locales and either all or none of them to provide a default entry.
 - `value`: The localised string.
-- `value_type`: **OPTIONAL**. A `value_type` as defined in Section 3.1 governing how the Wallet formats the `value`. If omitted, treated as plain text. Restricted to the text-producing value types per Section 3.3.
 
 The following UI element identifiers are defined by this specification:
 
 - **`affirmative_action_label`**: Label for the confirmation action (e.g., "Confirm Payment").
 - **`denial_action_label`**: Label for the denial action. If absent, the Wallet **SHALL** provide its own.
 - **`transaction_title`**: Title for the consent screen. If absent, the Wallet **MAY** provide its own.
-- **`security_hint`**: A security hint displayed to the user. When present, the Wallet **SHALL** display it exactly as provided and **SHALL NOT** alter or remove it. Its entries **MUST NOT** include a `value_type`; the value is always plain text (Section 3.3).
+- **`security_hint`**: A security hint displayed to the user. When present, the Wallet **SHALL** display it exactly as provided and **SHALL NOT** alter or remove it.
 
 All `ui_labels` values are subject to the label constraints defined in Section 3.3.
 
@@ -104,7 +102,7 @@ The maximum lengths are chosen so that a conforming Wallet can always display a 
 
 Labels **MUST NOT** contain C0 or C1 control characters; this prohibits line breaks within labels — line wrapping is a rendering decision of the Wallet. Labels and `transaction_data` `payload` string values **MUST NOT** contain the Unicode directional embedding or override characters U+202A through U+202E. The directional isolate characters U+2066 through U+2068 **MAY** be used, provided each isolate is properly terminated by U+2069.
 
-Labels are text. A `display` entry's `display_type` and a `ui_labels` entry's `value_type` **MUST** be either `mini_markdown` or `template:mini_markdown` as defined in [PaSO View], or absent (plain text). Value types that produce non-textual or standalone content — in particular `image`, `url`, and `label_only` — **MUST NOT** be used for labels. `security_hint` values **MUST** be plain text: a `security_hint` entry **MUST NOT** carry a `value_type`.
+Labels are plain text. `display` entries and `ui_labels` entries carry no formatting parameter; claim value types — in particular `image`, `url`, and `label_only` — **MUST NOT** be applied to labels.
 
 The following structural constraints apply to each `transaction_data_types` entry:
 
@@ -113,7 +111,7 @@ The following structural constraints apply to each `transaction_data_types` entr
 - Every claim `display` array and every `ui_labels` entry array of the entry **MUST** contain entries for the same set of `locale` values, compared case-insensitively, and **MUST** either all contain a default entry or all contain none. This ensures that the Wallet renders the consent screen from a single locale, or entirely from default entries, per [PaSO View] Section 4.
 - A `locale` value **MUST NOT** be `default`, compared case-insensitively. That string is reserved for reporting the selection of default entries in `display_locale` per [PaSO View] Section 4.
 
-For labels whose `value_type` or `display_type` uses the `template:` prefix defined in [PaSO View], the limits apply to the fully interpolated result. The Wallet enforces these constraints at rendering time per [PaSO View] Section 2. Independent of rendering, the Wallet **SHALL** treat a transaction data type whose metadata violates these constraints as not supported by the credential.
+The Wallet enforces these constraints at rendering time per [PaSO View] Section 2. Independent of rendering, the Wallet **SHALL** treat a transaction data type whose metadata violates these constraints as not supported by the credential.
 
 ## 4 Signed Credential Metadata JWT
 

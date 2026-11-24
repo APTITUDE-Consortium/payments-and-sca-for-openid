@@ -24,7 +24,7 @@ The Wallet **SHALL** be able to render any transaction data type generically. Al
 
 The display order **SHALL** be the order in which the claims appear in the `claims` array, not the order of fields in the `payload` object.
 
-Each label **SHALL** be formatted according to the `display_type` of its locale-matched `display` entry if present, or as plain text otherwise. Each value **SHALL** be formatted according to its `value_type` as defined in Section 3.
+Each label **SHALL** be rendered as plain text. Each value **SHALL** be formatted according to its `value_type` as defined in Section 3.
 
 The Wallet **SHALL** ensure that all claims with a `display` array, and all populated UI elements — including the `security_hint` where present — have been displayed to the user before enabling the confirmation action.
 
@@ -32,7 +32,7 @@ Relying Parties and Attestation Providers **MUST NOT** use labels, payload value
 
 The Wallet **SHALL** populate the UI elements defined in [PaSO Proof Metadata] Section 3.2 with the localised labels from the credential metadata. When a `security_hint` is present, the Wallet **SHALL** display it exactly as provided.
 
-All labels are subject to the length limits and character constraints defined in [PaSO Proof Metadata] Section 3.3. The Wallet **SHALL** verify these constraints for every label it renders; for labels produced with a `template:` prefix, the verification applies to the fully interpolated result. If any label violates a constraint, the `transaction_data` entry is not compatible and the Wallet **SHALL** exclude it. The Wallet **MUST NOT** truncate, elide, or otherwise shorten a label; it **MAY** wrap a label across multiple lines provided the text remains visible in full. The Wallet **SHALL** likewise exclude a `transaction_data` entry whose formatted claim values contain the directional formatting characters prohibited by [PaSO Proof Metadata] Section 3.3.
+All labels are subject to the length limits and character constraints defined in [PaSO Proof Metadata] Section 3.3. The Wallet **SHALL** verify these constraints for every label it renders. If any label violates a constraint, the `transaction_data` entry is not compatible and the Wallet **SHALL** exclude it. The Wallet **MUST NOT** truncate, elide, or otherwise shorten a label; it **MAY** wrap a label across multiple lines provided the text remains visible in full. The Wallet **SHALL** likewise exclude a `transaction_data` entry whose formatted claim values contain the directional formatting characters prohibited by [PaSO Proof Metadata] Section 3.3.
 
 The Wallet **SHALL** be capable of displaying any label that conforms to the maximum lengths of [PaSO Proof Metadata] Section 3.3 in full, in every display configuration the Wallet supports — including platform accessibility text scaling. For action labels this **MAY** include wrapping the label across multiple lines, enlarging the control, or reducing the font size within the limits of legibility; the Wallet **MUST NOT** rely on platform default controls that truncate or ellipsize overflowing text. If, despite this, a conforming label cannot be displayed in full in the active display configuration, the Wallet **SHALL NOT** proceed with a partially displayed label: the `transaction_data` entry **SHALL** be treated as not compatible, and if no compatible entry remains, the Wallet **SHALL** cease processing and inform the user of the reason.
 
@@ -51,7 +51,7 @@ Each claim metadata object that has a `display` array **MAY** include a `value_t
 
 The Wallet **SHALL** support all value types defined below. A `transaction_data` entry whose displayable claims declare a `value_type` not supported by the Wallet, or whose `payload` values do not conform to the declared `value_type`, is not compatible and the Wallet **SHALL** exclude it.
 
-Each object in a claim's `display` array **MAY** include a `display_type` parameter. Labels are subject to the label constraints of [PaSO Proof Metadata] Section 3.3: `display_type` **MUST** be either `mini_markdown` or `template:mini_markdown`; other value types — in particular `image`, `url`, and `label_only` — **MUST NOT** be used for labels. The `display_type` governs how the Wallet **SHALL** format the `name` text of that `display` entry, applying the same rendering rules as the corresponding `value_type` but to the label instead of the claim value. If `display_type` is omitted, the label is treated as plain text. A `display` entry whose `display_type` carries any other value, or is not supported by the Wallet, **SHALL** be excluded from the locale selection matching procedure defined in Section 4.
+Labels — the `name` of a claim's `display` entry and the `value` of a `ui_labels` entry — are plain text. Value types apply to claim values only and **MUST NOT** be applied to labels.
 
 <table>
 <thead>
@@ -125,16 +125,6 @@ The claim **MUST NOT** be `mandatory`. The value in the `payload` **MAY** be of 
 </td>
 </tr>
 <tr>
-<td><code>mini_markdown</code></td>
-<td markdown="1">
-
-The value is a string containing text with inline formatting. The Wallet **MAY** render emphasis and strong emphasis as per [CommonMark] Section 6.2 (italic and bold) and `<u>` tags for underline as per [CommonMark] Section 6.6, or **MAY** render the value as plain text without formatting.
-
-All other [CommonMark] constructs and raw HTML **MUST** be rendered as their literal string representation.
-
-</td>
-</tr>
-<tr>
 <td><code>url</code></td>
 <td markdown="1">
 
@@ -148,29 +138,6 @@ The Wallet **SHOULD NOT** make the URL navigable directly from the consent scree
 
 </td>
 </tr>
-<tr>
-<td><code>template:${value_type}</code></td>
-<td markdown="1">
-
-A composable prefix that enables placeholder interpolation. The value is a string that **MAY** contain placeholders of the form `{<index>}`, where `<index>` is the zero-based position of a claim in the `claims` array for the transaction data type (e.g., `{2}` references the third claim).
-
-The Wallet **SHALL** resolve each placeholder by:
-
-1. Looking up the claim at the given index in the `claims` array — if the index is out of bounds, the placeholder **SHALL** be treated as literal text.
-2. Looking up the corresponding value in the `transaction_data.payload` using the claim's `path` — if the claim is absent from the payload, the entire locale entry **SHALL** be discarded.
-3. Formatting the resolved value according to the claim's `value_type`.
-4. Inserting the formatted value into the string, replacing the placeholder.
-
-A discarded entry is excluded from locale selection per Section 4. If it leaves an array without an entry for a tag, that tag is not available, and selection continues with the next locale in the priority list or with the default entries. If locale selection does not succeed as a result, the `transaction_data` entry is not compatible.
-
-After interpolation, the result **SHALL** be formatted according to the inner `value_type` specified after `template:` (e.g., `template:mini_markdown` applies `mini_markdown` formatting). If a referenced claim's formatting and the inner `value_type` conflict, the inner `value_type` takes precedence. When the template is used as a `display_type`, the label constraints of [PaSO Proof Metadata] Section 3.3 apply to the fully interpolated result per Section 2.
-
-Placeholders **MUST** only reference claims whose `path` contains the same number or fewer `null` entries than the referencing claim's `path`; each `null` in the referenced claim's `path` is resolved to the same array index as the corresponding `null` in the referencing claim's `path`.
-
-Interpolation is single-pass: placeholder-like sequences contained in resolved values **SHALL** be treated as literal text and **SHALL NOT** be interpolated. Placeholders **MUST NOT** reference claims whose `value_type` is `image` or `label_only`, or itself carries the `template:` prefix; a template containing such a reference makes the `transaction_data` entry not compatible. If a referenced claim has no `value_type`, the resolved value **MUST** be a string and is inserted as plain text; if it is not a string, the `transaction_data` entry is not compatible.
-
-</td>
-</tr>
 </tbody>
 </table>
 
@@ -180,7 +147,7 @@ The Wallet **SHALL** maintain a locale priority list: an ordered sequence of [RF
 
 The Wallet **SHALL** render all `display` entries and `ui_labels` entries of a transaction either from a single locale or entirely from default entries (entries without a `locale`). It **SHALL NOT** combine entries of different locales, or locale-tagged and default entries, on one consent screen.
 
-The arrays considered are the `display` arrays of all `claims` metadata objects that have one, together with all `ui_labels` entry arrays, for the matching transaction data type. Entries excluded under Section 3 do not take part in selection. These are entries whose `display_type` is not permitted or not supported, and `template:` entries discarded during interpolation. The available tags are the `locale` values for which every considered array has a non-excluded entry, compared case-insensitively.
+The arrays considered are the `display` arrays of all `claims` metadata objects that have one, together with all `ui_labels` entry arrays, for the matching transaction data type. The available tags are the `locale` values for which every considered array has an entry, compared case-insensitively.
 
 The Wallet **SHALL** select the locale as follows:
 
@@ -200,7 +167,7 @@ _**Note**: This section is **informative**._
 
 ### 5.1 Metadata as an Injection Channel
 
-Everything the Wallet renders during consent originates outside the Wallet: labels and value types from the Attestation Provider's signed metadata, and — through value formatting and `template:` interpolation — values from the Relying Party's `payload`. The constraints in this document and in [PaSO Proof Metadata] Section 3.3 (length limits, character prohibitions, text-only labels, single-pass interpolation, resource limits, rendering caps) exist to keep this channel from being usable to obfuscate or forge consent content. Wallets should treat every metadata- or payload-supplied string strictly as display data — never as markup beyond the constructs explicitly permitted by the declared value type, and never as code or instructions.
+Everything the Wallet renders during consent originates outside the Wallet: labels and value types from the Attestation Provider's signed metadata, and — through value formatting — values from the Relying Party's `payload`. The constraints in this document and in [PaSO Proof Metadata] Section 3.3 (length limits, character prohibitions, text-only labels, resource limits, rendering caps) exist to keep this channel from being usable to obfuscate or forge consent content. Wallets should treat every metadata- or payload-supplied string strictly as display data — never as markup beyond the constructs explicitly permitted by the declared value type, and never as code or instructions.
 
 ### 5.2 Why Truncation Is Prohibited
 
@@ -228,7 +195,6 @@ The character constraints prohibit directional embedding and override characters
 | [RFC5646]                      | [RFC 5646 — Tags for Identifying Languages](https://www.rfc-editor.org/rfc/rfc5646.html)                                   |
 | [RFC2397]                      | [RFC 2397 — The "data" URL scheme](https://www.rfc-editor.org/rfc/rfc2397.html)                                            |
 | [W3C.SRI]                      | [Subresource Integrity](https://www.w3.org/TR/SRI/)                                                                        |
-| [CommonMark]                   | [CommonMark Specification](https://spec.commonmark.org/)                                                                   |
 | [ISO8601]                      | [ISO 8601 — Date and time format](https://www.iso.org/iso-8601-date-and-time-format.html)                                  |
 | [ISO4217]                      | [ISO 4217 — Currency codes](https://www.iso.org/iso-4217-currency-codes.html)                                              |
 
@@ -250,5 +216,3 @@ The following examples apply Section 4 to the transaction data type of [PaSO Pro
 In the third row, German is shown although the first preference, `fr`, is unavailable: a locale-tagged match anywhere in the priority list takes precedence over the default entries. In the fourth row, the user sees the issuer's fallback text, and the proof says so: `display_locale` is `default`, not `fr`.
 
 If the same metadata carried no default entries, the fourth row would produce no selection, and the Wallet would exclude the credential.
-
-Suppose instead that the `de` entry of the `amount` `display` array carried a `display_type` the Wallet does not support. That entry is excluded, so `de` is not an available tag. With the priority list `de`, `en`, the Wallet renders all `en` entries and reports `en`. It does not render `amount` in English and the other labels in German.

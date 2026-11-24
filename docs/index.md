@@ -128,7 +128,7 @@ Informed consent depends entirely on what the user actually sees. PaSO View defi
 
 The central ideas are:
 
-- **Generic, metadata-driven rendering.** Each displayable claim carries a value type (for example, a currency amount, a date, an image, a frequency code, a URL, lightweight inline-formatted text, or a template that interpolates other claims). The wallet knows how to render each value type. A wallet may provide a dedicated UI for a type it specifically implements, but it must always be able to fall back to the generic renderer.
+- **Generic, metadata-driven rendering.** Each displayable claim carries a value type (for example, a currency amount, a date, an image, a frequency code, or a URL). The wallet knows how to render each value type. A wallet may provide a dedicated UI for a type it specifically implements, but it must always be able to fall back to the generic renderer.
 
 - **Display is mandatory and faithful.** Everything designated for display must be shown before the user can confirm. Parties may not use labels or hints to obscure information relevant to consent. Security hints, when provided, must be shown exactly.
 

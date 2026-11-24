@@ -122,15 +122,17 @@ The Wallet **SHALL** resolve the **effective signal set** for the matched transa
 
 1. **Collect referenced profiles.** Gather every risk signal profile referenced by either source:
    - the `risk_signal_profiles` member declared for the transaction data type in the signed credential metadata (per [PaSO Proof Metadata]), and
-   - the profiles referenced for the transaction data type by its Transaction Data Type Rulebook (per [PaSO Core] Section 5).
+   - the profiles referenced for the transaction data type by its Transaction Data Type Rulebook (per [PaSO Core] Section 5), where the Wallet implements that rulebook ([PaSO Core] Section 5.5).
 
 2. **Union the profile entries.** The effective signal set is the union of the `signals` entries of every referenced profile. Where the same signal type appears in more than one referenced profile, `required` is the logical OR of its values and `max_age` is the minimum of the values present. The strictest constraint wins in every case.
 
-3. **Apply enumerations as a ratchet.** Apply the `risk_signals` array declared in the signed credential metadata, and any signals enumerated directly by the Transaction Data Type Rulebook, over the unioned set. An enumeration entry **MAY** introduce a signal type absent from every referenced profile, promote `required` from `false` to `true`, or lower `max_age`. An enumeration entry **SHALL NOT** demote `required` from `true` to `false` and **SHALL NOT** raise `max_age`; where it specifies a looser value than a referenced profile established, the Wallet **SHALL** apply the stricter value.
+3. **Apply enumerations as a ratchet.** Apply the `risk_signals` array declared in the signed credential metadata, and, where the Wallet implements the Transaction Data Type Rulebook, any signals it enumerates directly, over the unioned set. An enumeration entry **MAY** introduce a signal type absent from every referenced profile, promote `required` from `false` to `true`, or lower `max_age`. An enumeration entry **SHALL NOT** demote `required` from `true` to `false` and **SHALL NOT** raise `max_age`; where it specifies a looser value than a referenced profile established, the Wallet **SHALL** apply the stricter value.
 
 A signal in the effective set whose resolved `required` is `true` is a **required signal**. One whose resolved `required` is `false` is an **optional signal**.
 
 Where neither source references a profile and neither enumerates a signal, the effective signal set is empty.
+
+A Wallet that does not implement the rulebook relies on the signed credential metadata, which the Attestation Provider keeps consistent with the rulebook per [PaSO Core] Section 5.5. When resolving the effective signal set for verification (Section 6), the Authorizing Party always includes the profiles and signals that the rulebook references or enumerates.
 
 Where the `transaction_data` entry carries ad-hoc metadata valid per [PaSO Proof Metadata] Section 5.3, the `risk_signal_profiles`, `risk_signals`, and `encrypted` members that this section and Section 7.2 take from the signed credential metadata are taken from that `metadata` object instead, per [PaSO Proof Metadata] Section 5.4. The issuer encryption key is unaffected and is obtained per Section 7.3.
 
@@ -219,7 +221,7 @@ For privacy, the risk-signals section **MAY** be required to be encrypted so tha
 
 Encryption is **required** for a transaction data type when **any** of the following mandates it:
 
-1. the applicable Transaction Data Type Rulebook,
+1. the applicable Transaction Data Type Rulebook, where the Wallet implements it ([PaSO Core] Section 5.5),
 2. the issuer's credential metadata, via the `encrypted` flag on the `transaction_data_types` entry (per [PaSO Proof Metadata]), or
 3. any risk signal profile referenced for the transaction data type, via its `encrypted` member (Section 3.3).
 

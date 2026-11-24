@@ -14,7 +14,7 @@ Published site: <https://aptitude-consortium.github.io/payments-and-sca-for-open
 docs/
   index.md                     # landing page
   specifications/              # PaSO Core, View, Proof specs
-  rulebooks/transaction_data/  # Generic, Mandate, Payment rulebooks
+  rulebooks/transaction_data/  # Payment rulebook
   assets/                      # logo and other static assets
 mkdocs.yml                     # site + theme configuration
 ```

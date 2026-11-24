@@ -45,7 +45,7 @@ When claims contain `null` (array wildcard) in their `path`, the Wallet **SHALL*
 
 The Wallet **SHOULD** display the complete transaction data on a single screen. Where this is not feasible, the Wallet **MAY** use scrolling, collapsible sections, or detailed views, provided the user can review the content in its entirety and the Wallet ensures the content has been displayed in full before enabling the confirmation action.
 
-The Wallet **SHALL** enforce an upper bound on the total number of rendered items — claim instances after array wildcard expansion plus UI elements. The bound is Wallet-defined but **SHALL** be at least 200. A `transaction_data` entry that would exceed the Wallet's bound is not compatible and the Wallet **SHALL** exclude it.
+A `transaction_data` entry **MUST NOT** contain more than 10 displayed claim values. Displayed claim values are the instances, present in the `payload`, of claims that have a `display` array, counted after array wildcard expansion. UI elements do not count toward this limit. The count is the same in dynamic and static rendering, even where static rendering omits a claim. The Wallet **SHALL** be able to render 10 displayed claim values. A `transaction_data` entry that exceeds this limit is not compatible and the Wallet **SHALL** exclude it.
 
 ## 3 Value Types
 
@@ -187,7 +187,7 @@ Static rendering does not change how the credential metadata is obtained or whic
 
 In static rendering, the Wallet **SHALL** display the content that the Static Presentation section of the rulebook requires, in the manner it requires. The Wallet uses its own layout and its own localised labels in place of the `display` entries and `ui_labels` of the credential metadata, except for the `security_hint`. The Wallet's labels **SHALL** convey the meaning defined by the rulebook clearly and unmistakably.
 
-The following requirements of Section 2 apply to static rendering unchanged: all content required for display **SHALL** have been displayed before the confirmation action is enabled; the Wallet **MUST NOT** truncate, elide, or otherwise shorten any label or displayed claim value; displayed claim values **SHALL** be formatted according to their `value_type` per Section 3; a `transaction_data` entry whose formatted claim values contain prohibited directional formatting characters **SHALL** be excluded; and the bound on rendered items applies.
+The following requirements of Section 2 apply to static rendering unchanged: all content required for display **SHALL** have been displayed before the confirmation action is enabled; the Wallet **MUST NOT** truncate, elide, or otherwise shorten any label or displayed claim value; displayed claim values **SHALL** be formatted according to their `value_type` per Section 3; a `transaction_data` entry whose formatted claim values contain prohibited directional formatting characters **SHALL** be excluded; and the limit on displayed claim values applies.
 
 When the matched transaction data type provides a `security_hint`, the Wallet **SHALL** display it exactly as provided, in the entry selected per Section 5.4.
 
@@ -220,6 +220,10 @@ Resolving a remote image URL at consent time reveals the transaction timing and 
 ### 6.4 Confusable Text and Wallet Chrome Spoofing
 
 The character constraints prohibit directional embedding and override characters, but cannot prevent homoglyphs or text that mimics Wallet UI (e.g., a label reading "✓ Verified by your Wallet"). Wallets should render metadata-supplied content so that it is visually attributable as transaction content and cannot be mistaken for Wallet-generated UI or system dialogs — for example, through clear containment within the consent layout and consistent, Wallet-controlled styling of its own controls.
+
+### 6.5 Why the Number of Displayed Claim Values Is Limited
+
+A user can realistically review only a small number of values before confirming a transaction; a consent screen that lists more invites approval without review. Section 2 therefore fixes the limit at 10 displayed claim values for every Wallet rather than leaving it Wallet-defined: a single limit makes behaviour identical across Wallets, so a transaction cannot be presentable in one Wallet and rejected by another, and every Wallet can design its consent screen for a known maximum. A `transaction_data` entry over the limit is excluded rather than shortened, for the reasons given in Section 6.2.
 
 ## 7 References
 

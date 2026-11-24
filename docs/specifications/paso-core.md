@@ -88,7 +88,7 @@ Attestation Providers and Relying Parties **SHALL** follow the applicable Creden
 
 A Transaction Data Type Rulebook is a governance document that defines a specific transaction data type. It specifies the semantic meaning of all claims and all UI display requirements.
 
-Every transaction data type identifier used with PaSO **SHALL** have a Transaction Data Type Rulebook published by the organisation that owns the identifier, except a type used only with ad-hoc metadata per [PaSO Proof Metadata] Section 5. For such a type, the ad-hoc metadata supplied by the Relying Party is the complete definition of the type for the transaction it accompanies, and Section 5.3, including its immutability requirement, does not apply.
+Every transaction data type identifier used with PaSO **SHALL** have a Transaction Data Type Rulebook published by the organisation that owns the identifier, except a type used only with ad-hoc metadata per [PaSO Proof Metadata] Section 5. For such a type, the ad-hoc metadata supplied by the Relying Party is the complete definition of the type for the transaction it accompanies, and the immutability requirement of Section 5.3 does not apply.
 
 ### 5.2 Type Identifiers
 

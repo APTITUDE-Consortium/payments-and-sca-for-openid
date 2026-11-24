@@ -88,7 +88,7 @@ Attestation Providers and Relying Parties **SHALL** follow the applicable Creden
 
 A Transaction Data Type Rulebook is a governance document that defines a specific transaction data type. It specifies the semantic meaning of all claims and all UI display requirements.
 
-Every transaction data type identifier used with PaSO **SHALL** have a Transaction Data Type Rulebook published by the organisation that owns the identifier.
+Every transaction data type identifier used with PaSO **SHALL** have a Transaction Data Type Rulebook published by the organisation that owns the identifier, except a type used only with ad-hoc metadata per [PaSO Proof Metadata] Section 5. For such a type, the ad-hoc metadata supplied by the Relying Party is the complete definition of the type for the transaction it accompanies, and Section 5.3, including its immutability requirement, does not apply.
 
 ### 5.2 Type Identifiers
 
@@ -130,6 +130,16 @@ The Wallet **SHALL** ensure that all claims designated for display — in static
 ### 5.4 Content Quality
 
 All text displayed to the user **SHALL** be short and easily understandable.
+
+### 5.5 Rulebook Obligations
+
+Conformance to a Transaction Data Type Rulebook is ensured by the parties that construct and verify transaction data:
+
+- The Attestation Provider **SHALL** ensure that the `transaction_data_types` entry it publishes for a transaction data type in the signed credential metadata ([PaSO Proof Metadata] Section 3) is consistent with the rulebook. This includes the claims and which of them are required, and any risk signal profiles, risk signals and encryption that the rulebook requires ([PaSO Risk Signals]).
+- The Relying Party **SHALL** construct the `payload` of a `transaction_data` entry per the rulebook of its `type`. For a type used only with ad-hoc metadata (Section 5.1), it **SHALL** construct the `payload` per that metadata.
+- The Authorizing Party **SHALL** verify that the `payload` conforms to the rulebook, per [PaSO Proof Verify] Section 3.
+
+A Wallet implements a rulebook by building it in; it does not obtain rulebooks at runtime. The Wallet **SHALL** apply the requirements of every rulebook it implements. For a rulebook it does not implement, the Wallet relies on the credential metadata, which reflects the rulebook by the Attestation Provider's obligation above.
 
 ## 6 Holder Binding Proof
 
@@ -247,12 +257,18 @@ This section applies to both the simple and the advanced profile. A PaSO-targete
 
 1. The credential matches a credential query whose identifier is listed in the entry's `credential_ids`.
 2. The entry's `type` is among the transaction data types supported by the credential.
-3. The `payload` conforms to the definition of that type. A `payload` conforms if it does not contain fields not declared by the rulebook, does not contain fields not covered by a claim `path` in the applicable claims metadata (companion `#integrity` fields are covered by the `path` of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting.
+3. The `payload` conforms to the definition of that type. A `payload` conforms if it does not contain fields not covered by a claim `path` in the applicable claims metadata (companion `#integrity` fields are covered by the `path` of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting. Where the Wallet implements the rulebook of the `type` (Section 5.5), the `payload` additionally **SHALL NOT** contain fields not declared by the rulebook.
 4. Every claim of the `payload` that requires resolution of an external resource with integrity verification has been resolved, and its content verified.
 
 A Wallet **SHALL** reject a request whose `transaction_data` entry contains an object with duplicate member names (compared after unescaping).
 
 Other PaSO specifications define further conditions under which an entry is not compatible with a credential.
+
+The following summary is informative. For each entry and candidate credential, the Wallet determines the definition of the type as follows:
+
+1. If the entry carries a `metadata` parameter, the Wallet verifies it per [PaSO Proof Metadata] Section 5.3. Invalid ad-hoc metadata makes the entry incompatible, without fallback to the stored credential metadata. Valid ad-hoc metadata is the definition of the type for this transaction, and the entry is rendered dynamically ([PaSO View] Section 5.1).
+2. Otherwise, the type is supported only if the signed credential metadata lists it (condition 2). The `payload` is checked against that metadata and, where the Wallet implements it, against the rulebook (condition 3).
+3. The Wallet then selects the rendering mode: static rendering where [PaSO View] Section 5.1 permits it, and dynamic rendering from the metadata otherwise.
 
 ## 8 References
 
@@ -272,6 +288,7 @@ Other PaSO specifications define further conditions under which an entry is not 
 | [PaSO View]           | [PaSO View](paso-view.md)                                                                                                  |
 | [PaSO Risk Signals]   | [PaSO Proof: Risk Signals Module](proof/paso-proof-risk-signals.md)                                                         |
 | [PaSO Risk Signal Registry] | [PaSO Proof: Risk Signal Registry](proof/paso-proof-risk-signal-registry.md)                                         |
+| [PaSO Proof Verify]   | [PaSO Proof: Verify Module](proof/paso-proof-verify.md)                                                                    |
 | [JAR]                 | [RFC 9101 — JWT-Secured Authorization Request](https://www.rfc-editor.org/rfc/rfc9101.html)                                |
 | [W3C.SRI]             | [Subresource Integrity](https://www.w3.org/TR/SRI/)                                                                        |
 

@@ -64,7 +64,7 @@ A Wallet that renders a type dynamically without knowing its rulebook can do non
 1. **`paso-core.md` §5.1**
    - Every type identifier **SHALL** have a Transaction Data Type Rulebook published by the identifier's owner, *except* types used only with ad-hoc metadata (Metadata §5).
    - For such types, the ad-hoc metadata is the complete definition, set by the Relying Party, and the immutability rule of §5.3 doesn't apply.
-2. **`paso-core.md` new §5.4 "Rulebook Obligations"**
+2. **`paso-core.md` new §5.5 "Rulebook Obligations"** (after the existing §5.4 "Content Quality")
    - The Attestation Provider **SHALL** publish transaction data type metadata consistent with the rulebook. This includes the claims and required fields, and the risk signal profiles, signals and encryption the rulebook requires, so that a Wallet relying on metadata alone collects what the rulebook requires.
    - The Relying Party **SHALL** construct the `payload` per the rulebook, and per its ad-hoc metadata for ad-hoc types.
    - The Authorizing Party **SHALL** verify conformance to the rulebook, per Verify §3 step 5.
@@ -76,9 +76,10 @@ A Wallet that renders a type dynamically without knowing its rulebook can do non
 5. **`paso-proof-risk-signals.md`**
    - §4.1 step 1, second source, and step 3, rulebook enumerations: these apply where the Wallet implements the rulebook.
    - §7.2 item 1: the rulebook mandate applies where the Wallet implements the rulebook.
-   - A note points to the Attestation Provider's obligation (Core §5.4) as what guarantees the outcome for Wallets that rely on metadata.
+   - A note points to the Attestation Provider's obligation (Core §5.5) as what guarantees the outcome for Wallets that rely on metadata.
    - The Authorizing Party's resolution in Verify §3 step 6 is unchanged; it always uses the rulebook.
-6. **`paso-view.md` §5.2:** no normative change. It already requires conformance to both the rulebook and the metadata in static mode, and static mode implies the Wallet implements the rulebook. Add a cross-reference to Core §5.4 if it reads naturally.
+6. **`paso-view.md`:** no change. §5.2 already requires conformance to both the rulebook and the metadata in static mode, and static mode implies the Wallet implements the rulebook.
+6a. **`paso-proof-verify.md` §3 step 5** (found while planning): the step checks the payload against "the applicable Transaction Data Type Rulebook", which an ad-hoc-only type lacks. For such a type, the Authorizing Party verifies the payload against the entry's ad-hoc `metadata` instead.
 7. **`index.md` §6.2**
    - Reword the ad-hoc bullet. Ad-hoc metadata serves the RP's own types, which have no rulebook, and is their complete definition.
    - Replace "the issuer publishing its metadata and rulebook" with wording consistent with Core §5.1.
@@ -87,5 +88,5 @@ A Wallet that renders a type dynamically without knowing its rulebook can do non
 ## Calls made (correct if wrong)
 
 - **Ad-hoc metadata for a type that does have a rulebook** (an override of a published type) follows decision path step 1. The Wallet checks against the ad-hoc metadata only. The Authorizing Party still checks the rulebook. Whether such overrides should be allowed or constrained belongs to #9.
-- **The new section is §5.4**, appended after §5.3. No renumbering.
+- **The new section is §5.5**, appended after the existing §5.4 "Content Quality". No renumbering.
 - **Metadata §3 is unchanged.** Its rulebook references concern semantics and the definition of value types, not Wallet checks.

@@ -219,8 +219,6 @@ The Wallet **SHALL** present the PaSO-targeted alternatives to the user as indep
 
 The ordering of alternatives expresses the Relying Party's preference: the Wallet **SHOULD** derive the display order for each slot from the order in which credential query identifiers first appear across the alternatives. The Wallet **SHOULD** default to the first alternative's selection for each slot, but **MAY** override the default with a credential the user has previously selected in the same context, provided the slot's display order remains as defined by the request.
 
-This first-match rule allows a Relying Party to provide versioned transaction data: a newer `type` can be listed first in the `transaction_data` array, with an older `type` as a fallback for credentials that do not yet support it.
-
 A presentation request **MAY** combine PaSO Credentials with non-PaSO credentials.
 
 #### 7.4.2 Discovery and Validation
@@ -236,6 +234,8 @@ For the PaSO-targeted entries, the Wallet **SHALL** perform the following steps:
 5. The Wallet **SHALL** present the remaining compatible credentials as alternatives to the user. For the initially selected credential, the Wallet **SHALL** display the `transaction_data` entry matched in step 2.
 6. If the user selects a different credential, the Wallet **SHALL** display the `transaction_data` entry matched for that credential in step 2. When the matched `transaction_data` entry differs between credentials, the displayed content **SHALL** update accordingly.
 7. If the user consents, the Wallet **MAY** proceed with the presentation.
+
+The first-match rule of step 2 allows a Relying Party to provide versioned transaction data: a newer `type` can be listed first in the `transaction_data` array, with an older `type` as a fallback for credentials that do not yet support it (Annex A.7).
 
 ## 8 References
 

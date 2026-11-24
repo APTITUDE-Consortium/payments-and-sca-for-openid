@@ -12,7 +12,7 @@ It is deliberately non-normative. Where the specifications use precise requireme
 
 Two bodies of work have matured largely in parallel:
 
-- **Digital identity wallets and the OpenID for Verifiable Credentials family.** A wallet is an application, usually on a mobile device, that holds digital attestations (credentials) and can present them to other parties. Two protocols underpin this: [**OpenID for Verifiable Credential Issuance (OpenID4VCI)**](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html), which governs how a credential is issued into a wallet, and [**OpenID for Verifiable Presentations (OpenID4VP)**](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html), which governs how a wallet presents a credential to a relying party. These protocols give us a device-bound key, a high-assurance authentication ceremony, and a signed presentation — exactly the primitives one needs for strong authentication.
+- **Digital identity wallets and the OpenID for Verifiable Credentials family.** A wallet is an application, usually on a mobile device, that holds digital attestations (credentials) and can present them to other parties. Two protocols underpin this: [**OpenID for Verifiable Credential Issuance (OpenID4VCI)**](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html), which governs how a credential is issued into a wallet, and [**OpenID for Verifiable Presentations (OpenID4VP)**](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html), which governs how a wallet presents a credential to a relying party. These protocols give us a device-bound key, a high-assurance authentication ceremony, and a signed presentation — exactly the primitives one needs for strong authentication.
 
 - **European payments regulation.** Payment services legislation requires **Strong Customer Authentication (SCA)**: authentication based on at least two independent factors drawn from the categories of knowledge, possession, and inherence. For electronic payments it additionally requires **dynamic linking** — the authentication must be cryptographically tied to a specific amount and a specific payee, so that the user provably consented to *that* transaction and nothing else.
 
@@ -42,7 +42,7 @@ PaSO is deliberately modular. A small core defines the shared concepts; addition
 The standards are organized as follows:
 
 - **PaSO Core** — the common foundation: roles, flow types, the governance documents (rulebooks), the proof structure the wallet produces, and the rules for processing transaction data.
-- **PaSO Proof** — a family of modules for producing a verifiable and replayable proof package: a metadata module, a verification module, a logging module, a status backchannel, and a trust module.
+- **PaSO Proof** — a family of modules for producing a verifiable and replayable proof package: a metadata module, a verification module, a logging module, and a risk signals module with its registry of signal types.
 - **PaSO View** — how a wallet renders transaction data for the user generically, so that any transaction type is supported consistently across wallets.
 
 The rest of this document introduces the key ideas behind these parts.
@@ -101,7 +101,7 @@ When a wallet presents a PaSO credential together with transaction data, it prod
 - the authentication methods used (with explicit values distinguishing strong from weaker biometrics), required to span at least two independent factor categories in a payments context;
 - a hash of the exact transaction data the user consented to;
 - an integrity value over the signed request the wallet received;
-- an integrity value over the signed credential metadata used to display the transaction (when applicable);
+- an integrity value over the signed credential metadata relied on — the metadata used to display the transaction or, where a Relying Party supplied ad-hoc metadata, the metadata that authorised it to do so;
 - the locale that was actually shown to the user, whether the transaction was rendered statically or dynamically, and the wallet's version.
 
 These claims are carried in the format-appropriate structure — a Key Binding JWT for SD-JWT-VC credentials, or device-signed data elements for mdoc credentials.

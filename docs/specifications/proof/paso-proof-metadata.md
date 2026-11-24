@@ -22,7 +22,7 @@ The key words "**MUST**", "**MUST NOT**", "**REQUIRED**", "**SHALL**", "**SHALL 
 
 This section defines an extension to [OID4VCI] Credential Issuer Metadata for serving signed credential metadata.
 
-- **`credential_metadata_uri`**: **OPTIONAL** (string). A new parameter for entries in `credential_configurations_supported` as defined in [OID4VCI] Section 12.2.4. A URL that serves the `credential_metadata` object as defined in [OID4VCI] Section 12.2.4, extended with `transaction_data_types` per Section 3.
+- **`credential_metadata_uri`**: **OPTIONAL** (string); **REQUIRED** for PaSO Credential configurations, as stated below. A new parameter for entries in `credential_configurations_supported` as defined in [OID4VCI] Section 12.2.4. A URL that serves the `credential_metadata` object as defined in [OID4VCI] Section 12.2.4, extended with `transaction_data_types` per Section 3.
 
 The Attestation Provider **SHALL** include a `credential_metadata_uri` in each PaSO Credential configuration within the Credential Issuer Metadata and **SHALL** serve the credential metadata at that URI.
 
@@ -237,7 +237,7 @@ If any step fails, the metadata JWT **SHALL** be considered invalid and the Wall
 
 ## 8 Renewal and Unlinkability
 
-Upon fetching a signed credential metadata JWT, the Wallet **SHALL** verify that the `credential_metadata_uri` claim matches the URI from which the JWT was retrieved, after following any HTTP redirects. If they do not match, the JWT **SHALL** be considered invalid per Section 6. The Wallet **SHALL** use the `credential_metadata_uri` claim of the most recently verified JWT for subsequent renewals, allowing the Attestation Provider to relocate the endpoint via HTTP redirects.
+Upon fetching a signed credential metadata JWT, the Wallet **SHALL** verify that the `credential_metadata_uri` claim matches the URI from which the JWT was retrieved, after following any HTTP redirects. If they do not match, the JWT **SHALL** be considered invalid and handled per Sections 6 and 7. The Wallet **SHALL** use the `credential_metadata_uri` claim of the most recently verified JWT for subsequent renewals, allowing the Attestation Provider to relocate the endpoint via HTTP redirects.
 
 The Wallet **SHALL** renew each signed credential metadata JWT before its `exp` time by re-fetching from the `credential_metadata_uri`, and **MAY** re-fetch at any other time. The Wallet **MAY** fetch additional locales by issuing separate requests with different `Accept-Language` headers during renewal.
 
@@ -321,7 +321,7 @@ A `credential_configurations_supported` entry with `credential_metadata_uri`:
         "claims": [
           {
             "path": ["transaction_id"],
-            "mandatory": true
+            "mandatory": false
           },
           {
             "path": ["amount"],
@@ -380,7 +380,7 @@ A decoded `transaction_data` entry carrying ad-hoc metadata, in a signed Authori
   "credential_ids": ["bank_card"],
   "payload": {
     "transaction_id": "89d0a218-7f52-4dd0-b503-9b0146bfb0ef",
-    "amount": "EUR 45.00",
+    "amount": "45.00 EUR",
     "payee": {
       "name": "Merchant Ltd",
       "id": "DE89370400440532013000"
@@ -390,7 +390,7 @@ A decoded `transaction_data` entry carrying ad-hoc metadata, in a signed Authori
     "claims": [
       {
         "path": ["transaction_id"],
-        "mandatory": true
+        "mandatory": false
       },
       {
         "path": ["amount"],
@@ -445,6 +445,10 @@ A signed credential metadata JWT payload for a PaSO Credential in `mso_mdoc` for
       "urn:paso:sca:global:payment:1": {
         "claims": [
           {
+            "path": ["transaction_id"],
+            "mandatory": false
+          },
+          {
             "path": ["amount"],
             "mandatory": true,
             "value_type": "iso_currency_amount",
@@ -452,6 +456,18 @@ A signed credential metadata JWT payload for a PaSO Credential in `mso_mdoc` for
               { "locale": "en", "name": "Amount" },
               { "locale": "de", "name": "Betrag" }
             ]
+          },
+          {
+            "path": ["payee", "name"],
+            "mandatory": true,
+            "display": [
+              { "locale": "en", "name": "Payee" },
+              { "locale": "de", "name": "Empfänger" }
+            ]
+          },
+          {
+            "path": ["payee", "id"],
+            "mandatory": true
           }
         ],
         "ui_labels": {
@@ -480,7 +496,7 @@ A `transaction_data_types` entry that serves `en`, `de`, and default entries. Ev
     "claims": [
       {
         "path": ["transaction_id"],
-        "mandatory": true
+        "mandatory": false
       },
       {
         "path": ["amount"],

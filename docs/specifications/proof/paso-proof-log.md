@@ -20,7 +20,7 @@ For each PaSO Credential, the Wallet **SHALL** store the following artefacts tog
 
 2. **Metadata history**: all signed credential metadata JWTs (per [PaSO Proof Metadata]) used during presentations, including all locale variants.
 
-3. **Resolved resources**: all external resources resolved for this credential — including SVG templates, resources embedded within SVG documents (per [PaSO Proof SD-JWT-VC and SVG]), and any other resource fetched for credential display. For each resource, the Wallet **SHALL** store:
+3. **Resolved resources**: all external resources fetched for credential display. For each resource, the Wallet **SHALL** store:
    - the URL from which the resource was retrieved,
    - the resource content,
    - its [W3C.SRI] integrity value,
@@ -34,7 +34,7 @@ For each [OID4VP] presentation session involving PaSO transaction data, whether 
 
 2. **The full `vp_token`** as delivered to the Relying Party. If the transaction was not completed, whatever was produced at the point of abandonment, or nothing if no token was generated.
 
-3. **Resolved resources**: all external resources resolved during the transaction — including SVG templates, resources embedded within SVG documents, and any other resource fetched for transaction display. For each resource, the Wallet **SHALL** store:
+3. **Resolved resources**: all external resources fetched during the transaction for transaction display, such as remote images. For each resource, the Wallet **SHALL** store:
    - the URL from which the resource was retrieved,
    - the resource content,
    - its [W3C.SRI] integrity value,
@@ -56,7 +56,6 @@ The Wallet **SHOULD** provide a mechanism to replay the full presentation reques
 |----------------------------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core]                      | [PaSO Core](../paso-core.md)                                                                                               |
 | [PaSO Proof Metadata]            | [PaSO Proof: Metadata Module](paso-proof-metadata.md)                                                                      |
-| [PaSO Proof SD-JWT-VC and SVG]   | [PaSO Proof: SD-JWT-VC and SVG Module](paso-proof-sd-jwt-vc-svg.md)                                                        |
 | [OID4VP]                         | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |
 | [RFC2119]                        | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |
 | [RFC8174]                        | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)        |

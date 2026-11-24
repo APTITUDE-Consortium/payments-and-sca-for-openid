@@ -227,7 +227,7 @@ If any source requires encryption, the Wallet **SHALL** encrypt. Encryption appl
 
 ### 7.3 Encryption Key
 
-The Wallet **SHALL** obtain the issuer encryption key from the credential's signed credential metadata JWT, which is the authoritative source for a PaSO Credential's metadata (per [PaSO Proof Metadata] Section 3). For PaSO Credentials in [SD-JWT-VC] format, the Wallet **MAY** obtain the key from integrity-verified [SD-JWT-VC] Type Metadata as an equal-integrity alternative, mirroring the display relaxation in [PaSO Proof SD-JWT-VC and SVG] Section 2. A key that is not integrity-verified **SHALL** be treated as absent.
+The Wallet **SHALL** obtain the issuer encryption key from the credential's signed credential metadata JWT, which is the authoritative source for a PaSO Credential's metadata (per [PaSO Proof Metadata] Section 3). For PaSO Credentials in [SD-JWT-VC] format, the Wallet **MAY** obtain the key from integrity-verified [SD-JWT-VC] Type Metadata as an equal-integrity alternative, mirroring the display relaxation in [PaSO Proof Metadata] Section 9. A key that is not integrity-verified **SHALL** be treated as absent.
 
 The issuer publishes one or more encryption keys under the `risk_signals_encryption_keys` metadata member, each with a key identifier and its intended key-management algorithm:
 
@@ -285,7 +285,6 @@ An ecosystem **SHOULD NOT** combine a profile that requires `urn:paso:risk:globa
 | [PaSO Core]           | [PaSO Core](../paso-core.md)                                                                                               |
 | [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](paso-proof-metadata.md)                                                                      |
 | [PaSO Proof Verify]   | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                          |
-| [PaSO Proof SD-JWT-VC and SVG] | [PaSO Proof: SD-JWT-VC and SVG Module](paso-proof-sd-jwt-vc-svg.md)                                                        |
 | [PaSO Risk Signal Registry] | [PaSO Proof: Risk Signal Registry](paso-proof-risk-signal-registry.md)                                             |
 | [PaSO Default Risk Signal Profile] | [Default Risk Signal Profile](../../rulebooks/risk_profiles/Default.md)                                     |
 | [RFC2119]             | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |

@@ -78,11 +78,11 @@ The Wallet **SHALL** display it as a human-readable, localised string that accur
 
 The value is a string containing a resolvable URL or a Data URL per [RFC2397] pointing to an image. Images serve an informational or illustrative purpose; the user is not required to view them to give informed consent.
 
-The Wallet **SHALL** support at least PNG, JPEG, and SVG base64 formats for Data URLs. When resolving a URL, the Wallet **SHALL** send an `Accept` header listing the image media types it supports.
+The image **MUST** be in PNG or JPEG format; an image in any other format makes the `transaction_data` entry not compatible. When resolving a URL, the Wallet **SHALL** send an `Accept` header listing `image/png` and `image/jpeg`.
 
-If the URL is not a Data URL, it **MUST** use the `https` scheme and the `payload` **MUST** contain a sibling claim at the same path suffixed with `#integrity` containing a [W3C.SRI] hash of the image content. The Wallet **SHALL** resolve the URL and verify the content against the `#integrity` value. When resolving, the Wallet **SHALL** enforce a fetch timeout, **SHALL** follow at most 3 redirects, and **SHALL NOT** transmit cookies, credentials, or Wallet-identifying headers. If the resolved image is an SVG, URL integrity verification within the SVG **SHALL** follow [PaSO Proof SD-JWT-VC and SVG] Section 3. If verification fails, the `transaction_data` entry is not compatible.
+If the URL is not a Data URL, it **MUST** use the `https` scheme and the `payload` **MUST** contain a sibling claim at the same path suffixed with `#integrity` containing a [W3C.SRI] hash of the image content. The Wallet **SHALL** resolve the URL and verify the content against the `#integrity` value. When resolving, the Wallet **SHALL** enforce a fetch timeout, **SHALL** follow at most 3 redirects, and **SHALL NOT** transmit cookies, credentials, or Wallet-identifying headers. If verification fails, the `transaction_data` entry is not compatible.
 
-An image — the Data URL payload or the resolved content — **MUST NOT** exceed 512 KiB in encoded size, and its decoded dimensions **MUST NOT** exceed 2048 pixels in either direction. A non-conforming image makes the `transaction_data` entry not compatible. The Wallet **SHALL** render SVG images statically: script content **SHALL NOT** be executed, external resources **SHALL NOT** be loaded except as verified per [PaSO Proof SD-JWT-VC and SVG] Section 3, and animation and interactivity **SHALL** be ignored.
+An image — the Data URL payload or the resolved content — **MUST NOT** exceed 512 KiB in encoded size, and its decoded dimensions **MUST NOT** exceed 2048 pixels in either direction. A non-conforming image makes the `transaction_data` entry not compatible.
 
 Because images are informational only, they **MUST NOT** convey information required for the user's consent. The Wallet **SHALL** render images contained within the consent layout; an image **SHALL NOT** overlay or displace other transaction data or Wallet controls. See Section 5 for the linkability considerations of resolving remote images.
 
@@ -187,7 +187,6 @@ The character constraints prohibit directional embedding and override characters
 |--------------------------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core]                    | [PaSO Core](paso-core.md)                                                                                                  |
 | [PaSO Proof Metadata]          | [PaSO Proof: Metadata Module](proof/paso-proof-metadata.md)                                                                |
-| [PaSO Proof SD-JWT-VC and SVG] | [PaSO Proof: SD-JWT-VC and SVG Module](proof/paso-proof-sd-jwt-vc-svg.md)                                                  |
 | [OID4VCI]                      | [OpenID for Verifiable Credential Issuance 1.0](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) |
 | [RFC2119]                      | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |
 | [RFC8174]                      | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)        |

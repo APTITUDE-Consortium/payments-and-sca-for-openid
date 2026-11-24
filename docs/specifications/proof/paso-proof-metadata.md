@@ -243,7 +243,13 @@ The Wallet **SHALL** renew each signed credential metadata JWT before its `exp` 
 
 Credential metadata retrieval **SHALL NOT** be linkable to credential usage. The Wallet **SHALL NOT** fetch credential metadata immediately before or after a presentation in a pattern that would allow a network observer to correlate the two activities.
 
-## 9 References
+## 9 SD-JWT-VC Type Metadata
+
+As an exception to Section 3, the Wallet **MAY** use integrity-verified [SD-JWT-VC] Type Metadata for display purposes without requiring a signed credential metadata JWT for the display information.
+
+When displaying a PaSO Credential in [SD-JWT-VC] format, the Wallet **SHALL** resolve display metadata following the priority order defined in [OID4VCI] Section 12.2.4. [SD-JWT-VC] integrity verification is always required in a PaSO context; any resource that is not integrity-verified **SHALL** be considered absent.
+
+## 10 References
 
 | Reference   | Description                                                                                                                |
 |-------------|----------------------------------------------------------------------------------------------------------------------------|

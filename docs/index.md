@@ -42,7 +42,7 @@ PaSO is deliberately modular. A small core defines the shared concepts; addition
 The standards are organized as follows:
 
 - **PaSO Core** — the common foundation: roles, flow types, the governance documents (rulebooks), the proof structure the wallet produces, and the rules for processing transaction data.
-- **PaSO Proof** — a family of modules for producing a verifiable and replayable proof package: a metadata module, a verification module, a logging module, a status backchannel, a trust module, and a profile for SD-JWT-VC with SVG.
+- **PaSO Proof** — a family of modules for producing a verifiable and replayable proof package: a metadata module, a verification module, a logging module, a status backchannel, and a trust module.
 - **PaSO View** — how a wallet renders transaction data for the user generically, so that any transaction type is supported consistently across wallets.
 
 The rest of this document introduces the key ideas behind these parts.

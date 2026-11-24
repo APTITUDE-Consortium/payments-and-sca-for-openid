@@ -3,6 +3,7 @@
 **Date:** 2026-11-24
 **Scope:** All documents under `docs/` — `index.md`, `paso-core.md`, `paso-view.md`, `proof/paso-proof-metadata.md`, `proof/paso-proof-verify.md`, `proof/paso-proof-log.md`, `proof/paso-proof-risk-signals.md`, `proof/paso-proof-risk-signal-registry.md`, `rulebooks/transaction_data/Payment.md`, `rulebooks/risk_profiles/Default.md`.
 **Reviewed at commit:** `192ef7d`
+**Resolved:** #1 and #2 — `amr` is an ordinary risk signal; SCA comes from holder binding per the Credential Rulebook (design `2026-11-24-paso-amr-not-sca-design.md`, commits `2202bbe`..`de2805a`). Editorial items in C, and the example fixes in #17 and #20, in `64c079c`.
 
 Findings are ordered by impact. References use the form `file §section`. OID4VP/OID4VCI section numbers and the claim that OID4VP requires `transaction_data_hashes` were not checked against the published documents.
 

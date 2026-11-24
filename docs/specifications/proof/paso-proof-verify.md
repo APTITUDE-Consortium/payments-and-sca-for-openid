@@ -49,7 +49,7 @@ Upon receiving the proof package, the Authorizing Party **SHALL** perform the fo
    - `jti`: verify uniqueness (the Authorizing Party **SHOULD** maintain a replay cache).
    - Ad-hoc metadata: where this step refers to the credential metadata of the matched transaction data type and the `transaction_data` entry in the Authorization Request carries a `metadata` parameter, the Authorizing Party **SHALL** instead use that `metadata` object. Before doing so, it **SHALL** verify, per [PaSO Proof Metadata] Section 5.3, that the `client_id` of the Authorization Request is listed in `adhoc_metadata_clients` of the signed credential metadata JWT identified by `metadata_integrity`, and that the `metadata` object conforms to [PaSO Proof Metadata] Sections 3.1 to 3.3.
 
-5. **Payload verification**: Verify that the `transaction_data` entry's `payload` conforms to the applicable Transaction Data Type Rulebook. The specific checks are defined by the rulebook.
+5. **Payload verification**: Verify that the `transaction_data` entry's `payload` conforms to the applicable Transaction Data Type Rulebook. The specific checks are defined by the rulebook. Where the type has no rulebook because it is used only with ad-hoc metadata ([PaSO Core] Section 5.1), verify instead that the `payload` conforms to the `metadata` object of the entry, per [PaSO Core] Section 7.5 condition 3.
 
 6. **Risk-signals verification** per [PaSO Risk Signals] Section 6:
    - Resolve the effective signal set for the matched transaction data type per [PaSO Risk Signals] Section 4.1: the union of every referenced risk signal profile, then tightened by any metadata or rulebook enumeration. Signal types are defined by [PaSO Risk Signal Registry].

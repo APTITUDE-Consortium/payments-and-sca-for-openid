@@ -359,6 +359,7 @@ The `risk_signals` claim as a top-level KB-JWT claim, shown alongside selected S
   "sd_hash": "Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY",
   "jti": "deeec2b0-3bea-4477-bd5d-e3462a709481",
   "display_locale": "de",
+  "render_mode": "dynamic",
   "transaction_data_hash": "OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q",
   "transaction_data_hash_alg": "sha-256",
   "risk_signals": [
@@ -423,6 +424,7 @@ When encryption is required, the KB-JWT `risk_signals` claim value is a JWE comp
   "sd_hash": "Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY",
   "jti": "deeec2b0-3bea-4477-bd5d-e3462a709481",
   "display_locale": "de",
+  "render_mode": "dynamic",
   "transaction_data_hash": "OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q",
   "transaction_data_hash_alg": "sha-256",
   "risk_signals": "eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTI1NkdDTSIsImtpZCI6Imlzc3Vlci1lbmMtMSJ9..O94i8v...ciphertext...Q.tag"

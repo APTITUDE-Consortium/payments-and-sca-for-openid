@@ -48,7 +48,7 @@ The Wallet **MAY** support exporting the transaction log and credential artefact
 
 ## 5 Replayability
 
-The Wallet **SHOULD** provide a mechanism to replay the full presentation request exactly as it happened at that time, with the credential choices set to the ones that were chosen at that time.
+The Wallet **SHOULD** provide a mechanism to replay the full presentation request exactly as it happened at that time, with the credential choices set to the ones that were chosen at that time. Where the presentation was rendered with static rendering (`render_mode` `static`, per [PaSO View] Section 5), the replay **SHALL** reproduce the static presentation of the Wallet version identified by `wallet_instance_version`.
 
 ## 6 References
 
@@ -56,6 +56,7 @@ The Wallet **SHOULD** provide a mechanism to replay the full presentation reques
 |----------------------------------|----------------------------------------------------------------------------------------------------------------------------|
 | [PaSO Core]                      | [PaSO Core](../paso-core.md)                                                                                               |
 | [PaSO Proof Metadata]            | [PaSO Proof: Metadata Module](paso-proof-metadata.md)                                                                      |
+| [PaSO View]                      | [PaSO View](../paso-view.md)                                                                                               |
 | [OID4VP]                         | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |
 | [RFC2119]                        | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |
 | [RFC8174]                        | [RFC 8174 — Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words](https://www.rfc-editor.org/rfc/rfc8174.html)        |

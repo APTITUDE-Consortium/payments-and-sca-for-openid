@@ -74,8 +74,11 @@ A Credential Rulebook **MAY** specify:
 - references to one or more Transaction Data Type Rulebooks,
 - policies for Attestation Providers and Relying Parties,
 - issuance requirements (e.g., validity period, binding to wallet attestations),
+- holder binding and user authentication requirements: how the credential key is protected and which user authentication releases it,
 - verification requirements for the Relying Party and Authorizing Party,
 - the embedded disclosure policy, if applicable.
+
+Strong Customer Authentication is established by holder binding: the credential key is held in the Wallet's secure cryptographic environment (possession) and released only after user authentication (knowledge or inherence). The Credential Rulebook of a PaSO Credential used for Strong Customer Authentication **SHALL** specify the holder binding and user authentication requirements by which its presentations meet [PSD2] Article 97.
 
 Attestation Providers and Relying Parties **SHALL** follow the applicable Credential Rulebook.
 
@@ -146,7 +149,7 @@ The Wallet **SHALL** include the following claims in every PaSO Credential prese
 | `wallet_instance_version`   | yes         | Version identifier of the Wallet application that authorized the transaction.                                                                                                                                                                 |
 | `risk_signals`              | conditional | An array of risk-signal envelopes per [PaSO Risk Signals]. **REQUIRED** when the signal set resolved for the matched transaction data type contains one or more required signals, per [PaSO Risk Signals] Section 4.1; absent otherwise. Signal types are defined by [PaSO Risk Signal Registry]. When encryption is required for the transaction data type, this value is an encrypted structure per [PaSO Risk Signals] instead of a plaintext array. |
 
-The authentication methods used to release the transaction, and the `response_mode` of the Authorization Request, are not claims of this section. They are risk signal types defined by [PaSO Risk Signal Registry] and are carried inside `risk_signals` when a referenced risk signal profile requires them. A PaSO transaction therefore evidences Strong Customer Authentication only where the risk signal profile in force requires the authentication-methods signal; this specification does not require it.
+The authentication methods used to release the transaction, and the `response_mode` of the Authorization Request, are not claims of this section. They are risk signal types defined by [PaSO Risk Signal Registry] and are carried inside `risk_signals` when the risk signal set in force requires them. Strong Customer Authentication is established by holder binding per Section 4.2. The authentication-methods signal is a Wallet observation like any other risk signal: its presence does not establish Strong Customer Authentication, and its absence does not negate it.
 
 ### 6.2 SD-JWT-VC Profile
 

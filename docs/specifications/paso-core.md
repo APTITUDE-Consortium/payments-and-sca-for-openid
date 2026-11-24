@@ -114,7 +114,13 @@ A Transaction Data Type Rulebook **SHALL** define, for each claim in the transac
 
 A Transaction Data Type Rulebook **MAY** also define the localised UI labels for the consent screen, including at minimum a label for the confirmation action.
 
-These definitions constitute the **semantic structure** of the transaction data type. For any given type identifier, the semantic structure **SHALL** be immutable once published. Changes to the semantic structure **SHALL** require a new version of the type identifier.
+A Transaction Data Type Rulebook **MAY** include a **Static Presentation** section, which enables static rendering of the transaction data type per [PaSO View] Section 5. A Static Presentation section **SHALL** define:
+
+- which claims **SHALL** be displayed in static rendering, and which claims **MAY** be omitted,
+- the display obligations for each displayed claim, such as prominence and completeness,
+- the meaning of the affirmative action and of the denial action.
+
+These definitions, including any Static Presentation section, constitute the **semantic structure** of the transaction data type. For any given type identifier, the semantic structure **SHALL** be immutable once published. Changes to the semantic structure **SHALL** require a new version of the type identifier.
 
 The Wallet **SHALL** ensure that all claims designated for display have been shown to the user before enabling the confirmation action.
 
@@ -131,7 +137,8 @@ The Wallet **SHALL** include the following claims in every PaSO Credential prese
 | Claim                       | Required    | Description                                                                                                                                                                                                                                   |
 |-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `jti`                       | yes         | A fresh, cryptographically random value with sufficient entropy per [RFC7519] Section 4.1.7. Unique per presentation. When used for SCA, serves as the Authentication Code per [PSD2].                                                        |
-| `display_locale`            | yes         | The locale of the entries shown to the user during consent, per [PaSO View] Section 4: the [RFC5646] language tag of the selected `display` and `ui_labels` entries as it appears in the metadata, or the string `default` if the default entries (entries without a `locale`) were shown. Enables deterministic reconstruction of which display entries were used.                                                                                   |
+| `display_locale`            | yes         | The locale of the consent screen shown to the user. For dynamic rendering, per [PaSO View] Section 4: the [RFC5646] language tag of the selected `display` and `ui_labels` entries as it appears in the metadata, or the string `default` if the default entries (entries without a `locale`) were shown. For static rendering, per [PaSO View] Section 5.4: an [RFC5646] language tag, never `default`. Enables deterministic reconstruction of which text was shown. |
+| `render_mode`               | yes         | The rendering mode used for the transaction data shown during consent: `dynamic` or `static`, per [PaSO View] Section 5.2.                                                                                                                       |
 | `transaction_data_hash`     | yes         | Hash of the base64url-encoded `transaction_data` entry selected for the PaSO Credential.                                                                                                                                                      |
 | `transaction_data_hash_alg` | yes         | Hash algorithm identifier. Default: `sha-256`.                                                                                                                                                                                                |
 | `metadata_integrity`        | yes         | The [W3C.SRI] integrity value of the signed credential metadata JWT (per [PaSO Proof Metadata]) relied on during this presentation: the JWT used to display the transaction data or, where ad-hoc metadata was used, the JWT that authorised the Relying Party to supply it per [PaSO Proof Metadata] Section 5.4. |
@@ -153,6 +160,7 @@ For PaSO Credentials in [mdoc] format, the Wallet **SHALL** include device authe
 |-----------------------------|---------------|
 | `jti`                       | tstr          |
 | `display_locale`            | tstr          |
+| `render_mode`               | tstr          |
 | `transaction_data_hash`     | bstr          |
 | `transaction_data_hash_alg` | tstr          |
 | `metadata_integrity`        | tstr          |
@@ -170,7 +178,7 @@ PaSO extends the [OID4VP] `transaction_data` entry with the following parameter:
 
 ### 7.2 Locale Selection
 
-Locale selection **SHALL** follow [PaSO View] Section 4. The Wallet renders all `display` and `ui_labels` entries from a single locale, selected with the Lookup matching scheme defined in [RFC4647] Section 3.4. If no locale in its priority list matches, it renders all of them from the default entries (entries without a `locale`). The selection **SHALL** be reported in the `display_locale` claim (Section 6.1): the selected metadata `locale` tag, or the string `default`. It reflects the entries actually rendered, not the priority-list locale that led to the selection.
+For dynamic rendering, locale selection **SHALL** follow [PaSO View] Section 4. The Wallet renders all `display` and `ui_labels` entries from a single locale, selected with the Lookup matching scheme defined in [RFC4647] Section 3.4. If no locale in its priority list matches, it renders all of them from the default entries (entries without a `locale`). The selection **SHALL** be reported in the `display_locale` claim (Section 6.1): the selected metadata `locale` tag, or the string `default`. It reflects the entries actually rendered, not the priority-list locale that led to the selection. For static rendering, `display_locale` is determined per [PaSO View] Section 5.4.
 
 ### 7.3 Simple Profile
 
@@ -307,6 +315,7 @@ This example assumes a risk signal profile requiring the `response_mode` and aut
   "sd_hash": "Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY",
   "jti": "deeec2b0-3bea-4477-bd5d-e3462a709481",
   "display_locale": "de",
+  "render_mode": "dynamic",
   "transaction_data_hash": "OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q",
   "transaction_data_hash_alg": "sha-256",
   "metadata_integrity": "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
@@ -337,6 +346,7 @@ CBOR diagnostic notation:
 "urn:paso:sca:1" : {
   "jti" : "deeec2b0-3bea-4477-bd5d-e3462a709481",
   "display_locale" : "de",
+  "render_mode" : "dynamic",
   "transaction_data_hash" : h'3897274100F2BD5D624D8C624104310431E75C76EF...',
   "transaction_data_hash_alg" : "sha-256",
   "metadata_integrity" : "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",

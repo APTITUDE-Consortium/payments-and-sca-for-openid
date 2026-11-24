@@ -187,20 +187,21 @@ For dynamic rendering, locale selection **SHALL** follow [PaSO View] Section 4. 
 
 The simple profile is the minimum PaSO transaction data processing mode and a minimal subset of the advanced profile. All Wallets supporting PaSO **SHALL** implement the simple profile. A Wallet implementing the advanced profile is fully compatible with requests made in the simple profile.
 
-In the simple profile, the presentation request contains exactly one PaSO-targeted `transaction_data` entry, identified by a `type` starting with `urn:paso:sca:`, whose `credential_ids` **SHALL** contain exactly one credential query identifier. When `credential_sets` are used, the PaSO-targeted credential **SHALL** be required in all alternatives. The Wallet **MAY** reject non-trivial credential set configurations.
+In the simple profile, the presentation request contains exactly one PaSO-targeted `transaction_data` entry, identified by a `type` starting with `urn:paso:sca:`, whose `credential_ids` **SHALL** contain exactly one credential query identifier. When `credential_sets` are used, that credential query identifier **SHALL** appear in every option of every credential set that references it, and at least one such credential set **SHALL** be required; the options **SHALL** be transposable as defined in Section 7.4.1. A request that does not meet these conditions is not in the simple profile (Section 7.4).
 
 The Wallet **SHALL**:
 
-1. Identify the credential matching the single credential query identifier in `credential_ids`.
-2. Verify that the entry's `type` is supported by that credential and that the `payload` conforms to the applicable Transaction Data Type Rulebook. If not, the Wallet **SHALL** cease processing and inform the user.
-3. Display the transaction data to the user for consent.
-4. If the user consents, proceed with the presentation.
+1. Identify the credentials in the Wallet that match the credential query.
+2. Retain those credentials with which the entry is compatible per Section 7.5. If none remain, the Wallet **SHALL** cease processing and inform the user.
+3. If more than one credential remains, let the user select one. The Wallet **SHALL** display the transaction data as rendered with the selected credential's metadata and **SHALL** update the display when the selection changes.
+4. Display the transaction data to the user for consent.
+5. If the user consents, proceed with the presentation.
 
 ### 7.4 Advanced Profile
 
-The advanced profile applies when the presentation request contains multiple PaSO-targeted `transaction_data` entries, multiple credential alternatives, or uses DCQL credential sets. Wallets **MAY** implement the advanced profile. Credential Rulebooks and Transaction Data Type Rulebooks **MAY** require that the Wallet supports the advanced profile.
+The advanced profile applies when a presentation request contains a PaSO-targeted `transaction_data` entry and does not meet the conditions of the simple profile (Section 7.3). Wallets **MAY** implement the advanced profile. Credential Rulebooks and Transaction Data Type Rulebooks **MAY** require that the Wallet supports the advanced profile.
 
-A Wallet that does not support the advanced profile **SHALL** reject a presentation request that contains more than one PaSO-targeted `transaction_data` entry or that uses `credential_sets` involving non-trivial PaSO-targeted entries, and **SHALL** inform the user.
+A Wallet that does not support the advanced profile **SHALL** reject such a presentation request and **SHALL** inform the user.
 
 #### 7.4.1 Transaction Data and DCQL Credential Sets
 
@@ -231,14 +232,27 @@ After resolution, exactly one `transaction_data` entry **SHALL** apply to the se
 For the PaSO-targeted entries, the Wallet **SHALL** perform the following steps:
 
 1. The Wallet **SHALL** identify all credentials matching the presentation request that are PaSO Credentials. A credential is a candidate for a PaSO-targeted `transaction_data` entry if the credential matches a credential query whose identifier is listed in that entry's `credential_ids`.
-2. For each candidate credential, the Wallet **SHALL** select the first PaSO-targeted `transaction_data` entry (in array order) that targets that credential via `credential_ids`, whose `type` is among the transaction data types supported by that credential, and whose `payload` conforms to the rulebook definition for that type. A `payload` conforms if it does not contain fields not declared by the rulebook, does not contain fields not covered by a claim `path` in the applicable claims metadata (companion `#integrity` fields are covered by the `path` of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting. A Wallet **SHALL** reject a request whose `transaction_data` entry contains an object with duplicate member names (compared after unescaping). If no entry is compatible, the credential **SHALL** be excluded.
-3. For each candidate credential, where the selected entry's `payload` contains claims that require resolution of an external resource with integrity verification, the Wallet **SHALL** resolve and verify them. If resolution or verification fails, the `transaction_data` entry **SHALL** be considered incompatible and the Wallet **SHALL** resume the selection in step 2 for the affected credential, continuing with the next `transaction_data` entry in array order that targets that credential. If no compatible entry remains for the credential, the credential **SHALL** be excluded.
+2. For each candidate credential, the Wallet **SHALL** select the first PaSO-targeted `transaction_data` entry (in array order) that targets that credential via `credential_ids` and is compatible with it per Section 7.5, evaluating the conditions of Section 7.5 in order. If no entry is compatible, the credential **SHALL** be excluded.
+3. For each candidate credential, where resolution or verification of an external resource (Section 7.5, condition 4) fails for the selected entry, the entry is incompatible and the Wallet **SHALL** resume the selection in step 2 for the affected credential, continuing with the next `transaction_data` entry in array order that targets that credential. If no compatible entry remains for the credential, the credential **SHALL** be excluded.
 4. If at any point during the processing of this section no compatible credentials remain, the Wallet **SHALL** cease processing and inform the user.
 5. The Wallet **SHALL** present the remaining compatible credentials as alternatives to the user. For the initially selected credential, the Wallet **SHALL** display the `transaction_data` entry matched in step 2.
 6. If the user selects a different credential, the Wallet **SHALL** display the `transaction_data` entry matched for that credential in step 2. When the matched `transaction_data` entry differs between credentials, the displayed content **SHALL** update accordingly.
 7. If the user consents, the Wallet **MAY** proceed with the presentation.
 
 The first-match rule of step 2 allows a Relying Party to provide versioned transaction data: a newer `type` can be listed first in the `transaction_data` array, with an older `type` as a fallback for credentials that do not yet support it (Annex A.7).
+
+### 7.5 Entry Compatibility
+
+This section applies to both the simple and the advanced profile. A PaSO-targeted `transaction_data` entry is **compatible** with a credential when all of the following hold:
+
+1. The credential matches a credential query whose identifier is listed in the entry's `credential_ids`.
+2. The entry's `type` is among the transaction data types supported by the credential.
+3. The `payload` conforms to the definition of that type. A `payload` conforms if it does not contain fields not declared by the rulebook, does not contain fields not covered by a claim `path` in the applicable claims metadata (companion `#integrity` fields are covered by the `path` of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting.
+4. Every claim of the `payload` that requires resolution of an external resource with integrity verification has been resolved, and its content verified.
+
+A Wallet **SHALL** reject a request whose `transaction_data` entry contains an object with duplicate member names (compared after unescaping).
+
+Other PaSO specifications define further conditions under which an entry is not compatible with a credential.
 
 ## 8 References
 

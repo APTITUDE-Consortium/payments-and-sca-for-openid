@@ -147,11 +147,7 @@ This document defines two additional values for biometric strength:
 
 When a biometric factor is used, the Wallet **SHALL** include exactly one of `bio_strong` or `bio_weak`. The Wallet **SHOULD** additionally include the modality value (`fpt`, `face`, `iris`) when the platform identifies it.
 
-When used in a [PSD2] context, the `value` array **SHALL** cover at least two different categories of authentication elements (knowledge, possession, inherence) as required by [PSD2] Article 4(30).
-
 A Wallet that implements this signal type **SHALL** report `status` `ok` and **SHALL** set `collected_at` to the time at which the user completed authentication.
-
-[PaSO Core] does not require this signal. An ecosystem that requires Strong Customer Authentication **SHALL** publish a risk signal profile ([PaSO Risk Signals] Section 3) that includes this signal type with `required` set to `true`, and **SHOULD** observe the encryption advisory in [PaSO Risk Signals] Section 7.8.
 
 ## 3 References
 
@@ -161,7 +157,6 @@ A Wallet that implements this signal type **SHALL** report `status` `ok` and **S
 | [PaSO Risk Signals]            | [PaSO Proof: Risk Signals Module](paso-proof-risk-signals.md)                                                                                                                      |
 | [PaSO Proof Verify]            | [PaSO Proof: Verify Module](paso-proof-verify.md)                                                                                                                                  |
 | [OID4VP]                       | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)                                                                     |
-| [PSD2]                         | [Directive (EU) 2015/2366 on payment services in the internal market](https://eur-lex.europa.eu/eli/dir/2015/2366/)                                                                |
 | [Apple IDFV]                   | [Apple Developer Documentation — identifierForVendor](https://developer.apple.com/documentation/uikit/uidevice/identifierforvendor)                                                |
 | [Android ASID]                 | [Android Developers — Identify developer-owned apps (app set ID)](https://developer.android.com/identity/app-set-id)                                                               |
 | [Apple Screen Capture]         | [Apple Developer Documentation — UIScreen.isCaptured](https://developer.apple.com/documentation/uikit/uiscreen/iscaptured)                                                         |

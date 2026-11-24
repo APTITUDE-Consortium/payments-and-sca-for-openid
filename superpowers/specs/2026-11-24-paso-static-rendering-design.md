@@ -48,17 +48,18 @@ The goal is a native, polished payment experience that does not give up the "no 
 - **Mode choice (my call).** The Wallet chooses the mode per transaction. Neither the Attestation Provider nor the Relying Party can force or forbid static mode.
 - **`security_hint` (my call).**
   - In static mode, a present `security_hint` is still displayed verbatim. Its entry is chosen by the locale selection of PaSO View §4, as today.
-  - If the selected locale differs from the Wallet's UI language, the Wallet renders dynamically instead. This preserves the single-language rule.
+  - If that selection yields the default entries, or a tag in whose language the Wallet cannot render its static presentation, the Wallet renders dynamically instead.
+  - Otherwise the Wallet renders the static presentation in the selected language. This preserves the single-language rule.
 - **Proof.**
   - New required claim `render_mode` with the value `static` or `dynamic`. It is a `tstr` data element in the mdoc profile.
-  - In static mode, `display_locale` is the [RFC5646] tag of the language the Wallet rendered in.
+  - In static mode, `display_locale` is the selected metadata tag when a `security_hint` is present. Otherwise it is the [RFC5646] tag of the Wallet's UI language. It is never `default`.
   - In dynamic mode, `display_locale` keeps its current meaning.
 
 ## Change list (by commit)
 
 1. **PaSO View** (`paso-view.md`).
    - §1.1: generic rendering is always available, and static rendering is permitted per the new section.
-   - New section "Static Rendering", placed after §2. It covers eligibility, mode choice, the rulebook-defined obligations, which §2 safeguards still apply, the `security_hint` rule with dynamic fallback, and `display_locale` in static mode.
+   - New section "5 Static Rendering", placed after §4 so that the many external citations of §2 and §4 stay valid. Security Considerations becomes §6 and References becomes §7. The section covers eligibility, mode choice, the rulebook-defined obligations, which §2 safeguards still apply, the `security_hint` rule with dynamic fallback, and `display_locale` in static mode.
    - §4: note that it governs dynamic mode and the `security_hint` selection.
    - Renumber the later sections and fix cross-references.
 2. **PaSO Core** (`paso-core.md`).

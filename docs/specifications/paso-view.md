@@ -10,7 +10,7 @@ This document defines how Wallets render transaction data for user consent. It s
 
 [PaSO Proof Metadata] defines how credential metadata carries transaction data type definitions, including claims with `display` arrays and `value_type` hints. This document defines how the Wallet uses that metadata to render transaction data to the user.
 
-The Wallet renders any transaction data type generically using the metadata alone — no transaction-type-specific logic is required. A Wallet that implements a specific Transaction Data Type Rulebook **MAY** provide a dedicated UI in place of the generic renderer, provided it is done in accordance with the respective rulebooks.
+This document defines two rendering modes. In **dynamic rendering**, the Wallet renders any transaction data type generically using the metadata alone — no transaction-type-specific logic is required. The Wallet **SHALL** be able to render every transaction data type with dynamic rendering. For transaction data types whose Transaction Data Type Rulebook contains a Static Presentation section, the Wallet **MAY** instead use **static rendering**, a purpose-built consent screen with Wallet-defined layout and labels, as defined in Section 5.
 
 A Wallet implementing PaSO View **SHALL** support the advanced profile defined in [PaSO Core] Section 7.4. The advanced profile enables multiple transaction data entries, credential alternatives, and credential sets — all of which require generic rendering to present the correct transaction data as the user navigates credential choices.
 
@@ -84,7 +84,7 @@ If the URL is not a Data URL, it **MUST** use the `https` scheme and the `payloa
 
 An image — the Data URL payload or the resolved content — **MUST NOT** exceed 512 KiB in encoded size, and its decoded dimensions **MUST NOT** exceed 2048 pixels in either direction. A non-conforming image makes the `transaction_data` entry not compatible.
 
-Because images are informational only, they **MUST NOT** convey information required for the user's consent. The Wallet **SHALL** render images contained within the consent layout; an image **SHALL NOT** overlay or displace other transaction data or Wallet controls. See Section 5 for the linkability considerations of resolving remote images.
+Because images are informational only, they **MUST NOT** convey information required for the user's consent. The Wallet **SHALL** render images contained within the consent layout; an image **SHALL NOT** overlay or displace other transaction data or Wallet controls. See Section 6.3 for the linkability considerations of resolving remote images.
 
 </td>
 </tr>
@@ -143,6 +143,8 @@ The Wallet **SHOULD NOT** make the URL navigable directly from the consent scree
 
 ## 4 Locale Selection
 
+This section applies to dynamic rendering, and to static rendering where a `security_hint` is present (Section 5.4).
+
 The Wallet **SHALL** maintain a locale priority list: an ordered sequence of [RFC5646] language tags representing the user's language preferences, in decreasing order of priority.
 
 The Wallet **SHALL** render all `display` entries and `ui_labels` entries of a transaction either from a single locale or entirely from default entries (entries without a `locale`). It **SHALL NOT** combine entries of different locales, or locale-tagged and default entries, on one consent screen.
@@ -161,27 +163,63 @@ The Wallet **SHALL** report the selection in the `display_locale` holder binding
 
 If the transaction data cannot be presented in the Wallet's current operating language, the Wallet **MAY** switch its entire user interface to another language the user understands for the duration of the PaSO presentation flow.
 
-## 5 Security Considerations
+## 5 Static Rendering
+
+### 5.1 Eligibility
+
+The Wallet **MAY** render a `transaction_data` entry with static rendering only if all of the following hold:
+
+1. The applicable Transaction Data Type Rulebook contains a Static Presentation section per [PaSO Core] Section 5.3.
+2. The Wallet implements that rulebook for the exact transaction data type identifier of the entry, including its version.
+3. The entry does not carry an ad-hoc `metadata` parameter per [PaSO Proof Metadata] Section 5.
+
+Otherwise, the Wallet **SHALL** use dynamic rendering.
+
+### 5.2 Mode Selection
+
+The Wallet selects the rendering mode for each `transaction_data` entry it presents. Attestation Providers and Relying Parties cannot require or prohibit static rendering. In the advanced profile ([PaSO Core] Section 7.4), the mode applies to the entry presented for each credential and **MAY** differ between credentials. The Wallet **SHALL** report the mode used for the presented entry in the `render_mode` claim per [PaSO Core] Section 6.1.
+
+Static rendering does not change how the credential metadata is obtained or which transaction data types a credential supports. The Wallet **SHALL** retrieve and verify the signed credential metadata per [PaSO Proof Metadata], and the `payload` **SHALL** conform both to the Transaction Data Type Rulebook and to the claims metadata of the matched transaction data type.
+
+### 5.3 Presentation Obligations
+
+In static rendering, the Wallet **SHALL** display the content that the Static Presentation section of the rulebook requires, in the manner it requires. The Wallet uses its own layout and its own localised labels in place of the `display` entries and `ui_labels` of the credential metadata, except for the `security_hint`. The Wallet's labels **SHALL** convey the meaning defined by the rulebook clearly and unmistakably.
+
+The following requirements of Section 2 apply to static rendering unchanged: all content required for display **SHALL** have been displayed before the confirmation action is enabled; the Wallet **MUST NOT** truncate, elide, or otherwise shorten any label or displayed claim value; displayed claim values **SHALL** be formatted according to their `value_type` per Section 3; a `transaction_data` entry whose formatted claim values contain prohibited directional formatting characters **SHALL** be excluded; and the bound on rendered items applies.
+
+When the matched transaction data type provides a `security_hint`, the Wallet **SHALL** display it exactly as provided, in the entry selected per Section 5.4.
+
+### 5.4 Locale and `display_locale`
+
+A statically rendered consent screen **SHALL** use a single language.
+
+If the matched transaction data type provides a `security_hint`, the Wallet **SHALL** perform locale selection per Section 4. If that selects the default entries, or selects a tag in whose language the Wallet cannot render its static presentation, the Wallet **SHALL** use dynamic rendering instead. Otherwise, the Wallet **SHALL** render the static presentation in the language of the selected tag and **SHALL** report the selected tag in `display_locale`.
+
+If no `security_hint` is provided, the Wallet **SHALL** report in `display_locale` the [RFC5646] language tag of the language in which it rendered the static presentation.
+
+In static rendering, `display_locale` **SHALL NOT** be `default`.
+
+## 6 Security Considerations
 
 _**Note**: This section is **informative**._
 
-### 5.1 Metadata as an Injection Channel
+### 6.1 Metadata as an Injection Channel
 
 Everything the Wallet renders during consent originates outside the Wallet: labels and value types from the Attestation Provider's signed metadata, and — through value formatting — values from the Relying Party's `payload`. The constraints in this document and in [PaSO Proof Metadata] Section 3.3 (length limits, character prohibitions, text-only labels, resource limits, rendering caps) exist to keep this channel from being usable to obfuscate or forge consent content. Wallets should treat every metadata- or payload-supplied string strictly as display data — never as markup beyond the constructs explicitly permitted by the declared value type, and never as code or instructions.
 
-### 5.2 Why Truncation Is Prohibited
+### 6.2 Why Truncation Is Prohibited
 
 Section 2 forbids truncating, eliding, or shortening labels. Attacker-influenced text truncates to attacker-chosen prefixes: a label crafted so that platform ellipsis cuts it after "Confirm payment of €1.00" hides the continuation. Divergent, implementation-defined truncation behaviour across Wallets would make such attacks reliable. Exclusion of the entire entry is therefore the only permitted failure mode for oversized content.
 
-### 5.3 Linkability of Remote Resources
+### 6.3 Linkability of Remote Resources
 
 Resolving a remote image URL at consent time reveals the transaction timing and the Wallet's network address to the host serving the image. Attestation Providers and Relying Parties should prefer Data URLs for images. Wallets resolving remote images should be aware of this correlation channel; the considerations of [PaSO Proof Metadata] Section 8 on unlinkability apply in spirit, even though the fetch is triggered by the transaction itself.
 
-### 5.4 Confusable Text and Wallet Chrome Spoofing
+### 6.4 Confusable Text and Wallet Chrome Spoofing
 
 The character constraints prohibit directional embedding and override characters, but cannot prevent homoglyphs or text that mimics Wallet UI (e.g., a label reading "✓ Verified by your Wallet"). Wallets should render metadata-supplied content so that it is visually attributable as transaction content and cannot be mistaken for Wallet-generated UI or system dialogs — for example, through clear containment within the consent layout and consistent, Wallet-controlled styling of its own controls.
 
-## 6 References
+## 7 References
 
 | Reference                      | Description                                                                                                                |
 |--------------------------------|----------------------------------------------------------------------------------------------------------------------------|

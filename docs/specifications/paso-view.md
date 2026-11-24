@@ -12,7 +12,7 @@ This document defines how Wallets render transaction data for user consent. It s
 
 This document defines two rendering modes. In **dynamic rendering**, the Wallet renders any transaction data type generically using the metadata alone — no transaction-type-specific logic is required. The Wallet **SHALL** be able to render every transaction data type with dynamic rendering. For transaction data types whose Transaction Data Type Rulebook contains a Static Presentation section, the Wallet **MAY** instead use **static rendering**, a purpose-built consent screen with Wallet-defined layout and labels, as defined in Section 5.
 
-A Wallet implementing PaSO View **SHALL** support the advanced profile defined in [PaSO Core] Section 7.4. The advanced profile enables multiple transaction data entries, credential alternatives, and credential sets — all of which require generic rendering to present the correct transaction data as the user navigates credential choices.
+PaSO View applies to both the simple and the advanced profile defined in [PaSO Core] Section 7. Whenever the user's credential selection changes which credential or `transaction_data` entry applies, the Wallet renders the transaction data anew per this document.
 
 ### 1.2 Requirements Notation
 

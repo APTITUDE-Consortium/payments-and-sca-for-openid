@@ -55,10 +55,9 @@ Upon receiving the proof package, the Authorizing Party **SHALL** perform the fo
    - Resolve the effective signal set for the matched transaction data type per [PaSO Risk Signals] Section 4.1: the union of every referenced risk signal profile, then tightened by any metadata or rulebook enumeration. Signal types are defined by [PaSO Risk Signal Registry].
    - Verify that every signal resolved as required is present in the `risk_signals` claim, with any `status`. The absence of a signal that did not resolve as required **SHALL NOT** be treated as a failure.
    - Verify each envelope is well-formed and that its `collected_at` is no older than the `max_age` resolved for that signal, measured from the time the proof package was received and allowing for reasonable clock skew and forwarding delay. Where no `max_age` was resolved, the acceptable window is a matter of Transaction Data Type Rulebook or Authorizing Party policy.
-   - When `urn:paso:risk:global:amr:1` is present, verify that the authentication methods it reports meet the requirements of the applicable Transaction Data Type Rulebook.
    - When `urn:paso:risk:global:response_mode:1` is present, verify that its value matches the `response_mode` of the received Authorization Request.
    - Interpreting signal values to reach a risk decision is out of scope and left to Authorizing Party policy.
-   - When encryption is required for the transaction data type, verify that the `risk_signals` value is an encrypted structure and reject a plaintext value; the presence, well-formedness, freshness, and signal-specific checks above are performed by the holder of the issuer decryption key after decryption, as defined in [PaSO Risk Signals] Section 6.1. An Authorizing Party that is not the issuer therefore cannot perform the `amr` check — see [PaSO Risk Signals] Section 7.8.
+   - When encryption is required for the transaction data type, verify that the `risk_signals` value is an encrypted structure and reject a plaintext value; the presence, well-formedness, freshness, and signal-specific checks above are performed by the holder of the issuer decryption key after decryption, as defined in [PaSO Risk Signals] Section 6.1.
 
 If any check fails, the Authorizing Party **SHALL** reject the transaction.
 

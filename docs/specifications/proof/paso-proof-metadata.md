@@ -213,7 +213,7 @@ Together with Section 3, this mechanism lets an Attestation Provider reserve tra
 
 The Wallet **SHALL** persist signed credential metadata JWTs in their signed form and **SHALL NOT** persist the decoded credential metadata. The Wallet **MAY** store multiple signed metadata JWTs per credential to cover different locales. Each time the Wallet loads a metadata JWT from storage, it **SHALL** perform the full verification procedure defined in Section 7.
 
-If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 7. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT is obtained for which locale selection per [PaSO View] Section 4 succeeds.
+If a stored metadata JWT fails verification upon loading (e.g., due to expiry or corruption), the Wallet **SHALL** discard it and re-fetch and verify it per Section 7. The Wallet **SHALL NOT** proceed with any PaSO operation for that credential until a valid metadata JWT is obtained, and **SHALL NOT** use dynamic rendering for that credential unless locale selection per [PaSO View] Section 4 succeeds for that metadata JWT.
 
 ## 7 Verification
 

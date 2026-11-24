@@ -20,6 +20,8 @@ The key words "**MUST**", "**MUST NOT**", "**REQUIRED**", "**SHALL**", "**SHALL 
 
 ## 2 Generic Rendering
 
+This section defines dynamic rendering. Section 5.3 specifies which of its requirements also apply to static rendering.
+
 The Wallet **SHALL** be able to render any transaction data type generically. All claims that have a `display` array **SHALL** be rendered as a sequence of labelled values. Claims without a `display` array **MUST** be internal values irrelevant to the user's consent; the Wallet **MAY** omit them from the consent screen or show them in a separate detailed view.
 
 The display order **SHALL** be the order in which the claims appear in the `claims` array, not the order of fields in the `payload` object.

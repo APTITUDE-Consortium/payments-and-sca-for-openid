@@ -122,7 +122,7 @@ A Transaction Data Type Rulebook **MAY** include a **Static Presentation** secti
 
 These definitions, including any Static Presentation section, constitute the **semantic structure** of the transaction data type. For any given type identifier, the semantic structure **SHALL** be immutable once published. Changes to the semantic structure **SHALL** require a new version of the type identifier.
 
-The Wallet **SHALL** ensure that all claims designated for display have been shown to the user before enabling the confirmation action.
+The Wallet **SHALL** ensure that all claims designated for display — in static rendering, those that the Static Presentation section requires — have been shown to the user before enabling the confirmation action.
 
 ### 5.4 Content Quality
 

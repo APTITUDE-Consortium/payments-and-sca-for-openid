@@ -39,7 +39,7 @@ The credential metadata for a PaSO Credential **SHALL** include the following pa
 
 - **`transaction_data_types`**: **REQUIRED** (object). An object where each key is a transaction data type identifier following the `urn:paso:sca:<domain>:<suffix>:<version>` structure defined in [PaSO Core] Section 5.2, and each value is an object containing:
   - **`claims`**: **REQUIRED**. Array of claim metadata objects per Section 3.1.
-  - **`ui_labels`**: **REQUIRED** when the credential is issued to a Wallet that does not have a dedicated UI for the transaction data type; **OPTIONAL** otherwise. Object providing localised strings for the consent UI per Section 3.2.
+  - **`ui_labels`**: **REQUIRED**. Object providing localised strings for the consent UI per Section 3.2.
   - Additional parameters **MAY** be defined and used. The Wallet **MUST** ignore any unrecognised parameters.
 
 The `transaction_data_types` object **MAY** be empty and **MAY** omit transaction data types that the Attestation Provider uses. A transaction data type absent from the signed credential metadata is supported by the credential only for a `transaction_data` entry that carries ad-hoc metadata valid per Section 5.3; a `transaction_data` entry of such a type without a `metadata` parameter is not supported by the credential for the purposes of [PaSO Core] Section 7. Where `transaction_data_types` is empty, locale selection per [PaSO View] Section 4 for the credential metadata, as required in Sections 4 and 6, **SHALL** be treated as succeeding.
@@ -60,11 +60,11 @@ Each entry in `transaction_data_types` **MUST** supply metadata for each claim o
 
 Claims that are relevant to the user's consent **MUST** include a `display` array with entries for the locales served in that signed JWT. Claims without a `display` array **MUST** be internal values irrelevant to the user's consent.
 
-The `display` entries and `value_type` provide default rendering hints. The applicable Transaction Data Type Rulebook defines the semantic meaning of each claim; a Wallet that implements a specific rulebook **MAY** provide its own labels or visual representations in place of the metadata-supplied `display` entries, provided the meaning remains clear and unmistakable to the user.
+The `display` entries and `value_type` drive dynamic rendering per [PaSO View]. The applicable Transaction Data Type Rulebook defines the semantic meaning of each claim. In static rendering per [PaSO View] Section 5, the Wallet uses its own labels in place of the `display` entries, as constrained by the Static Presentation section of the rulebook.
 
 ### 3.2 UI Labels
 
-Each entry in `transaction_data_types` **MAY** include a `ui_labels` object providing localised strings for consent UI elements. The `ui_labels` object is a set of key-value pairs where each key is a UI element identifier and each value is an array of objects containing:
+Each entry in `transaction_data_types` **SHALL** include a `ui_labels` object providing localised strings for consent UI elements. The `ui_labels` object is a set of key-value pairs where each key is a UI element identifier and each value is an array of objects containing:
 
 - `locale`: **OPTIONAL**. A [RFC5646] language tag. An entry without `locale` is a default entry. The same applies to entries without `locale` in a claim's `display` array (Section 3.1). Default entries are used only when no locale in the Wallet's locale priority list matches, and then for every array at once, per [PaSO View] Section 4. Section 3.3 requires all arrays of a transaction data type to provide the same locales and either all or none of them to provide a default entry.
 - `value`: The localised string.
@@ -80,7 +80,7 @@ All `ui_labels` values are subject to the label constraints defined in Section 3
 
 Additional UI element identifiers **MAY** be defined by Transaction Data Type Rulebooks or other PaSO specifications. The Wallet **SHALL** ignore any unrecognised UI element identifiers.
 
-As with claims, the applicable Transaction Data Type Rulebook defines the semantic meaning of each UI element identifier. A Wallet that implements a specific rulebook **MAY** replace `ui_labels` text with its own labels or visual representations, provided the meaning remains clear and unmistakable to the user. The `security_hint` is an exception: it **SHALL** always be displayed exactly as provided.
+As with claims, the applicable Transaction Data Type Rulebook defines the semantic meaning of each UI element identifier. In static rendering per [PaSO View] Section 5, the Wallet uses its own labels in place of the `ui_labels` entries, as constrained by the Static Presentation section of the rulebook. The `security_hint` is an exception: it **SHALL** always be displayed exactly as provided, per [PaSO View] Section 5.3.
 
 ### 3.3 Label and Structural Constraints
 
@@ -344,7 +344,17 @@ A `credential_configurations_supported` entry with `credential_metadata_uri`:
             "path": ["payee", "id"],
             "mandatory": true
           }
-        ]
+        ],
+        "ui_labels": {
+          "transaction_title": [
+            { "locale": "en", "value": "Confirm Payment" },
+            { "locale": "de", "value": "Zahlung bestätigen" }
+          ],
+          "affirmative_action_label": [
+            { "locale": "en", "value": "Pay" },
+            { "locale": "de", "value": "Bezahlen" }
+          ]
+        }
       }
     }
   }
@@ -443,7 +453,13 @@ A signed credential metadata JWT payload for a PaSO Credential in `mso_mdoc` for
               { "locale": "de", "name": "Betrag" }
             ]
           }
-        ]
+        ],
+        "ui_labels": {
+          "affirmative_action_label": [
+            { "locale": "en", "value": "Pay" },
+            { "locale": "de", "value": "Bezahlen" }
+          ]
+        }
       }
     },
     "adhoc_metadata_clients": [

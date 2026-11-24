@@ -102,7 +102,7 @@ When a wallet presents a PaSO credential together with transaction data, it prod
 - a hash of the exact transaction data the user consented to;
 - an integrity value over the signed request the wallet received;
 - an integrity value over the signed credential metadata used to display the transaction (when applicable);
-- the locale that was actually shown to the user, and the wallet's version.
+- the locale that was actually shown to the user, whether the transaction was rendered statically or dynamically, and the wallet's version.
 
 These claims are carried in the format-appropriate structure — a Key Binding JWT for SD-JWT-VC credentials, or device-signed data elements for mdoc credentials.
 
@@ -128,7 +128,7 @@ Informed consent depends entirely on what the user actually sees. PaSO View defi
 
 The central ideas are:
 
-- **Generic, metadata-driven rendering.** Each displayable claim carries a value type (for example, a currency amount, a date, an image, a frequency code, or a URL). The wallet knows how to render each value type. A wallet may provide a dedicated UI for a type it specifically implements, but it must always be able to fall back to the generic renderer.
+- **Generic, metadata-driven rendering.** Each displayable claim carries a value type (for example, a currency amount, a date, an image, a frequency code, or a URL). The wallet knows how to render each value type. Every wallet must be able to render any type this way. For highly standardised types whose rulebook allows it, such as payments, a wallet may instead use **static rendering** — its own purpose-built screen within the rulebook's obligations — as an optional optimisation (see Section 6).
 
 - **Display is mandatory and faithful.** Everything designated for display must be shown before the user can confirm. Parties may not use labels or hints to obscure information relevant to consent. Security hints, when provided, must be shown exactly.
 
@@ -138,22 +138,22 @@ The central ideas are:
 
 This is how PaSO turns "the user consented" into "the user demonstrably saw, in their language, exactly these details, and confirmed them."
 
-## 6 Two integration paths for a wallet provider
+## 6 Two rendering modes
 
-A wallet provider adopting PaSO faces a choice with significant consequences for integration effort and long-term maintainability. The choice is *how the wallet learns to render a given transaction type*. PaSO supports two paths, and the **PaSO Proof: Metadata Module** is what makes the second one possible.
+A wallet provider adopting PaSO needs to know *how the wallet learns to render a given transaction type*. PaSO defines two rendering modes. Every wallet supports **dynamic rendering**, which the **PaSO Proof: Metadata Module** makes possible; **static rendering** is an optional optimisation on top of it for highly standardised transaction types.
 
-### 6.1 Static path: hard-coded transaction types
+### 6.1 Static rendering: optimised UX for standardised types
 
-In the static path, the wallet provider implements support for each transaction data type directly in the wallet's code. The provider reads the relevant Transaction Data Type Rulebook, builds a dedicated consent screen for that type, and ships it as part of the wallet application.
+For highly standardised transaction types such as payments, a wallet may show a purpose-built consent screen instead of the generic one. A Transaction Data Type Rulebook opts in with a **Static Presentation** section that fixes what must be shown — for a payment, the amount and the payee, in full and prominently — and what the confirmation means. Within those obligations, the wallet chooses its own layout, wording and translations.
 
-- **Advantage:** simple to start with. For a small, fixed set of types — say, a single base payment type — a hand-built screen is straightforward and gives the provider full control over the look and feel.
-- **Drawback:** it does not scale. Every new transaction data type, and every change to an existing one, requires a code change, a new wallet release, and a wait for users to update. With a growing catalogue of types — especially types defined by many different organisations under their own domains — this becomes unmaintainable. A wallet can only transact a type it has already shipped support for.
+- **Advantage:** the best possible experience for the transactions users perform most often, consistent with the rest of the wallet and available in every language the wallet supports.
+- **Limits:** static rendering applies only to types whose rulebook defines a Static Presentation and which the wallet has implemented; transactions carrying ad-hoc metadata are always rendered dynamically.
 
-PaSO permits this path: a wallet that implements a specific rulebook *may* provide its own dedicated UI, provided it remains faithful to the rulebook's meaning.
+Static rendering is an optimisation on top of dynamic rendering, not a replacement for it. The wallet still retrieves and verifies the signed credential metadata, still applies PaSO View's safeguards — everything required must be shown before confirmation, nothing may be truncated — and records in the proof that it rendered statically (`render_mode`), so the screen can be reconstructed later.
 
-### 6.2 Dynamic path: metadata-driven rendering
+### 6.2 Dynamic rendering: metadata-driven
 
-In the dynamic path, the wallet does not hard-code any transaction type. Instead, it relies on the mechanisms of the **PaSO Proof: Metadata Module** together with **PaSO View**:
+In dynamic rendering, the wallet does not hard-code any transaction type. Instead, it relies on the mechanisms of the **PaSO Proof: Metadata Module** together with **PaSO View**:
 
 - The Attestation Provider serves **signed credential metadata** that describes each supported transaction data type — its claims, which of them must be displayed, how each value should be formatted (via value types), and the localised UI labels for the consent screen.
 - For transaction types without a published rulebook — for example, a bank's own login or limit-change interactions — a Relying Party that the signed credential metadata authorises (`adhoc_metadata_clients`) may instead supply the type's metadata **ad hoc**, inside the `transaction_data` entry of its signed request (PaSO Proof: Metadata Module, Section 5).
@@ -161,11 +161,11 @@ In the dynamic path, the wallet does not hard-code any transaction type. Instead
 
 The consequence is decisive: a new transaction data type can be introduced by the issuer publishing its metadata and rulebook, or by an authorised Relying Party supplying ad-hoc metadata with the transaction — **the wallet needs no update**. One generic renderer handles every present and future type, in every served locale, while still meeting PaSO's faithful-display and dynamic-linking guarantees. The signed nature of the metadata is what makes this safe: the wallet is not rendering arbitrary issuer-supplied UI, but verified, integrity-protected descriptions bound to the credential and its issuer, which also become part of the evidence (via the `metadata_integrity` value in the proof). Ad-hoc metadata is equally constrained: only Relying Parties named in the issuer's signed metadata may supply it, and it is bound to the signed request it arrives in.
 
-This is why the Metadata Module is central rather than peripheral. It converts rendering from a per-type engineering task into a one-time capability.
+This is why the Metadata Module is central rather than peripheral, and why dynamic rendering is mandatory for every wallet: a wallet limited to the types it has built static screens for could only transact what it has already shipped. Dynamic rendering converts rendering from a per-type engineering task into a one-time capability.
 
-### 6.3 Why the dynamic path matters for real banking adoption
+### 6.3 Why dynamic rendering matters for real banking adoption
 
-The dynamic path is not merely a convenience. It is effectively a precondition for using a wallet as a general authentication mechanism in existing banking applications.
+Dynamic rendering is not merely a convenience. It is effectively a precondition for using a wallet as a general authentication mechanism in existing banking applications.
 
 The reason lies in how modern banking apps already work. Today, banks routinely show transaction-specific consent dialogs — and perform dynamic linking — for far more than payments. Regulation (PSD2) mandates SCA with dynamic linking for payment transactions, but it is common market practice for banks to apply the same transaction-bound consent pattern to a range of **non-payment** interactions as well, for example:
 
@@ -176,9 +176,9 @@ The reason lies in how modern banking apps already work. Today, banks routinely 
 
 None of these is required by PSD2 to use dynamic linking, yet banks do it because it is good security practice and users expect it. Each such interaction has its own consent screen with its own fields and wording.
 
-If a wallet is to serve as the authentication mechanism for these interactions — as an alternative to a bank's existing in-app SCA — it must be able to display the right consent screen for *each* of them. Under the static path, every one of these interaction types, across every bank that wants to use the wallet, would require the wallet provider to ship and maintain bespoke UI. That does not scale to the diversity of banks and interaction types in the market, and it puts the wallet provider in the impractical position of having to release an update whenever any bank introduces or changes an interaction.
+If a wallet is to serve as the authentication mechanism for these interactions — as an alternative to a bank's existing in-app SCA — it must be able to display the right consent screen for *each* of them. With static rendering alone, every one of these interaction types, across every bank that wants to use the wallet, would require the wallet provider to ship and maintain bespoke UI. That does not scale to the diversity of banks and interaction types in the market, and it puts the wallet provider in the impractical position of having to release an update whenever any bank introduces or changes an interaction.
 
-Under the dynamic path, each bank simply publishes signed metadata for its interaction types — or, acting as its own Relying Party, supplies ad-hoc metadata with each request — and the wallet renders them generically. The wallet becomes a universal, transaction-aware consent surface for financial interactions — payment and non-payment alike — without per-bank, per-interaction engineering. For a wallet provider that intends to be adopted broadly as an SCA mechanism, this is the path that makes the proposition viable.
+With dynamic rendering, each bank simply publishes signed metadata for its interaction types — or, acting as its own Relying Party, supplies ad-hoc metadata with each request — and the wallet renders them generically. The wallet becomes a universal, transaction-aware consent surface for financial interactions — payment and non-payment alike — without per-bank, per-interaction engineering. This is why PaSO requires every wallet to support dynamic rendering, and treats static rendering as an optimisation for the standardised types — such as payments — where a purpose-built screen adds the most value.
 
 ## 7 How the pieces fit together
 

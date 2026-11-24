@@ -272,12 +272,6 @@ Other algorithms **MAY** be used when the published issuer key declares them. Th
 
 When encryption is required for the matched transaction data type, the consumer **SHALL** expect the `risk_signals` value to be an encrypted structure — a [JWE] compact string ([SD-JWT-VC]) or a `COSE_Encrypt` ([mdoc]) — rather than the plaintext structure of Section 5. A plaintext `risk_signals` value where encryption was required **SHALL** be rejected (Section 6.1).
 
-### 7.8 Interaction with Authentication-Method Signals
-
-Encryption covers the entire `risk_signals` array, including transaction-fact signals such as `urn:paso:risk:global:amr:1`. Under Section 6.1 the Authorizing Party can then verify only that the value is an encrypted structure; the checks on the signals themselves move to the holder of the issuer decryption key.
-
-An ecosystem **SHOULD NOT** combine a profile that requires `urn:paso:risk:global:amr:1` with encryption for a transaction data type used in a third-party flow ([PaSO Core] Section 3). An Authorizing Party that is not the issuer would be unable to confirm how the user authenticated, which is precisely the check a Strong Customer Authentication policy depends on.
-
 ## 8 References
 
 | Reference             | Description                                                                                                                |
@@ -437,8 +431,6 @@ The JWE protected header (decoded) is:
 { "alg": "ECDH-ES", "enc": "A256GCM", "kid": "issuer-enc-1" }
 ```
 
-Any `amr` signal in the effective set is inside this ciphertext. Where the Authorizing Party is not the issuer it cannot read it — see Section 7.8.
-
 ### A.6 Issuer Encryption Key and Trigger (Metadata)
 
 A `transaction_data_types` entry requiring encryption, with the issuer encryption key published as a JWK Set in the signed credential metadata (per [PaSO Proof Metadata]):
@@ -497,4 +489,4 @@ A transaction data type referencing both profiles, with the metadata enumeration
 | `urn:paso:risk:global:device_motion:1` | `true`     | —         | baseline profile                                    |
 | `urn:paso:risk:global:amr:1`           | `true`     | —         | ecosystem profile, and the enumeration              |
 
-Because `amr` resolved as required and neither profile sets `encrypted`, the Authorizing Party can verify the authentication methods directly. Had either profile set `encrypted` to `true`, that check would move behind decryption per Section 6.1, which Section 7.8 advises against in a third-party flow.
+Neither profile sets `encrypted`, so the Authorizing Party verifies every resolved signal directly. Had either profile set `encrypted` to `true`, those checks would move to the holder of the issuer decryption key per Section 6.1.

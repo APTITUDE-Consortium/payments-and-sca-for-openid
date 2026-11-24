@@ -134,7 +134,7 @@ The central ideas are:
 
 - **Locale selection is deterministic.** The wallet selects a display locale according to defined matching rules, and records the locale it used in the proof — so it can later be shown precisely which text the user saw.
 
-- **The advanced profile handles choice.** When a request offers several credential alternatives or different transaction-data entries, the wallet presents these as independent choices and updates the displayed transaction data as the user switches between credentials. A consistency property ensures these choices are genuinely independent rather than artificially coupled.
+- **The optional advanced profile handles choice.** Every wallet handles the simple case — one transaction-data entry for one requested credential, while still letting the user pick among several matching credentials. When a request offers several credential alternatives or different transaction-data entries, the wallet presents these as independent choices and updates the displayed transaction data as the user switches between credentials. A consistency property ensures these choices are genuinely independent rather than artificially coupled.
 
 This is how PaSO turns "the user consented" into "the user demonstrably saw, in their language, exactly these details, and confirmed them."
 

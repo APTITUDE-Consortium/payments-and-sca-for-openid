@@ -168,7 +168,7 @@ When a PaSO-targeted `transaction_data` entry contains a `metadata` parameter, t
 3. Verify that the `client_id` of the Authorization Request exactly equals an element of `adhoc_metadata_clients` in that JWT, including the Client Identifier Prefix.
 4. Verify that the `metadata` parameter is a JSON object that conforms to Sections 3.1, 3.2, and 3.3.
 
-If any step fails, the ad-hoc metadata **SHALL** be considered invalid and the `transaction_data` entry **SHALL** be considered incompatible for the targeted credential per [PaSO Core] Section 7.4.2. The Wallet **SHALL NOT** fall back to the stored credential metadata entry for a `transaction_data` entry whose `metadata` parameter is invalid.
+If any step fails, the ad-hoc metadata **SHALL** be considered invalid and the `transaction_data` entry **SHALL** be considered incompatible for the targeted credential per [PaSO Core] Section 7.5. The Wallet **SHALL NOT** fall back to the stored credential metadata entry for a `transaction_data` entry whose `metadata` parameter is invalid.
 
 ### 5.4 Precedence and Processing
 

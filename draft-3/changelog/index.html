@@ -1,0 +1,1671 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/changelog/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../rulebooks/risk_profiles/Default/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Changelog - Payment and SCA for OpenID</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#changelog" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Payment and SCA for OpenID" class="md-header__button md-logo" aria-label="Payment and SCA for OpenID" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Payment and SCA for OpenID
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Changelog
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="pink"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="pink"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Payment and SCA for OpenID" class="md-nav__button md-logo" aria-label="Payment and SCA for OpenID" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    Payment and SCA for OpenID
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#draft-3-changes-since-draft-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        draft-3 (changes since draft-2)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="draft-3 (changes since draft-2)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-to-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to change
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What to change">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wallet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wallet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relying-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relying Party
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attestation-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attestation Provider
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authorizing-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authorizing Party
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rulebook-authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rulebook authors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changes-by-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changes by document
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changes by document">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PaSO Core
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PaSO View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metadata-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metadata Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verify Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risk-signals-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risk Signals Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risk-signal-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risk Signal Registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Log Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payment-rulebook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Payment rulebook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-risk-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default risk profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rulebooks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Rulebooks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Risk profiles
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Risk profiles
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rulebooks/risk_profiles/Default/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Risk Signal Profile: Default
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Transaction data
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Transaction data
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rulebooks/transaction_data/Payment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Payments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specifications
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Specifications
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specifications/paso-core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PaSO Core
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specifications/paso-view/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PaSO View
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proof
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Proof
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specifications/proof/paso-proof-log/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specifications/proof/paso-proof-metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metadata Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specifications/proof/paso-proof-risk-signal-registry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Risk Signal Registry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specifications/proof/paso-proof-risk-signals/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Risk Signals Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specifications/proof/paso-proof-verify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verify Module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#draft-3-changes-since-draft-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        draft-3 (changes since draft-2)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="draft-3 (changes since draft-2)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-to-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to change
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What to change">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wallet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wallet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relying-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relying Party
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attestation-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attestation Provider
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authorizing-party" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authorizing Party
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rulebook-authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rulebook authors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changes-by-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changes by document
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Changes by document">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PaSO Core
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PaSO View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metadata-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metadata Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verify Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risk-signals-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risk Signals Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risk-signal-registry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risk Signal Registry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Log Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#payment-rulebook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Payment rulebook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-risk-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default risk profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="changelog">Changelog</h1>
+<p>This page lists the changes between published drafts of PaSO. For each draft, it first tells each role what to change in an implementation of the previous draft, then lists the changes document by document.</p>
+<p>Every item carries one tag:</p>
+<ul>
+<li><strong>Breaking</strong>: an implementation of the role that conformed to the previous draft no longer conforms.</li>
+<li><strong>New</strong>: an optional or additive capability.</li>
+<li><strong>Clarified</strong>: a resolved ambiguity or restatement; the intended behaviour is unchanged.</li>
+</ul>
+<p>Section numbers refer to the current draft.</p>
+<h2 id="draft-3-changes-since-draft-2">draft-3 (changes since draft-2)</h2>
+<p>Draft-3 is compared with the published draft-2. Changes made and then superseded during the work on draft-3 are not listed; each item describes the draft-3 text.</p>
+<h3 id="what-to-change">What to change</h3>
+<h4 id="wallet">Wallet</h4>
+<ul>
+<li><strong>Breaking</strong> Add the <code>render_mode</code> claim to every PaSO presentation. Report in <code>display_locale</code> the <code>locale</code> tag of the rendered entries, or <code>default</code>; it is no longer the priority-list locale (<a href="../specifications/paso-core/">Core §6.1, §6.3, §7.2</a>).</li>
+<li><strong>Breaking</strong> Always include <code>metadata_integrity</code>. Where ad-hoc metadata is used, it identifies the signed credential metadata JWT that authorised the Relying Party (<a href="../specifications/paso-core/">Core §6.1</a>).</li>
+<li><strong>Breaking</strong> Implement the new locale selection: one locale or the default entries for the whole consent screen. If neither is available, the entry is not compatible (<a href="../specifications/paso-view/">View §4</a>, <a href="../specifications/paso-core/">Core §7.2</a>).</li>
+<li><strong>Breaking</strong> Render labels as plain text. Drop <code>display_type</code>, <code>mini_markdown</code> and <code>template:*</code> (<a href="../specifications/paso-view/">View §2, §3</a>).</li>
+<li><strong>Breaking</strong> Accept only PNG and JPEG images, and send <code>Accept: image/png, image/jpeg</code> (<a href="../specifications/paso-view/">View §3</a>).</li>
+<li><strong>Breaking</strong> Treat an entry with more than 10 displayed claim values as not compatible (<a href="../specifications/paso-view/">View §2</a>).</li>
+<li><strong>Breaking</strong> Offer a dedicated consent screen for a type only as static rendering: the rulebook must have a Static Presentation section, you must implement that exact type and version, and the entry must carry no ad-hoc metadata (<a href="../specifications/paso-view/">View §5</a>).</li>
+<li><strong>Breaking</strong> Stop accepting issuer-signed ad-hoc metadata JWTs. Accept a plain <code>metadata</code> object only from a Relying Party listed in <code>adhoc_metadata_clients</code>, only for types the signed credential metadata does not list, and only after the checks of Metadata §5.3 (<a href="../specifications/proof/paso-proof-metadata/">Metadata §5</a>).</li>
+<li><strong>Breaking</strong> Reject a request that would let the user present more than one PaSO Credential: more than one PaSO credential query per alternative, an optional PaSO credential set, or <code>multiple</code> set to <code>true</code> (<a href="../specifications/paso-core/">Core §7.3, §7.4.1</a>).</li>
+<li><strong>Breaking</strong> When locale selection fails or no encryption key is available, treat the entry as not compatible and fall back to the next entry, instead of excluding the credential (<a href="../specifications/paso-core/">Core §7.5</a>).</li>
+<li><strong>Breaking</strong> For types that reference the Default risk profile, include an <code>amr</code> envelope; the profile now has eight required signals (<a href="../rulebooks/risk_profiles/Default/">Default</a>).</li>
+<li><strong>New</strong> Optionally render statically the types whose rulebook you implement and that have a Static Presentation section, such as Payment (<a href="../specifications/paso-view/">View §5</a>, <a href="../rulebooks/transaction_data/Payment/">Payment §3</a>). If the type has a <code>security_hint</code>, run locale selection first. If it selects the default entries or a language you cannot render statically, use dynamic rendering. Otherwise report the selected tag in <code>display_locale</code>, which in static rendering is never <code>default</code> (<a href="../specifications/paso-view/">View §5.4</a>). Replay of a static presentation must reproduce your Wallet version's presentation (<a href="../specifications/proof/paso-proof-log/">Log §5</a>).</li>
+<li><strong>New</strong> In the simple profile, let the user choose when several credentials match (<a href="../specifications/paso-core/">Core §7.3</a>).</li>
+<li><strong>Clarified</strong> Apply rulebook risk signal profiles, enumerations and encryption requirements only for rulebooks you implement; otherwise follow the signed credential metadata (<a href="../specifications/paso-core/">Core §5.5</a>, <a href="../specifications/proof/paso-proof-risk-signals/">Risk Signals §4.1, §7.2</a>).</li>
+<li><strong>Clarified</strong> Compute <code>transaction_data_hash</code> over the entry's base64url string as received, with <code>sha-256</code> unless the rulebook names another algorithm (<a href="../specifications/paso-core/">Core §6.1</a>).</li>
+<li><strong>Clarified</strong> <code>amr</code> no longer has to cover two categories of authentication elements; it does not establish SCA (<a href="../specifications/paso-core/">Core §4.2</a>, <a href="../specifications/proof/paso-proof-risk-signal-registry/">Registry</a>).</li>
+<li><strong>Clarified</strong> Display metadata for SD-JWT VC credentials is now defined in Metadata §9; SVG resources are gone (<a href="../specifications/proof/paso-proof-metadata/">Metadata §9</a>).</li>
+</ul>
+<h4 id="relying-party">Relying Party</h4>
+<ul>
+<li><strong>Breaking</strong> Build requests that allow exactly one PaSO Credential: every alternative contains exactly one PaSO-referenced credential query, the PaSO credential set is not optional, and no such query sets <code>multiple</code> to <code>true</code> (<a href="../specifications/paso-core/">Core §7.3, §7.4.1</a>).</li>
+<li><strong>Breaking</strong> Stop sending issuer-signed ad-hoc metadata JWTs. To supply ad-hoc metadata, send a plain <code>metadata</code> object; you must be listed in <code>adhoc_metadata_clients</code>, and the type must not be published in the signed credential metadata. The object must follow the label and locale rules of Metadata §3.3 (<a href="../specifications/proof/paso-proof-metadata/">Metadata §5</a>).</li>
+<li><strong>Breaking</strong> Keep every entry within 10 displayed claim values, and use only PNG or JPEG images (<a href="../specifications/paso-view/">View §2, §3</a>).</li>
+<li><strong>Breaking</strong> The Generic and Mandate transaction data types no longer exist. Use ad-hoc metadata or a rulebook of your own (<a href="../specifications/proof/paso-proof-metadata/">Metadata §5</a>).</li>
+<li><strong>Breaking</strong> If you forward proof packages through the proposed endpoint, send a signed JWT (<code>typ</code> <code>paso-proof-package+jwt</code>, your chain in <code>x5c</code>), and preferably wrap it in a JWE. Plain JSON is no longer accepted. A payment scheme or rulebook may define its own forwarding mechanism instead (<a href="../specifications/proof/paso-proof-verify/">Verify §4</a>).</li>
+<li><strong>New</strong> A type you use only with ad-hoc metadata needs no rulebook, and its ad-hoc metadata may carry risk signal configuration (<a href="../specifications/paso-core/">Core §5.1</a>, <a href="../specifications/proof/paso-proof-risk-signals/">Risk Signals §4.1</a>).</li>
+<li><strong>Clarified</strong> Keep ad-hoc metadata consistent with any rulebook for its type (<a href="../specifications/paso-core/">Core §5.5</a>).</li>
+<li><strong>Clarified</strong> In versioned requests, a newer entry that fails locale selection or lacks an encryption key now falls back to the older entry (<a href="../specifications/paso-core/">Core §7.5</a>).</li>
+</ul>
+<h4 id="attestation-provider">Attestation Provider</h4>
+<ul>
+<li><strong>Breaking</strong> Publish <code>ui_labels</code> for every transaction data type (<a href="../specifications/proof/paso-proof-metadata/">Metadata §3, §3.2</a>).</li>
+<li><strong>Breaking</strong> Give every <code>display</code> and <code>ui_labels</code> array of a type the same set of locales, with a default entry in all or none of them. Do not use <code>default</code> as a <code>locale</code> value. Declare at most 10 claims with a <code>display</code> array (<a href="../specifications/proof/paso-proof-metadata/">Metadata §3.3</a>).</li>
+<li><strong>Breaking</strong> Remove <code>display_type</code>, <code>mini_markdown</code> and <code>template:*</code> from metadata, and SVG templates and images from display resources (<a href="../specifications/paso-view/">View §2, §3</a>).</li>
+<li><strong>Breaking</strong> Issuer-signed ad-hoc metadata JWTs are no longer accepted. Authorise Relying Parties through <code>adhoc_metadata_clients</code> in the signed credential metadata instead (<a href="../specifications/proof/paso-proof-metadata/">Metadata §5.2</a>).</li>
+<li><strong>New</strong> <code>transaction_data_types</code> may be empty or omit types. Types you do not publish are reserved for the Relying Parties you authorise (<a href="../specifications/proof/paso-proof-metadata/">Metadata §3, §5.2</a>).</li>
+<li><strong>Clarified</strong> Keep the signed credential metadata consistent with the rulebook of each published type (<a href="../specifications/paso-core/">Core §5.5</a>).</li>
+<li><strong>Clarified</strong> For SD-JWT VC credentials, integrity-verified Type Metadata may be used for display (<a href="../specifications/proof/paso-proof-metadata/">Metadata §9</a>).</li>
+</ul>
+<h4 id="authorizing-party">Authorizing Party</h4>
+<ul>
+<li><strong>Breaking</strong> Require exactly one PaSO presentation in the <code>vp_token</code>. Find the matched entry by the presentation's credential query and the hash, without requiring it to be the first-match entry. Accept <code>sha-256</code>, or the algorithm the rulebook names (<a href="../specifications/proof/paso-proof-verify/">Verify §3</a>).</li>
+<li><strong>Breaking</strong> Check <code>render_mode</code>. If it is <code>static</code>, check that the rulebook has a Static Presentation section and that the entry carries no ad-hoc <code>metadata</code>. Check <code>display_locale</code> against the rendering mode. In dynamic rendering it is a tag for which every <code>display</code> and <code>ui_labels</code> array has an entry, or <code>default</code> if every array has a default entry. In static rendering it is a language tag, never <code>default</code>, and it matches a <code>security_hint</code> entry where the type has one. Always check <code>metadata_integrity</code> (<a href="../specifications/proof/paso-proof-verify/">Verify §3</a>).</li>
+<li><strong>Breaking</strong> Verify ad-hoc metadata: the client is listed in <code>adhoc_metadata_clients</code>, the type is not published, and the object conforms. For types used only with ad-hoc metadata, check the <code>payload</code> against that metadata (<a href="../specifications/proof/paso-proof-verify/">Verify §3</a>).</li>
+<li><strong>Breaking</strong> Do not treat <code>amr</code> as evidence of SCA. SCA rests on holder binding, and the <code>amr</code> check is removed. Where the Default risk profile applies, an <code>amr</code> envelope is now required (<a href="../specifications/paso-core/">Core §4.2</a>, <a href="../specifications/proof/paso-proof-verify/">Verify §3</a>, <a href="../rulebooks/risk_profiles/Default/">Default</a>).</li>
+<li><strong>Breaking</strong> If you expose the proposed endpoint, accept only a signed JWT or a JWE containing one. Verify the signature, <code>typ</code> and certificate chain, and respond <code>401</code> on failure (<a href="../specifications/proof/paso-proof-verify/">Verify §4</a>).</li>
+<li><strong>Clarified</strong> Keep applying the rulebook's risk signal profiles, enumerations and encryption requirements when verifying, as in draft-2, even where the Wallet does not implement the rulebook and follows the signed credential metadata (<a href="../specifications/proof/paso-proof-risk-signals/">Risk Signals §4.1, §7.2</a>).</li>
+<li><strong>Clarified</strong> <code>transaction_data_hash</code> is computed over the entry's base64url string as received (<a href="../specifications/paso-core/">Core §6.1</a>).</li>
+</ul>
+<h4 id="rulebook-authors">Rulebook authors</h4>
+<ul>
+<li><strong>Breaking</strong> The Credential Rulebook of a PaSO Credential used for Strong Customer Authentication must specify the holder binding and user authentication requirements by which its presentations meet PSD2 Article 97 (<a href="../specifications/paso-core/">Core §4.2</a>).</li>
+<li><strong>Breaking</strong> The Generic and Mandate rulebooks are removed. Types that relied on them need their own rulebook or ad-hoc metadata (<a href="../specifications/paso-core/">Core §5.1</a>).</li>
+<li><strong>New</strong> A rulebook may include a Static Presentation section, which becomes part of the type's immutable semantic structure. The Payment rulebook is an example (<a href="../specifications/paso-core/">Core §5.3</a>, <a href="../rulebooks/transaction_data/Payment/">Payment §3</a>).</li>
+<li><strong>New</strong> A rulebook may name a hash algorithm other than <code>sha-256</code> for <code>transaction_data_hash</code> (<a href="../specifications/paso-core/">Core §6.1</a>).</li>
+<li><strong>Clarified</strong> Obligations are stated by role. Wallets build rulebooks in and do not fetch them at runtime, and a type used only with ad-hoc metadata needs no rulebook (<a href="../specifications/paso-core/">Core §5.1, §5.5</a>).</li>
+</ul>
+<h3 id="changes-by-document">Changes by document</h3>
+<h4 id="introduction">Introduction</h4>
+<ul>
+<li><strong>Clarified</strong> The overview presents two rendering modes: dynamic rendering, which every Wallet supports, and static rendering as an optional optimisation for standardised types (<a href="../">Introduction §6</a>).</li>
+<li><strong>Clarified</strong> Strong Customer Authentication is attributed to holder binding, not to the <code>amr</code> claim (<a href="../">Introduction §4.1, §7 and §9</a>).</li>
+<li><strong>Clarified</strong> Generic transaction types, such as login or limit changes, are served by ad-hoc metadata instead of a generic rulebook (<a href="../">Introduction §6.2, §6.3</a>).</li>
+<li><strong>Clarified</strong> The proof package hand-off uses a proposed endpoint with a signed, optionally encrypted envelope, and a payment scheme may define its own (<a href="../">Introduction §4.2 and §7.2</a>).</li>
+</ul>
+<h4 id="paso-core">PaSO Core</h4>
+<ul>
+<li><strong>Breaking</strong> New required SCA response claim <code>render_mode</code> (<code>dynamic</code> or <code>static</code>), also as an mdoc data element (<a href="../specifications/paso-core/">Core §6.1, §6.3</a>).</li>
+<li><strong>Breaking</strong> <code>display_locale</code> reports the <code>locale</code> tag of the rendered metadata entries, or the string <code>default</code> when the default entries were rendered. In static rendering it is a language tag and never <code>default</code> (<a href="../specifications/paso-core/">Core §6.1</a>).</li>
+<li><strong>Breaking</strong> The Wallet renders one consent screen from a single locale or entirely from default entries, and <code>display_locale</code> reports that selection; it is no longer the priority-list locale (<a href="../specifications/paso-core/">Core §7.2</a>).</li>
+<li><strong>Breaking</strong> The Credential Rulebook of a PaSO Credential used for Strong Customer Authentication shall specify the holder binding and user authentication requirements by which its presentations meet PSD2 Article 97 (<a href="../specifications/paso-core/">Core §4.2</a>).</li>
+<li><strong>Breaking</strong> A presentation carries exactly one PaSO Credential. The credential query identifiers referenced by PaSO-targeted entries form a single slot, the PaSO slot. Every alternative of its credential set contains exactly one of them, and that set is not optional. Without <code>credential_sets</code>, the PaSO entries reference exactly one credential query. No such query sets <code>multiple</code> to <code>true</code>. A Wallet rejects a request that breaks these rules (<a href="../specifications/paso-core/">Core §7.3, §7.4.1</a>).</li>
+<li><strong>Breaking</strong> Failures have one of three consequences: rejecting the request, excluding the credential, or making the entry not compatible with the credential. A locale-selection failure and a missing encryption key are now entry-level, so the Wallet falls back to the next entry instead of excluding the credential (<a href="../specifications/paso-core/">Core §7.5</a>).</li>
+<li><strong>New</strong> A Transaction Data Type Rulebook may include a Static Presentation section, which enables static rendering. It is part of the immutable semantic structure of the type (<a href="../specifications/paso-core/">Core §5.3</a>).</li>
+<li><strong>New</strong> A type used only with ad-hoc metadata needs no rulebook (<a href="../specifications/paso-core/">Core §5.1</a>).</li>
+<li><strong>New</strong> In the simple profile, several credentials may match the credential query; the user selects one, and the display follows the selection. The simple profile's boundary is stated exactly, and every other PaSO request is in the advanced profile (<a href="../specifications/paso-core/">Core §7.3, §7.4</a>).</li>
+<li><strong>Clarified</strong> Strong Customer Authentication is established by holder binding as required by the Credential Rulebook. <code>amr</code> is an ordinary risk signal: its presence does not establish SCA and its absence does not negate it (<a href="../specifications/paso-core/">Core §4.2, §6.1</a>).</li>
+<li><strong>Clarified</strong> <code>metadata_integrity</code> is always present. Where ad-hoc metadata is used, it identifies the signed credential metadata JWT that authorised the Relying Party (<a href="../specifications/paso-core/">Core §6.1</a>).</li>
+<li><strong>Clarified</strong> <code>transaction_data_hash</code> is computed over the base64url string of the entry exactly as received, without decoding. <code>transaction_data_hash_alg</code> is <code>sha-256</code> unless the rulebook names another algorithm. These claims are PaSO's representation of transaction data under OpenID4VP §8.4; PaSO does not use <code>transaction_data_hashes</code> (<a href="../specifications/paso-core/">Core §6.1</a>).</li>
+<li><strong>Clarified</strong> Rulebook obligations are stated by role. A Wallet applies the rulebooks it has built in and otherwise relies on the signed credential metadata, which the Attestation Provider keeps consistent with the rulebook (<a href="../specifications/paso-core/">Core §5.5</a>).</li>
+<li><strong>Clarified</strong> Entry compatibility is defined once for both profiles, including when a <code>payload</code> conforms (<a href="../specifications/paso-core/">Core §7.5</a>).</li>
+</ul>
+<h4 id="paso-view">PaSO View</h4>
+<ul>
+<li><strong>Breaking</strong> Labels are plain text. The <code>display_type</code> parameter and the value types <code>mini_markdown</code> and <code>template:*</code> are removed (<a href="../specifications/paso-view/">View §2, §3</a>).</li>
+<li><strong>Breaking</strong> A <code>transaction_data</code> entry may contain at most 10 displayed claim values; otherwise it is not compatible. This replaces the Wallet-defined bound of at least 200 rendered items (<a href="../specifications/paso-view/">View §2</a>).</li>
+<li><strong>Breaking</strong> Images must be PNG or JPEG. SVG is no longer supported, and the Wallet sends <code>Accept: image/png, image/jpeg</code> (<a href="../specifications/paso-view/">View §3</a>).</li>
+<li><strong>Breaking</strong> Locale selection is redefined. The available tags are the locales present in every considered array. The Wallet applies RFC 4647 Lookup for each locale of its priority list, then falls back to the default entries; if neither succeeds, the entry is not compatible (<a href="../specifications/paso-view/">View §4</a>).</li>
+<li><strong>Breaking</strong> Static rendering replaces the draft-2 permission for a dedicated UI. The Wallet may render statically only if the rulebook has a Static Presentation section, the Wallet implements that exact type and version, and the entry carries no ad-hoc metadata. The Wallet chooses the mode; Attestation Providers and Relying Parties cannot require or prohibit it. A static screen uses a single language and shows any <code>security_hint</code> exactly. Where the type has a <code>security_hint</code>, locale selection decides the language. If it selects the default entries or a language the Wallet cannot render statically, the Wallet uses dynamic rendering (<a href="../specifications/paso-view/">View §5</a>).</li>
+<li><strong>Clarified</strong> View applies to both the simple and the advanced profile and no longer requires the advanced profile (<a href="../specifications/paso-view/">View §1.1</a>).</li>
+<li><strong>Clarified</strong> The rendering mode may differ between the candidate credentials the user can choose from (<a href="../specifications/paso-view/">View §5.2</a>).</li>
+<li><strong>Clarified</strong> Security Considerations move to §6 (new §6.5 on the claim-value limit), References to §7, and Annex A.1 adds locale-selection examples (<a href="../specifications/paso-view/">View</a>).</li>
+</ul>
+<h4 id="metadata-module">Metadata Module</h4>
+<ul>
+<li><strong>Breaking</strong> The issuer-signed ad-hoc metadata JWT (<code>adhoc-transaction-metadata+jwt</code>) is removed. Ad-hoc metadata is now a plain <code>metadata</code> object in the <code>transaction_data</code> entry. Only a Relying Party listed in <code>adhoc_metadata_clients</code> may supply it, its authority rests on the signature of the Authorization Request, and it is allowed only for types the signed credential metadata does not list (<a href="../specifications/proof/paso-proof-metadata/">Metadata §5</a>).</li>
+<li><strong>Breaking</strong> <code>ui_labels</code> is required for every transaction data type (<a href="../specifications/proof/paso-proof-metadata/">Metadata §3, §3.2</a>).</li>
+<li><strong>Breaking</strong> All <code>display</code> and <code>ui_labels</code> arrays of a type carry the same set of locales, and either all or none have a default entry. An array has no duplicate locales and at most one default entry. The <code>locale</code> value <code>default</code> is reserved. At most 10 claims may have a <code>display</code> array (<a href="../specifications/proof/paso-proof-metadata/">Metadata §3.3</a>).</li>
+<li><strong>New</strong> <code>adhoc_metadata_clients</code> lists the Relying Parties authorised to supply ad-hoc metadata (<a href="../specifications/proof/paso-proof-metadata/">Metadata §5.2</a>).</li>
+<li><strong>New</strong> <code>transaction_data_types</code> may be empty or omit types. A type the Attestation Provider does not publish is reserved for the Relying Parties it authorises (<a href="../specifications/proof/paso-proof-metadata/">Metadata §3</a>).</li>
+<li><strong>Clarified</strong> If locale selection fails for ad-hoc metadata, the entry is not compatible (<a href="../specifications/proof/paso-proof-metadata/">Metadata §5.4</a>).</li>
+<li><strong>Clarified</strong> The Wallet may refuse issuance if locale selection fails for the returned metadata (<a href="../specifications/proof/paso-proof-metadata/">Metadata §4</a>).</li>
+<li><strong>Clarified</strong> Display metadata for SD-JWT VC credentials, previously in the SD-JWT VC and SVG module, is now here: integrity-verified Type Metadata may be used for display, in the priority order of OpenID4VCI §12.2.4 (<a href="../specifications/proof/paso-proof-metadata/">Metadata §9</a>).</li>
+</ul>
+<h4 id="verify-module">Verify Module</h4>
+<ul>
+<li><strong>Breaking</strong> The ingestion endpoint is a proposal; a payment scheme or rulebook may define another forwarding mechanism. The body is always a signed JWT (<code>typ</code> <code>paso-proof-package+jwt</code>, sender's chain in <code>x5c</code>), optionally nested in a JWE (<code>cty</code> <code>JWT</code>, baseline <code>ECDH-ES</code> with <code>P-256</code> and <code>A256GCM</code>). The plain <code>application/json</code> body is removed. The sender may be the Relying Party or a party forwarding on its behalf. <code>401</code> means the signature, <code>typ</code> or chain failed (<a href="../specifications/proof/paso-proof-verify/">Verify §4</a>).</li>
+<li><strong>Breaking</strong> The Authorizing Party checks <code>render_mode</code>; for <code>static</code>, the rulebook must have a Static Presentation section and the entry must carry no ad-hoc metadata. It checks <code>display_locale</code> against the rendering mode; for <code>static</code>, it is a language tag that matches a <code>security_hint</code> entry where the type has one. It always checks <code>metadata_integrity</code>, and verifies ad-hoc metadata: the client is authorised, the type is unpublished, and the object conforms. For types used only with ad-hoc metadata, it checks the <code>payload</code> against that metadata. The <code>amr</code> check is removed (<a href="../specifications/proof/paso-proof-verify/">Verify §3</a>).</li>
+<li><strong>Breaking</strong> The <code>vp_token</code> must contain exactly one PaSO presentation. The matched entry is the PaSO-targeted entry whose <code>credential_ids</code> contain the presentation's credential query and whose hash equals <code>transaction_data_hash</code>. The Authorizing Party does not require it to be the first-match entry. The hash algorithm must be <code>sha-256</code> or the one the rulebook names (<a href="../specifications/proof/paso-proof-verify/">Verify §3</a>).</li>
+</ul>
+<h4 id="risk-signals-module">Risk Signals Module</h4>
+<ul>
+<li><strong>New</strong> For a type supplied by ad-hoc metadata, the risk members come from the <code>metadata</code> object (<a href="../specifications/proof/paso-proof-risk-signals/">Risk Signals §4.1</a>).</li>
+<li><strong>Clarified</strong> When verifying, the Authorizing Party applies the risk signal profiles, enumerations and encryption requirements of the rulebook, as in draft-2, even where the Wallet does not implement the rulebook (<a href="../specifications/proof/paso-proof-risk-signals/">Risk Signals §4.1, §7.2</a>).</li>
+<li><strong>Clarified</strong> A Wallet applies rulebook risk sources only where it implements the rulebook, and otherwise the signed credential metadata (<a href="../specifications/proof/paso-proof-risk-signals/">Risk Signals §4.1, §7.2</a>).</li>
+<li><strong>Clarified</strong> Without an integrity-verified encryption key, the entry is not compatible with the credential (<a href="../specifications/proof/paso-proof-risk-signals/">Risk Signals §7.3</a>).</li>
+<li><strong>Clarified</strong> The caution against combining <code>amr</code> with encryption (former §7.8) is removed (<a href="../specifications/proof/paso-proof-risk-signals/">Risk Signals §7</a>).</li>
+</ul>
+<h4 id="risk-signal-registry">Risk Signal Registry</h4>
+<ul>
+<li><strong>Clarified</strong> The <code>amr</code> signal no longer has to cover two categories of authentication elements in a PSD2 context, and an ecosystem that requires SCA is no longer obliged to publish a risk signal profile that requires it. SCA rests on holder binding (<a href="../specifications/proof/paso-proof-risk-signal-registry/">Registry</a>, <a href="../specifications/paso-core/">Core §4.2, §6.1</a>).</li>
+</ul>
+<h4 id="log-module">Log Module</h4>
+<ul>
+<li><strong>New</strong> Replay of a statically rendered presentation reproduces the static presentation of the Wallet version recorded in <code>wallet_instance_version</code> (<a href="../specifications/proof/paso-proof-log/">Log §5</a>).</li>
+<li><strong>Clarified</strong> Resolved resources no longer include SVG templates; they are the resources fetched for display, such as remote images (<a href="../specifications/proof/paso-proof-log/">Log §3</a>).</li>
+</ul>
+<h4 id="payment-rulebook">Payment rulebook</h4>
+<ul>
+<li><strong>New</strong> Static Presentation section: <code>amount</code> and <code>payee.name</code> are shown on the same screen as the affirmative action, <code>payee.logo</code> may be shown, and the other claims are not shown. Example A.2 shows a static rendering. References move to §4 (<a href="../rulebooks/transaction_data/Payment/">Payment §3</a>).</li>
+</ul>
+<h4 id="default-risk-profile">Default risk profile</h4>
+<ul>
+<li><strong>Breaking</strong> The profile includes <code>urn:paso:risk:global:amr:1</code>, so it lists eight required signals, each with a <code>max_age</code> of 600 seconds (<a href="../rulebooks/risk_profiles/Default/">Default</a>).</li>
+</ul>
+<h4 id="removed">Removed</h4>
+<ul>
+<li>The Generic rulebook (<code>urn:paso:sca:global:generic:*</code>). Generic use cases use ad-hoc metadata.</li>
+<li>The Mandate rulebook (<code>urn:paso:sca:global:mandate:*</code>).</li>
+<li>The SD-JWT VC and SVG module. Its display-metadata rules moved to Metadata §9; SVG images are no longer supported.</li>
+<li>The value types <code>mini_markdown</code> and <code>template:*</code>, and the <code>display_type</code> parameter.</li>
+<li>The issuer-signed ad-hoc metadata JWT (<code>adhoc-transaction-metadata+jwt</code>).</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Introduction
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../rulebooks/risk_profiles/Default/" class="md-footer__link md-footer__link--next" aria-label="Next: Risk Signal Profile: Default">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Risk Signal Profile: Default
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2026 Aptitude Consortium
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/APTITUDE-Consortium/payments-and-sca-for-openid" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.footer", "navigation.sections"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

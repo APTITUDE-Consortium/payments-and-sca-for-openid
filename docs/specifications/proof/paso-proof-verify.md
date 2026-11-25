@@ -27,11 +27,11 @@ The Relying Party **SHALL NOT** modify either artefact. Section 4 proposes a sta
 
 ## 3 Verification Procedure
 
-Upon receiving the proof package, the Authorizing Party **SHALL** perform the following checks:
+Upon receiving the proof package, the Authorizing Party **SHALL** perform the following checks. Step 1 applies once. Steps 2 to 6 apply to each PaSO presentation, that is, each presentation in the `vp_token` under a credential query identifier listed in the `credential_ids` of a PaSO-targeted `transaction_data` entry ([PaSO Core] Section 7.3).
 
 1. **Request verification**: Verify the signed Authorization Request JWT signature. Verify the Relying Party's identity from the request.
 
-2. **Credential verification**: Verify the PaSO Credential in the `vp_token`:
+2. **Credential verification**: Verify the PaSO Credential of the presentation:
    - Validate the credential signature.
    - Verify the credential has not expired.
    - Verify the credential has not been revoked.
@@ -39,8 +39,8 @@ Upon receiving the proof package, the Authorizing Party **SHALL** perform the fo
 3. **Holder binding proof verification**: Verify the holder binding proof (KB-JWT for [SD-JWT-VC], DeviceAuthentication for [mdoc]).
 
 4. **SCA response claims verification** per [PaSO Core] Section 6.1:
-   - `transaction_data_hash`: recompute the hash from the `transaction_data` entry in the Authorization Request and verify it matches.
-   - `transaction_data_hash_alg`: verify the algorithm is acceptable.
+   - `transaction_data_hash`: identify the matched entry. It is the PaSO-targeted `transaction_data` entry whose `credential_ids` contain the credential query identifier under which the presentation appears in the `vp_token`, and whose hash, computed per [PaSO Core] Section 6.1, equals `transaction_data_hash`. If no entry matches, the check fails. The Authorizing Party **SHALL NOT** require the matched entry to be the first entry that targets that credential query ([PaSO Core] Section 7.4.2 step 2). The Relying Party signed every entry, and the Wallet's compatibility evaluation cannot be reproduced. In steps 4 to 6, "the `transaction_data` entry" refers to the matched entry, and "the matched transaction data type" to its `type`.
+   - `transaction_data_hash_alg`: verify that it is `sha-256`, or the algorithm named by the applicable Transaction Data Type Rulebook.
    - `request_integrity`: recompute the [W3C.SRI] integrity value of the signed Authorization Request JWT and verify it matches.
    - `metadata_integrity`: verify it matches the [W3C.SRI] integrity value of the Attestation Provider's current signed credential metadata JWT for this credential.
    - `render_mode`: verify that it is either `dynamic` or `static`. If it is `static`, verify that the applicable Transaction Data Type Rulebook contains a Static Presentation section per [PaSO Core] Section 5.3, and that the `transaction_data` entry does not carry a `metadata` parameter, per [PaSO View] Section 5.1.

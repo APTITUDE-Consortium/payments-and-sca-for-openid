@@ -132,7 +132,7 @@ A signal in the effective set whose resolved `required` is `true` is a **require
 
 Where neither source references a profile and neither enumerates a signal, the effective signal set is empty.
 
-A Wallet that does not implement the rulebook relies on the signed credential metadata, which the Attestation Provider keeps consistent with the rulebook per [PaSO Core] Section 5.5. When resolving the effective signal set for verification (Section 6), the Authorizing Party always includes the profiles and signals that the rulebook references or enumerates.
+A Wallet that does not implement the rulebook relies on the signed credential metadata, which the Attestation Provider keeps consistent with the rulebook per [PaSO Core] Section 5.5. When resolving the effective signal set for verification (Section 6), the Authorizing Party **SHALL** include the profiles and signals that the rulebook references or enumerates, regardless of what the Wallet implements.
 
 Where the `transaction_data` entry carries ad-hoc metadata valid per [PaSO Proof Metadata] Section 5.3, the `risk_signal_profiles`, `risk_signals`, and `encrypted` members that this section and Section 7.2 take from the signed credential metadata are taken from that `metadata` object instead, per [PaSO Proof Metadata] Section 5.4. The issuer encryption key is unaffected and is obtained per Section 7.3.
 
@@ -225,7 +225,7 @@ Encryption is **required** for a transaction data type when **any** of the follo
 2. the issuer's credential metadata, via the `encrypted` flag on the `transaction_data_types` entry (per [PaSO Proof Metadata]), or
 3. any risk signal profile referenced for the transaction data type, via its `encrypted` member (Section 3.3).
 
-If any source requires encryption, the Wallet **SHALL** encrypt. Encryption applies to the entire `risk_signals` array for that transaction data type; individual signals are not encrypted separately.
+If any source requires encryption, the Wallet **SHALL** encrypt. When determining whether encryption was required (Sections 6.1 and 7.7), the Authorizing Party **SHALL** apply item 1, and item 3 for every profile the rulebook references, regardless of what the Wallet implements. Encryption applies to the entire `risk_signals` array for that transaction data type; individual signals are not encrypted separately.
 
 ### 7.3 Encryption Key
 

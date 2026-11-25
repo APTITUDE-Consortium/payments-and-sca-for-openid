@@ -257,7 +257,7 @@ This section applies to both the simple and the advanced profile. A PaSO-targete
 
 1. The credential matches a credential query whose identifier is listed in the entry's `credential_ids`.
 2. The entry's `type` is among the transaction data types supported by the credential.
-3. The `payload` conforms to the definition of that type. A `payload` conforms if it does not contain fields not covered by a claim `path` in the applicable claims metadata (companion `#integrity` fields are covered by the `path` of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting. Where the Wallet implements the rulebook of the `type` (Section 5.5), the `payload` additionally **SHALL NOT** contain fields not declared by the rulebook.
+3. The `payload` conforms to the definition of that type. A `payload` conforms if it does not contain fields not covered by a claim `path` in the applicable claims metadata (companion `#integrity` fields are covered by the `path` of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting. Where the Wallet implements the rulebook of the `type` (Section 5.5), the `payload` conforms only if, in addition, every field it contains is declared or permitted by the rulebook.
 4. Every claim of the `payload` that requires resolution of an external resource with integrity verification has been resolved, and its content verified.
 
 A Wallet **SHALL** reject a request whose `transaction_data` entry contains an object with duplicate member names (compared after unescaping).
@@ -266,7 +266,7 @@ Other PaSO specifications define further conditions under which an entry is not 
 
 The following summary is informative. For each entry and candidate credential, the Wallet determines the definition of the type as follows:
 
-1. If the entry carries a `metadata` parameter, the Wallet verifies it per [PaSO Proof Metadata] Section 5.3. Invalid ad-hoc metadata makes the entry incompatible, without fallback to the stored credential metadata. Valid ad-hoc metadata is the definition of the type for this transaction, and the entry is rendered dynamically ([PaSO View] Section 5.1).
+1. If the entry carries a `metadata` parameter, the Wallet verifies it per [PaSO Proof Metadata] Section 5.3. Invalid ad-hoc metadata makes the entry incompatible, without fallback to the stored credential metadata. Valid ad-hoc metadata is the definition of the type for this transaction: the `payload` is checked against it and, where the Wallet implements a rulebook for the `type`, also against that rulebook (condition 3). The entry is rendered dynamically ([PaSO View] Section 5.1).
 2. Otherwise, the type is supported only if the signed credential metadata lists it (condition 2). The `payload` is checked against that metadata and, where the Wallet implements it, against the rulebook (condition 3).
 3. The Wallet then selects the rendering mode: static rendering where [PaSO View] Section 5.1 permits it, and dynamic rendering from the metadata otherwise.
 

@@ -136,7 +136,7 @@ All text displayed to the user **SHALL** be short and easily understandable.
 Conformance to a Transaction Data Type Rulebook is ensured by the parties that construct and verify transaction data:
 
 - The Attestation Provider **SHALL** ensure that the `transaction_data_types` entry it publishes for a transaction data type in the signed credential metadata ([PaSO Proof Metadata] Section 3) is consistent with the rulebook. This includes the claims and which of them are required, and any risk signal profiles, risk signals and encryption that the rulebook requires ([PaSO Risk Signals]).
-- The Relying Party **SHALL** construct the `payload` of a `transaction_data` entry per the rulebook of its `type`. For a type used only with ad-hoc metadata (Section 5.1), it **SHALL** construct the `payload` per that metadata.
+- The Relying Party **SHALL** construct the `payload` of a `transaction_data` entry per the rulebook of its `type`. For a type used only with ad-hoc metadata (Section 5.1), it **SHALL** construct the `payload` per that metadata. Where it supplies ad-hoc metadata ([PaSO Proof Metadata] Section 5) for a type that has a rulebook, it **SHALL** ensure that the metadata is consistent with the rulebook, as the Attestation Provider must for the metadata it publishes.
 - The Authorizing Party **SHALL** verify that the `payload` conforms to the rulebook, per [PaSO Proof Verify] Section 3.
 
 A Wallet implements a rulebook by building it in; it does not obtain rulebooks at runtime. The Wallet **SHALL** apply the requirements of every rulebook it implements. For a rulebook it does not implement, the Wallet relies on the credential metadata, which reflects the rulebook by the Attestation Provider's obligation above.

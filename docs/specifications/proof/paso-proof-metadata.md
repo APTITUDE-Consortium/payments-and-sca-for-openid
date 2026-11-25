@@ -181,7 +181,7 @@ Ad-hoc metadata that is valid per Section 5.3 is authoritative for the enclosing
 - A transaction data type covered by valid ad-hoc metadata **SHALL** be considered supported by the targeted credential for the purposes of [PaSO Core] Section 7.
 - The `metadata_integrity` claim per [PaSO Core] Section 6.1 **SHALL** carry the integrity value of the signed credential metadata JWT against which step 3 of Section 5.3 was performed. The ad-hoc metadata itself is covered by `transaction_data_hash` and `request_integrity`. Together, these claims record both the authorisation and the metadata that was displayed.
 
-If locale selection per [PaSO View] Section 4 does not succeed for the ad-hoc metadata and the Wallet's locale priority list, the Wallet **MAY** treat the `transaction_data` entry as incompatible. Ad-hoc metadata for which selection succeeds only through default entries is compatible and **SHALL NOT** be treated as incompatible on locale grounds.
+Locale selection per [PaSO View] Section 4 applies to ad-hoc metadata as to any other metadata. If it does not succeed, the `transaction_data` entry is not compatible with the targeted credential ([PaSO Core] Section 7.5). If it succeeds only through default entries, the entry **SHALL NOT** be treated as incompatible on locale grounds.
 
 The Wallet **SHALL NOT** persist ad-hoc metadata beyond the processing of the transaction it accompanies. Sections 6 and 8 do not apply to ad-hoc metadata. Because ad-hoc metadata is delivered within the presentation request, its use involves no additional network retrieval and is not subject to the linkability considerations of Section 8.
 

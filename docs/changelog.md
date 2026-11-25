@@ -18,7 +18,8 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 
 #### Wallet
 
-- **Breaking** Add the `render_mode` claim to every PaSO presentation, and report in `display_locale` the `locale` tag of the rendered entries, or `default` ([Core §6.1, §6.3](specifications/paso-core.md)).
+- **Breaking** Add the `render_mode` claim to every PaSO presentation. Report in `display_locale` the `locale` tag of the rendered entries, or `default`; it is no longer the priority-list locale ([Core §6.1, §6.3, §7.2](specifications/paso-core.md)).
+- **Breaking** Always include `metadata_integrity`. Where ad-hoc metadata is used, it identifies the signed credential metadata JWT that authorised the Relying Party ([Core §6.1](specifications/paso-core.md)).
 - **Breaking** Implement the new locale selection: one locale or the default entries for the whole consent screen. If neither is available, the entry is not compatible ([View §4](specifications/paso-view.md), [Core §7.2](specifications/paso-core.md)).
 - **Breaking** Render labels as plain text. Drop `display_type`, `mini_markdown` and `template:*` ([View §2, §3](specifications/paso-view.md)).
 - **Breaking** Accept only PNG and JPEG images, and send `Accept: image/png, image/jpeg` ([View §3](specifications/paso-view.md)).
@@ -28,10 +29,10 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 - **Breaking** Reject a request that would let the user present more than one PaSO Credential: more than one PaSO credential query per alternative, an optional PaSO credential set, or `multiple` set to `true` ([Core §7.3, §7.4.1](specifications/paso-core.md)).
 - **Breaking** When locale selection fails or no encryption key is available, treat the entry as not compatible and fall back to the next entry, instead of excluding the credential ([Core §7.5](specifications/paso-core.md)).
 - **Breaking** For types that reference the Default risk profile, include an `amr` envelope; the profile now has eight required signals ([Default](rulebooks/risk_profiles/Default.md)).
-- **New** Optionally render statically the types whose rulebook you implement and that have a Static Presentation section, such as Payment ([View §5](specifications/paso-view.md), [Payment §3](rulebooks/transaction_data/Payment.md)). Replay of a static presentation must reproduce your Wallet version's presentation ([Log §5](specifications/proof/paso-proof-log.md)).
+- **New** Optionally render statically the types whose rulebook you implement and that have a Static Presentation section, such as Payment ([View §5](specifications/paso-view.md), [Payment §3](rulebooks/transaction_data/Payment.md)). If the type has a `security_hint`, run locale selection first. If it selects the default entries or a language you cannot render statically, use dynamic rendering. Otherwise report the selected tag in `display_locale`, which in static rendering is never `default` ([View §5.4](specifications/paso-view.md)). Replay of a static presentation must reproduce your Wallet version's presentation ([Log §5](specifications/proof/paso-proof-log.md)).
 - **New** In the simple profile, let the user choose when several credentials match ([Core §7.3](specifications/paso-core.md)).
 - **Clarified** Apply rulebook risk signal profiles, enumerations and encryption requirements only for rulebooks you implement; otherwise follow the signed credential metadata ([Core §5.5](specifications/paso-core.md), [Risk Signals §4.1, §7.2](specifications/proof/paso-proof-risk-signals.md)).
-- **Clarified** Always include `metadata_integrity`. Compute `transaction_data_hash` over the entry's base64url string as received, with `sha-256` unless the rulebook names another algorithm ([Core §6.1](specifications/paso-core.md)).
+- **Clarified** Compute `transaction_data_hash` over the entry's base64url string as received, with `sha-256` unless the rulebook names another algorithm ([Core §6.1](specifications/paso-core.md)).
 - **Clarified** `amr` no longer has to cover two categories of authentication elements; it does not establish SCA ([Core §4.2](specifications/paso-core.md), [Registry](specifications/proof/paso-proof-risk-signal-registry.md)).
 - **Clarified** Display metadata for SD-JWT VC credentials is now defined in Metadata §9; SVG resources are gone ([Metadata §9](specifications/proof/paso-proof-metadata.md)).
 
@@ -59,15 +60,16 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 #### Authorizing Party
 
 - **Breaking** Require exactly one PaSO presentation in the `vp_token`. Find the matched entry by the presentation's credential query and the hash, without requiring it to be the first-match entry. Accept `sha-256`, or the algorithm the rulebook names ([Verify §3](specifications/proof/paso-proof-verify.md)).
-- **Breaking** Check `render_mode`, check `display_locale` according to the rendering mode, and always check `metadata_integrity` ([Verify §3](specifications/proof/paso-proof-verify.md)).
+- **Breaking** Check `render_mode`. If it is `static`, check that the rulebook has a Static Presentation section and that the entry carries no ad-hoc `metadata`. Check `display_locale` against the rendering mode. In dynamic rendering it is a tag for which every `display` and `ui_labels` array has an entry, or `default` if every array has a default entry. In static rendering it is a language tag, never `default`, and it matches a `security_hint` entry where the type has one. Always check `metadata_integrity` ([Verify §3](specifications/proof/paso-proof-verify.md)).
 - **Breaking** Verify ad-hoc metadata: the client is listed in `adhoc_metadata_clients`, the type is not published, and the object conforms. For types used only with ad-hoc metadata, check the `payload` against that metadata ([Verify §3](specifications/proof/paso-proof-verify.md)).
-- **Breaking** Always apply the rulebook's risk signal profiles, enumerations and encryption requirements when verifying, whatever the Wallet implements ([Risk Signals §4.1, §7.2](specifications/proof/paso-proof-risk-signals.md)).
 - **Breaking** Do not treat `amr` as evidence of SCA. SCA rests on holder binding, and the `amr` check is removed. Where the Default risk profile applies, an `amr` envelope is now required ([Core §4.2](specifications/paso-core.md), [Verify §3](specifications/proof/paso-proof-verify.md), [Default](rulebooks/risk_profiles/Default.md)).
 - **Breaking** If you expose the proposed endpoint, accept only a signed JWT or a JWE containing one. Verify the signature, `typ` and certificate chain, and respond `401` on failure ([Verify §4](specifications/proof/paso-proof-verify.md)).
+- **Clarified** Keep applying the rulebook's risk signal profiles, enumerations and encryption requirements when verifying, as in draft-2, even where the Wallet does not implement the rulebook and follows the signed credential metadata ([Risk Signals §4.1, §7.2](specifications/proof/paso-proof-risk-signals.md)).
 - **Clarified** `transaction_data_hash` is computed over the entry's base64url string as received ([Core §6.1](specifications/paso-core.md)).
 
 #### Rulebook authors
 
+- **Breaking** The Credential Rulebook of a PaSO Credential used for Strong Customer Authentication must specify the holder binding and user authentication requirements by which its presentations meet PSD2 Article 97 ([Core §4.2](specifications/paso-core.md)).
 - **Breaking** The Generic and Mandate rulebooks are removed. Types that relied on them need their own rulebook or ad-hoc metadata ([Core §5.1](specifications/paso-core.md)).
 - **New** A rulebook may include a Static Presentation section, which becomes part of the type's immutable semantic structure. The Payment rulebook is an example ([Core §5.3](specifications/paso-core.md), [Payment §3](rulebooks/transaction_data/Payment.md)).
 - **New** A rulebook may name a hash algorithm other than `sha-256` for `transaction_data_hash` ([Core §6.1](specifications/paso-core.md)).
@@ -86,6 +88,8 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 
 - **Breaking** New required SCA response claim `render_mode` (`dynamic` or `static`), also as an mdoc data element ([Core §6.1, §6.3](specifications/paso-core.md)).
 - **Breaking** `display_locale` reports the `locale` tag of the rendered metadata entries, or the string `default` when the default entries were rendered. In static rendering it is a language tag and never `default` ([Core §6.1](specifications/paso-core.md)).
+- **Breaking** The Wallet renders one consent screen from a single locale or entirely from default entries, and `display_locale` reports that selection; it is no longer the priority-list locale ([Core §7.2](specifications/paso-core.md)).
+- **Breaking** The Credential Rulebook of a PaSO Credential used for Strong Customer Authentication shall specify the holder binding and user authentication requirements by which its presentations meet PSD2 Article 97 ([Core §4.2](specifications/paso-core.md)).
 - **Breaking** A presentation carries exactly one PaSO Credential. The credential query identifiers referenced by PaSO-targeted entries form a single slot, the PaSO slot. Every alternative of its credential set contains exactly one of them, and that set is not optional. Without `credential_sets`, the PaSO entries reference exactly one credential query. No such query sets `multiple` to `true`. A Wallet rejects a request that breaks these rules ([Core §7.3, §7.4.1](specifications/paso-core.md)).
 - **Breaking** Failures have one of three consequences: rejecting the request, excluding the credential, or making the entry not compatible with the credential. A locale-selection failure and a missing encryption key are now entry-level, so the Wallet falls back to the next entry instead of excluding the credential ([Core §7.5](specifications/paso-core.md)).
 - **New** A Transaction Data Type Rulebook may include a Static Presentation section, which enables static rendering. It is part of the immutable semantic structure of the type ([Core §5.3](specifications/paso-core.md)).
@@ -95,7 +99,6 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 - **Clarified** `metadata_integrity` is always present. Where ad-hoc metadata is used, it identifies the signed credential metadata JWT that authorised the Relying Party ([Core §6.1](specifications/paso-core.md)).
 - **Clarified** `transaction_data_hash` is computed over the base64url string of the entry exactly as received, without decoding. `transaction_data_hash_alg` is `sha-256` unless the rulebook names another algorithm. These claims are PaSO's representation of transaction data under OpenID4VP §8.4; PaSO does not use `transaction_data_hashes` ([Core §6.1](specifications/paso-core.md)).
 - **Clarified** Rulebook obligations are stated by role. A Wallet applies the rulebooks it has built in and otherwise relies on the signed credential metadata, which the Attestation Provider keeps consistent with the rulebook ([Core §5.5](specifications/paso-core.md)).
-- **Clarified** The Wallet renders one consent screen from a single locale or entirely from default entries ([Core §7.2](specifications/paso-core.md)).
 - **Clarified** Entry compatibility is defined once for both profiles, including when a `payload` conforms ([Core §7.5](specifications/paso-core.md)).
 
 #### PaSO View
@@ -104,7 +107,7 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 - **Breaking** A `transaction_data` entry may contain at most 10 displayed claim values; otherwise it is not compatible. This replaces the Wallet-defined bound of at least 200 rendered items ([View §2](specifications/paso-view.md)).
 - **Breaking** Images must be PNG or JPEG. SVG is no longer supported, and the Wallet sends `Accept: image/png, image/jpeg` ([View §3](specifications/paso-view.md)).
 - **Breaking** Locale selection is redefined. The available tags are the locales present in every considered array. The Wallet applies RFC 4647 Lookup for each locale of its priority list, then falls back to the default entries; if neither succeeds, the entry is not compatible ([View §4](specifications/paso-view.md)).
-- **Breaking** Static rendering replaces the draft-2 permission for a dedicated UI. The Wallet may render statically only if the rulebook has a Static Presentation section, the Wallet implements that exact type and version, and the entry carries no ad-hoc metadata. The Wallet chooses the mode; Attestation Providers and Relying Parties cannot require or prohibit it. A static screen uses a single language and shows any `security_hint` exactly ([View §5](specifications/paso-view.md)).
+- **Breaking** Static rendering replaces the draft-2 permission for a dedicated UI. The Wallet may render statically only if the rulebook has a Static Presentation section, the Wallet implements that exact type and version, and the entry carries no ad-hoc metadata. The Wallet chooses the mode; Attestation Providers and Relying Parties cannot require or prohibit it. A static screen uses a single language and shows any `security_hint` exactly. Where the type has a `security_hint`, locale selection decides the language. If it selects the default entries or a language the Wallet cannot render statically, the Wallet uses dynamic rendering ([View §5](specifications/paso-view.md)).
 - **Clarified** View applies to both the simple and the advanced profile and no longer requires the advanced profile ([View §1.1](specifications/paso-view.md)).
 - **Clarified** The rendering mode may differ between the candidate credentials the user can choose from ([View §5.2](specifications/paso-view.md)).
 - **Clarified** Security Considerations move to §6 (new §6.5 on the claim-value limit), References to §7, and Annex A.1 adds locale-selection examples ([View](specifications/paso-view.md)).
@@ -123,20 +126,20 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 #### Verify Module
 
 - **Breaking** The ingestion endpoint is a proposal; a payment scheme or rulebook may define another forwarding mechanism. The body is always a signed JWT (`typ` `paso-proof-package+jwt`, sender's chain in `x5c`), optionally nested in a JWE (`cty` `JWT`, baseline `ECDH-ES` with `P-256` and `A256GCM`). The plain `application/json` body is removed. The sender may be the Relying Party or a party forwarding on its behalf. `401` means the signature, `typ` or chain failed ([Verify §4](specifications/proof/paso-proof-verify.md)).
-- **Breaking** The Authorizing Party checks `render_mode`, checks `display_locale` according to the rendering mode, always checks `metadata_integrity`, and verifies ad-hoc metadata: the client is authorised, the type is unpublished, and the object conforms. For types used only with ad-hoc metadata, it checks the `payload` against that metadata. The `amr` check is removed ([Verify §3](specifications/proof/paso-proof-verify.md)).
+- **Breaking** The Authorizing Party checks `render_mode`; for `static`, the rulebook must have a Static Presentation section and the entry must carry no ad-hoc metadata. It checks `display_locale` against the rendering mode; for `static`, it is a language tag that matches a `security_hint` entry where the type has one. It always checks `metadata_integrity`, and verifies ad-hoc metadata: the client is authorised, the type is unpublished, and the object conforms. For types used only with ad-hoc metadata, it checks the `payload` against that metadata. The `amr` check is removed ([Verify §3](specifications/proof/paso-proof-verify.md)).
 - **Breaking** The `vp_token` must contain exactly one PaSO presentation. The matched entry is the PaSO-targeted entry whose `credential_ids` contain the presentation's credential query and whose hash equals `transaction_data_hash`. The Authorizing Party does not require it to be the first-match entry. The hash algorithm must be `sha-256` or the one the rulebook names ([Verify §3](specifications/proof/paso-proof-verify.md)).
 
 #### Risk Signals Module
 
-- **Breaking** When verifying, the Authorizing Party always applies the risk signal profiles, enumerations and encryption requirements of the rulebook, whatever the Wallet implements ([Risk Signals §4.1, §7.2](specifications/proof/paso-proof-risk-signals.md)).
 - **New** For a type supplied by ad-hoc metadata, the risk members come from the `metadata` object ([Risk Signals §4.1](specifications/proof/paso-proof-risk-signals.md)).
+- **Clarified** When verifying, the Authorizing Party applies the risk signal profiles, enumerations and encryption requirements of the rulebook, as in draft-2, even where the Wallet does not implement the rulebook ([Risk Signals §4.1, §7.2](specifications/proof/paso-proof-risk-signals.md)).
 - **Clarified** A Wallet applies rulebook risk sources only where it implements the rulebook, and otherwise the signed credential metadata ([Risk Signals §4.1, §7.2](specifications/proof/paso-proof-risk-signals.md)).
 - **Clarified** Without an integrity-verified encryption key, the entry is not compatible with the credential ([Risk Signals §7.3](specifications/proof/paso-proof-risk-signals.md)).
 - **Clarified** The caution against combining `amr` with encryption (former §7.8) is removed ([Risk Signals §7](specifications/proof/paso-proof-risk-signals.md)).
 
 #### Risk Signal Registry
 
-- **Breaking** The `amr` signal no longer has to cover two categories of authentication elements in a PSD2 context. An Authorizing Party must not rely on it as evidence of SCA ([Registry](specifications/proof/paso-proof-risk-signal-registry.md)).
+- **Clarified** The `amr` signal no longer has to cover two categories of authentication elements in a PSD2 context, and an ecosystem that requires SCA is no longer obliged to publish a risk signal profile that requires it. SCA rests on holder binding ([Registry](specifications/proof/paso-proof-risk-signal-registry.md), [Core §4.2, §6.1](specifications/paso-core.md)).
 
 #### Log Module
 

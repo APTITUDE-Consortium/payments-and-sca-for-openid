@@ -199,7 +199,7 @@ For dynamic rendering, locale selection **SHALL** follow [PaSO View] Section 4. 
 
 The simple profile is the minimum PaSO transaction data processing mode and a minimal subset of the advanced profile. All Wallets supporting PaSO **SHALL** implement the simple profile. A Wallet implementing the advanced profile is fully compatible with requests made in the simple profile.
 
-In the simple profile, the presentation request contains exactly one PaSO-targeted `transaction_data` entry, identified by a `type` starting with `urn:paso:sca:`, whose `credential_ids` **SHALL** contain exactly one credential query identifier. When `credential_sets` are used, that credential query identifier **SHALL** appear in every option of every credential set that references it, and at least one such credential set **SHALL** be required; the options **SHALL** be transposable as defined in Section 7.4.1. A request that does not meet these conditions is not in the simple profile (Section 7.4).
+In the simple profile, the presentation request contains exactly one PaSO-targeted `transaction_data` entry, identified by a `type` starting with `urn:paso:sca:`, whose `credential_ids` **SHALL** contain exactly one credential query identifier; that credential query **SHALL NOT** set `multiple` to `true` ([OID4VP] Section 6.1). When `credential_sets` are used, that credential query identifier **SHALL** appear in every option of every credential set that references it, and at least one such credential set **SHALL** be required; the options **SHALL** be transposable as defined in Section 7.4.1. A request that does not meet these conditions is not in the simple profile (Section 7.4).
 
 The Wallet **SHALL**:
 
@@ -225,11 +225,19 @@ Each inner array within the `options` of the credential set (hereafter called an
 
 All alternatives that involve a PaSO-targeted `transaction_data` entry **SHALL** be **transposable**. Transposability means that the user's credential choices must be fully independent of each other. Selecting one credential should never constrain which credentials are available in another slot.
 
-Concretely: it must be possible to decompose the alternatives into a set of independent credential slots _S₁_, _S₂_, …, _Sₖ_, where each slot represents one independent choice the user makes. Each slot contains the credentials the user can pick for that choice, and may also allow the user to pick nothing (making that slot optional). The full list of PaSO-targeted alternatives must be exactly the result of combining every possible selection across all slots.
+Concretely: it must be possible to decompose the alternatives into a set of independent credential slots _S₁_, _S₂_, …, _Sₖ_, where each slot represents one independent choice the user makes. Each slot contains the credentials the user can pick for that choice, and may also allow the user to pick nothing (making that slot optional). A slot contains ∅ when some alternatives contain none of its credential query identifiers. The full list of PaSO-targeted alternatives must be exactly the result of combining every possible selection across all slots.
 
 A Relying Party **SHALL** construct its alternatives so that this holds. If a Wallet detects that the alternatives cannot be decomposed this way, meaning some credential choices are artificially coupled, it **SHALL** stop processing and inform the user.
 
 Alternatives that do not involve any PaSO-targeted `transaction_data` entry are not subject to this requirement.
+
+A presentation request **SHALL** allow exactly one PaSO Credential to be presented:
+
+- When `credential_sets` are used, every alternative of the credential set that contains the credential query identifiers referenced by PaSO-targeted `transaction_data` entries **SHALL** contain exactly one of those identifiers, and that credential set **SHALL NOT** have `required` set to `false` ([OID4VP] Section 6.2).
+- When `credential_sets` are not used, the PaSO-targeted `transaction_data` entries **SHALL** together reference exactly one credential query identifier.
+- A credential query referenced by a PaSO-targeted `transaction_data` entry **SHALL NOT** set `multiple` to `true` ([OID4VP] Section 6.1).
+
+The credential query identifiers referenced by PaSO-targeted `transaction_data` entries therefore form a single slot without ∅: the **PaSO slot**. If a Wallet detects that a presentation request does not meet these conditions, it **SHALL** stop processing and inform the user.
 
 The Wallet **SHALL** present the PaSO-targeted alternatives to the user as independent choices, one per credential slot. For each slot the user selects one of the available credentials, or none if ∅ is present in that slot. When alternatives resolve to different `transaction_data` entries, the Wallet **SHALL** display the transaction data corresponding to the user's current credential selection. When the user changes a selection that causes a different `transaction_data` entry to apply, the Wallet **SHALL** update the displayed transaction data accordingly.
 
@@ -239,7 +247,7 @@ A presentation request **MAY** combine PaSO Credentials with non-PaSO credential
 
 #### 7.4.2 Discovery and Validation
 
-After resolution, exactly one `transaction_data` entry **SHALL** apply to the selected credential. The presentation request **MAY** contain multiple PaSO-targeted `transaction_data` entries provided they conform to the rules in Section 7.4.1.
+The user selects exactly one PaSO Credential, from the PaSO slot (Section 7.4.1). After resolution, exactly one `transaction_data` entry **SHALL** apply to that credential. The presentation request **MAY** contain multiple PaSO-targeted `transaction_data` entries provided they conform to the rules in Section 7.4.1.
 
 For the PaSO-targeted entries, the Wallet **SHALL** perform the following steps:
 
@@ -489,7 +497,7 @@ Decoded `transaction_data` entries:
 ]
 ```
 
-The four alternatives decompose into _S₁_ = {`sca_card`, `sca_account`}, _S₂_ = {`pid`, ∅}. The user independently chooses which PaSO Credential to use and whether to include the PID. When the user switches from `sca_card` to `sca_account`, the displayed transaction data updates to reflect the entry matched for that credential.
+The four alternatives decompose into _S₁_ = {`sca_card`, `sca_account`}, _S₂_ = {`pid`, ∅}. _S₁_ is the PaSO slot (Section 7.4.1). The user independently chooses which PaSO Credential to use and whether to include the PID. When the user switches from `sca_card` to `sca_account`, the displayed transaction data updates to reflect the entry matched for that credential.
 
 ### A.6 Advanced Profile — Transposability
 

@@ -14,6 +14,65 @@ Section numbers refer to the current draft.
 
 Draft-3 is compared with the published draft-2. Changes made and then superseded during the work on draft-3 are not listed; each item describes the draft-3 text.
 
+### What to change
+
+#### Wallet
+
+- **Breaking** Add the `render_mode` claim to every PaSO presentation, and report in `display_locale` the `locale` tag of the rendered entries, or `default` ([Core §6.1, §6.3](specifications/paso-core.md)).
+- **Breaking** Implement the new locale selection: one locale or the default entries for the whole consent screen. If neither is available, the entry is not compatible ([View §4](specifications/paso-view.md), [Core §7.2](specifications/paso-core.md)).
+- **Breaking** Render labels as plain text. Drop `display_type`, `mini_markdown` and `template:*` ([View §2, §3](specifications/paso-view.md)).
+- **Breaking** Accept only PNG and JPEG images, and send `Accept: image/png, image/jpeg` ([View §3](specifications/paso-view.md)).
+- **Breaking** Treat an entry with more than 10 displayed claim values as not compatible ([View §2](specifications/paso-view.md)).
+- **Breaking** Offer a dedicated consent screen for a type only as static rendering: the rulebook must have a Static Presentation section, you must implement that exact type and version, and the entry must carry no ad-hoc metadata ([View §5](specifications/paso-view.md)).
+- **Breaking** Stop accepting issuer-signed ad-hoc metadata JWTs. Accept a plain `metadata` object only from a Relying Party listed in `adhoc_metadata_clients`, only for types the signed credential metadata does not list, and only after the checks of Metadata §5.3 ([Metadata §5](specifications/proof/paso-proof-metadata.md)).
+- **Breaking** Reject a request that would let the user present more than one PaSO Credential: more than one PaSO credential query per alternative, an optional PaSO credential set, or `multiple` set to `true` ([Core §7.3, §7.4.1](specifications/paso-core.md)).
+- **Breaking** When locale selection fails or no encryption key is available, treat the entry as not compatible and fall back to the next entry, instead of excluding the credential ([Core §7.5](specifications/paso-core.md)).
+- **Breaking** For types that reference the Default risk profile, include an `amr` envelope; the profile now has eight required signals ([Default](rulebooks/risk_profiles/Default.md)).
+- **New** Optionally render statically the types whose rulebook you implement and that have a Static Presentation section, such as Payment ([View §5](specifications/paso-view.md), [Payment §3](rulebooks/transaction_data/Payment.md)). Replay of a static presentation must reproduce your Wallet version's presentation ([Log §5](specifications/proof/paso-proof-log.md)).
+- **New** In the simple profile, let the user choose when several credentials match ([Core §7.3](specifications/paso-core.md)).
+- **Clarified** Apply rulebook risk signal profiles, enumerations and encryption requirements only for rulebooks you implement; otherwise follow the signed credential metadata ([Core §5.5](specifications/paso-core.md), [Risk Signals §4.1, §7.2](specifications/proof/paso-proof-risk-signals.md)).
+- **Clarified** Always include `metadata_integrity`. Compute `transaction_data_hash` over the entry's base64url string as received, with `sha-256` unless the rulebook names another algorithm ([Core §6.1](specifications/paso-core.md)).
+- **Clarified** `amr` no longer has to cover two categories of authentication elements; it does not establish SCA ([Core §4.2](specifications/paso-core.md), [Registry](specifications/proof/paso-proof-risk-signal-registry.md)).
+- **Clarified** Display metadata for SD-JWT VC credentials is now defined in Metadata §9; SVG resources are gone ([Metadata §9](specifications/proof/paso-proof-metadata.md)).
+
+#### Relying Party
+
+- **Breaking** Build requests that allow exactly one PaSO Credential: every alternative contains exactly one PaSO-referenced credential query, the PaSO credential set is not optional, and no such query sets `multiple` to `true` ([Core §7.3, §7.4.1](specifications/paso-core.md)).
+- **Breaking** Stop sending issuer-signed ad-hoc metadata JWTs. To supply ad-hoc metadata, send a plain `metadata` object; you must be listed in `adhoc_metadata_clients`, and the type must not be published in the signed credential metadata. The object must follow the label and locale rules of Metadata §3.3 ([Metadata §5](specifications/proof/paso-proof-metadata.md)).
+- **Breaking** Keep every entry within 10 displayed claim values, and use only PNG or JPEG images ([View §2, §3](specifications/paso-view.md)).
+- **Breaking** The Generic and Mandate transaction data types no longer exist. Use ad-hoc metadata or a rulebook of your own ([Metadata §5](specifications/proof/paso-proof-metadata.md)).
+- **Breaking** If you forward proof packages through the proposed endpoint, send a signed JWT (`typ` `paso-proof-package+jwt`, your chain in `x5c`), and preferably wrap it in a JWE. Plain JSON is no longer accepted. A payment scheme or rulebook may define its own forwarding mechanism instead ([Verify §4](specifications/proof/paso-proof-verify.md)).
+- **New** A type you use only with ad-hoc metadata needs no rulebook, and its ad-hoc metadata may carry risk signal configuration ([Core §5.1](specifications/paso-core.md), [Risk Signals §4.1](specifications/proof/paso-proof-risk-signals.md)).
+- **Clarified** Keep ad-hoc metadata consistent with any rulebook for its type ([Core §5.5](specifications/paso-core.md)).
+- **Clarified** In versioned requests, a newer entry that fails locale selection or lacks an encryption key now falls back to the older entry ([Core §7.5](specifications/paso-core.md)).
+
+#### Attestation Provider
+
+- **Breaking** Publish `ui_labels` for every transaction data type ([Metadata §3, §3.2](specifications/proof/paso-proof-metadata.md)).
+- **Breaking** Give every `display` and `ui_labels` array of a type the same set of locales, with a default entry in all or none of them. Do not use `default` as a `locale` value. Declare at most 10 claims with a `display` array ([Metadata §3.3](specifications/proof/paso-proof-metadata.md)).
+- **Breaking** Remove `display_type`, `mini_markdown` and `template:*` from metadata, and SVG templates and images from display resources ([View §2, §3](specifications/paso-view.md)).
+- **Breaking** Issuer-signed ad-hoc metadata JWTs are no longer accepted. Authorise Relying Parties through `adhoc_metadata_clients` in the signed credential metadata instead ([Metadata §5.2](specifications/proof/paso-proof-metadata.md)).
+- **New** `transaction_data_types` may be empty or omit types. Types you do not publish are reserved for the Relying Parties you authorise ([Metadata §3, §5.2](specifications/proof/paso-proof-metadata.md)).
+- **Clarified** Keep the signed credential metadata consistent with the rulebook of each published type ([Core §5.5](specifications/paso-core.md)).
+- **Clarified** For SD-JWT VC credentials, integrity-verified Type Metadata may be used for display ([Metadata §9](specifications/proof/paso-proof-metadata.md)).
+
+#### Authorizing Party
+
+- **Breaking** Require exactly one PaSO presentation in the `vp_token`. Find the matched entry by the presentation's credential query and the hash, without requiring it to be the first-match entry. Accept `sha-256`, or the algorithm the rulebook names ([Verify §3](specifications/proof/paso-proof-verify.md)).
+- **Breaking** Check `render_mode`, check `display_locale` according to the rendering mode, and always check `metadata_integrity` ([Verify §3](specifications/proof/paso-proof-verify.md)).
+- **Breaking** Verify ad-hoc metadata: the client is listed in `adhoc_metadata_clients`, the type is not published, and the object conforms. For types used only with ad-hoc metadata, check the `payload` against that metadata ([Verify §3](specifications/proof/paso-proof-verify.md)).
+- **Breaking** Always apply the rulebook's risk signal profiles, enumerations and encryption requirements when verifying, whatever the Wallet implements ([Risk Signals §4.1, §7.2](specifications/proof/paso-proof-risk-signals.md)).
+- **Breaking** Do not treat `amr` as evidence of SCA. SCA rests on holder binding, and the `amr` check is removed. Where the Default risk profile applies, an `amr` envelope is now required ([Core §4.2](specifications/paso-core.md), [Verify §3](specifications/proof/paso-proof-verify.md), [Default](rulebooks/risk_profiles/Default.md)).
+- **Breaking** If you expose the proposed endpoint, accept only a signed JWT or a JWE containing one. Verify the signature, `typ` and certificate chain, and respond `401` on failure ([Verify §4](specifications/proof/paso-proof-verify.md)).
+- **Clarified** `transaction_data_hash` is computed over the entry's base64url string as received ([Core §6.1](specifications/paso-core.md)).
+
+#### Rulebook authors
+
+- **Breaking** The Generic and Mandate rulebooks are removed. Types that relied on them need their own rulebook or ad-hoc metadata ([Core §5.1](specifications/paso-core.md)).
+- **New** A rulebook may include a Static Presentation section, which becomes part of the type's immutable semantic structure. The Payment rulebook is an example ([Core §5.3](specifications/paso-core.md), [Payment §3](rulebooks/transaction_data/Payment.md)).
+- **New** A rulebook may name a hash algorithm other than `sha-256` for `transaction_data_hash` ([Core §6.1](specifications/paso-core.md)).
+- **Clarified** Obligations are stated by role. Wallets build rulebooks in and do not fetch them at runtime, and a type used only with ad-hoc metadata needs no rulebook ([Core §5.1, §5.5](specifications/paso-core.md)).
+
 ### Changes by document
 
 #### Introduction

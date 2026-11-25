@@ -110,7 +110,7 @@ The intent is that the proof captures not just *that* the user signed, but *what
 
 ### 4.2 The proof package and the Authorizing Party
 
-In a third-party flow, the relying party forwards an unmodified **proof package** — the original signed request plus the wallet's presentation — to the authorizing party. The authorizing party then independently re-verifies everything: the request signature and relying-party identity, the credential's validity and revocation status, the holder binding proof, the SCA response claims (re-hashing the transaction data and re-computing the integrity values), and conformance of the payload to the applicable rulebook. PaSO defines a standard endpoint and an optional signed-and-encrypted envelope for this hand-off.
+In a third-party flow, the relying party forwards an unmodified **proof package** — the original signed request plus the wallet's presentation — to the authorizing party. The authorizing party then independently re-verifies everything: the request signature and relying-party identity, the credential's validity and revocation status, the holder binding proof, the SCA response claims (re-hashing the transaction data and re-computing the integrity values), and conformance of the payload to the applicable rulebook. PaSO proposes a standard endpoint with a signed, optionally encrypted envelope for this hand-off; a payment scheme may define its own.
 
 The key property is **independent re-verifiability**: the authorizing party does not have to trust the relying party's word; it can reconstruct and check the evidence itself.
 
@@ -221,7 +221,7 @@ sequenceDiagram
 
 ### 7.2 Third-party flow
 
-In the third-party flow, the Relying Party is distinct from the Authorizing Party and Attestation Provider. A relying party — for example, a merchant or a merchant-side service — collects the user's consent, then forwards the unmodified proof package (the original signed request plus the wallet's presentation) to the authorizing party, which holds the trust relationship and ultimately verifies and authorizes the transaction. PaSO defines a standard ingestion endpoint and an optional signed-and-encrypted envelope for this hand-off, so the authorizing party can independently re-verify the evidence rather than trusting the relying party's word.
+In the third-party flow, the Relying Party is distinct from the Authorizing Party and Attestation Provider. A relying party — for example, a merchant or a merchant-side service — collects the user's consent, then forwards the unmodified proof package (the original signed request plus the wallet's presentation) to the authorizing party, which holds the trust relationship and ultimately verifies and authorizes the transaction. PaSO proposes a standard ingestion endpoint with a signed, optionally encrypted envelope for this hand-off; a payment scheme may define its own. Either way, the authorizing party independently re-verifies the evidence rather than trusting the relying party's word.
 
 ```mermaid
 sequenceDiagram
@@ -241,14 +241,14 @@ sequenceDiagram
     wallet ->> wallet: Produce holder binding proof (transaction_data hash, request integrity, risk signals, jti)
     wallet -->> rp: OpenID4VP response (vp_token)
     deactivate wallet
-    Note over rp,ap: Proof package forwarded (signed request + vp_token), optionally signed and encrypted
+    Note over rp,ap: Proof package forwarded (signed request + vp_token), signed, optionally encrypted
     rp ->> ap: Forward proof package
     ap ->> ap: Verify proof against original request (re-hash, integrity, risk signals, replay check, payload vs rulebook)
     ap -->> rp: Transaction result
     rp -->> user: Result
 ```
 
-**The role of payment schemes.** In the third-party flow the relying party (for example, a merchant or its payment service provider) is generally not in a direct trust or contractual relationship with the user's bank. Something has to carry the proof package from the relying party to the issuing bank that will authorize and settle the transaction — and to define how that bank should interpret and process it. This is the role of a **payment scheme**. The scheme provides the rails between the merchant side and the issuing side: it transports the proof package (the signed request plus the wallet's presentation) to the issuing bank acting as Authorizing Party, and it specifies how the bank evaluates the evidence and returns a result that the merchant side can act on. In PaSO terms, the scheme is the mechanism that realises the hand-off shown above as "forward proof package": PaSO defines the package contents, the verification procedure, and a standard ingestion endpoint, while a payment scheme (or another agreed forwarding mechanism named by the applicable Transaction Data Type Rulebook) governs how the package travels across organisational boundaries and how settlement follows. This is also why a PaSO Credential used in this flow must carry the information the scheme and the issuing bank need — such as which Authorizing Party and which payment network are responsible — so the relying party knows where to send the proof and the bank can correlate and settle it. Unlike the first-party flow, the third-party flow is not mandated by regulation; it is an opportunity to use the wallet's capabilities to enhance existing payment and checkout journeys.
+**The role of payment schemes.** In the third-party flow the relying party (for example, a merchant or its payment service provider) is generally not in a direct trust or contractual relationship with the user's bank. Something has to carry the proof package from the relying party to the issuing bank that will authorize and settle the transaction — and to define how that bank should interpret and process it. This is the role of a **payment scheme**. The scheme provides the rails between the merchant side and the issuing side: it transports the proof package (the signed request plus the wallet's presentation) to the issuing bank acting as Authorizing Party, and it specifies how the bank evaluates the evidence and returns a result that the merchant side can act on. In PaSO terms, the scheme is the mechanism that realises the hand-off shown above as "forward proof package": PaSO defines the package contents and the verification procedure and proposes a standard ingestion endpoint, while a payment scheme (or another agreed forwarding mechanism named by the applicable Transaction Data Type Rulebook) governs how the package travels across organisational boundaries and how settlement follows. This is also why a PaSO Credential used in this flow must carry the information the scheme and the issuing bank need — such as which Authorizing Party and which payment network are responsible — so the relying party knows where to send the proof and the bank can correlate and settle it. Unlike the first-party flow, the third-party flow is not mandated by regulation; it is an opportunity to use the wallet's capabilities to enhance existing payment and checkout journeys.
 
 ## 8 Design principles, in summary
 
@@ -299,7 +299,7 @@ PaSO is technology that helps a payment service provider *implement* these requi
 
 **Requirement.** The RTS requires protection of the confidentiality and integrity of the payment service user's personalised security credentials and of authentication data, across creation, transmission, and storage.
 
-**How PaSO helps.** The signing key never leaves the wallet's secure cryptographic environment, so the core credential material is not transmitted at all. The signed-and-encrypted proof package protects authentication data in transit between the relying party and the authorizing party. Signed credential metadata protects the integrity of the descriptive data the wallet relies on to display a transaction, and the proof can reference exactly which metadata was in force via an integrity value.
+**How PaSO helps.** The signing key never leaves the wallet's secure cryptographic environment, so the core credential material is not transmitted at all. The proof package envelope is signed and, as recommended, encrypted, protecting authentication data in transit between the relying party and the authorizing party. Signed credential metadata protects the integrity of the descriptive data the wallet relies on to display a transaction, and the proof can reference exactly which metadata was in force via an integrity value.
 
 ### 9.6 Auditability and dispute resolution
 
@@ -316,5 +316,5 @@ PaSO is technology that helps a payment service provider *implement* these requi
 | Dynamic linking to amount and payee | PSD2 Art. 97(2); SCA-RTS Art. 5 | Signed hash of the exact transaction data; any change invalidates the proof; re-checked by the authorizing party |
 | Integrity of the authenticated request | SCA-RTS Art. 5(1) | Signed presentation request plus a recorded request-integrity value |
 | Informed consent / faithful display | PSD2; EBA Opinion | Generic metadata-driven rendering; mandatory display before confirmation; recorded display locale |
-| Confidentiality/integrity of credentials and data | SCA-RTS Arts. 22–27 | Keys confined to secure hardware; signed-and-encrypted proof package; signed credential metadata |
+| Confidentiality/integrity of credentials and data | SCA-RTS Arts. 22–27 | Keys confined to secure hardware; signed, optionally encrypted proof package; signed credential metadata |
 | Provider's burden of proof in disputes | PSD2 Arts. 72, 97 | Re-verifiable proof package and replayable wallet-side transaction log |

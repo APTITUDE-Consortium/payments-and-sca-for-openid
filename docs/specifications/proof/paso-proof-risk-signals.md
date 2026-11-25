@@ -238,7 +238,7 @@ The issuer publishes one or more encryption keys under the `risk_signals_encrypt
 
 When multiple keys are published, the Wallet **SHALL** select one and reference its key identifier in the encrypted structure's header.
 
-If encryption is required and no integrity-verified issuer encryption key is available, the Wallet **SHALL NOT** send the risk signals in plaintext. The Wallet **SHALL** treat the `transaction_data` entry as incompatible, cease processing it, and inform the user.
+If encryption is required and no integrity-verified issuer encryption key is available, the Wallet **SHALL NOT** send the risk signals in plaintext. The `transaction_data` entry is then not compatible with the credential ([PaSO Core] Section 7.5).
 
 ### 7.4 Encryption Procedure
 

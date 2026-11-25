@@ -10,7 +10,7 @@ This document defines how an Authorizing Party receives, verifies, and authorize
 
 After the Wallet produces a presentation response, the Relying Party forwards the proof package to the Authorizing Party. This module defines what the proof package contains, how the Authorizing Party verifies it, and a standard HTTP endpoint for receiving it.
 
-How the Relying Party obtains the Authorizing Party's public key and endpoint URI is out of scope of this document.
+How the Relying Party obtains the Authorizing Party's public key and endpoint URI, and how the Authorizing Party establishes trust in the certificate of the party forwarding the proof package, are out of scope of this document.
 
 ### 1.2 Requirements Notation
 
@@ -23,7 +23,7 @@ The Relying Party **SHALL** forward the following to the Authorizing Party:
 1. **The signed [OID4VP] Authorization Request** ([JAR] Request Object) as sent to the Wallet, in its compact-serialised JWT form.
 2. **The full `vp_token`** as received from the Wallet.
 
-The Relying Party **SHALL NOT** modify either artefact. Section 4 defines a standard endpoint for forwarding; the applicable Transaction Data Type Rulebook **MAY** define alternative forwarding mechanisms.
+The Relying Party **SHALL NOT** modify either artefact. Section 4 proposes a standard endpoint for forwarding; a payment scheme or the applicable Transaction Data Type Rulebook **MAY** define alternative forwarding mechanisms.
 
 ## 3 Verification Procedure
 
@@ -63,16 +63,18 @@ If any check fails, the Authorizing Party **SHALL** reject the transaction.
 
 ## 4 Transaction Ingestion Endpoint
 
-The Authorizing Party **MAY** expose an HTTP endpoint for receiving proof packages.
+This section proposes an HTTP endpoint that an Authorizing Party **MAY** expose for receiving proof packages. It is a proposal for interoperable forwarding, not the only mechanism. In the third-party flow, forwarding is typically governed by a payment scheme, and a payment scheme or the applicable Transaction Data Type Rulebook **MAY** define a different mechanism. Sections 2 and 3 apply whichever mechanism is used.
+
+In this section, the sender is the Relying Party or a party forwarding the proof package on its behalf.
 
 ### 4.1 Request
 
-The Relying Party **SHALL** send an HTTP `POST` request to the endpoint with:
+The sender **SHALL** send an HTTP `POST` request to the endpoint with:
 
-- **Content-Type**: `application/jose` when encrypted per Section 4.3, or `application/json` otherwise.
-- **Body**: The proof package as defined below.
+- **Content-Type**: `application/jose`.
+- **Body**: the envelope defined in Section 4.3, which is a signed JWT or a JWE containing it.
 
-When the body is `application/json`, it **SHALL** have the following structure:
+The payload of the signed JWT **SHALL** be a JSON object with the following structure:
 
 ```json
 {
@@ -90,19 +92,26 @@ The endpoint **SHALL** respond with:
 
 - `200 OK` — the transaction was accepted.
 - `400 Bad Request` — the proof package is malformed or a verification check failed. The response body **SHOULD** be a JSON object with an `error` field describing the failure.
-- `401 Unauthorized` — the Relying Party could not be authenticated.
+- `401 Unauthorized` — the envelope signature could not be verified, its `typ` is not `paso-proof-package+jwt`, or the Authorizing Party does not trust the certificate chain in its `x5c` header parameter (Section 4.3).
 - `409 Conflict` — the `jti` has already been processed (replay).
 
-### 4.3 Encryption
+### 4.3 Envelope
 
-The Relying Party **SHOULD** encrypt the proof package as a [JWE] compact serialisation. The JWE **SHALL** be:
+The sender **SHALL** sign the proof package and **SHOULD** encrypt it.
 
-- signed by the Relying Party using its trust chain,
-- encrypted to the Authorizing Party's public key, so that only the Authorizing Party can decrypt it.
+**Signing.** The sender **SHALL** produce a [JWS] in compact serialisation whose payload is the JSON object defined in Section 4.1. The JWS protected header **SHALL** include:
 
-The JWE payload is the JSON proof package defined in Section 4.1. The JOSE header **SHALL** include the Relying Party's certificate chain in the `x5c` parameter.
+- `alg`: the signature algorithm;
+- `typ`: the value `paso-proof-package+jwt`;
+- `x5c`: the sender's certificate chain, whose leaf certificate contains the signing key.
 
-How the Relying Party obtains the Authorizing Party's public key is out of scope of this document.
+**Encryption.** To encrypt, the sender **SHALL** nest the signed JWT in a [JWE] in compact serialisation, per [JWT] Section 5.2, encrypted to the Authorizing Party's public key so that only the Authorizing Party can decrypt it. The JWE protected header **SHALL** include `alg` (key management), `enc` (content encryption), `kid` (the Authorizing Party's key), and `cty` with the value `JWT`. When encryption is used, the sender and the Authorizing Party **SHALL** support `ECDH-ES` key agreement using the `P-256` curve with `A256GCM` content encryption, per [RFC7518], as a baseline. Other algorithms **MAY** be used when the Authorizing Party's key declares them.
+
+**Processing.** On receipt, the Authorizing Party **SHALL**:
+
+1. If the body is a JWE (five compact segments), decrypt it and take the plaintext as the signed JWT. If decryption fails, respond `400`.
+2. Verify the signed JWT's signature with the key in the leaf certificate of `x5c`, verify that `typ` is `paso-proof-package+jwt`, and verify that it trusts the `x5c` certificate chain. If any of these fails, respond `401`.
+3. Perform the verification procedure of Section 3 on the proof package in the payload. If it fails, respond `400`.
 
 ## 5 References
 
@@ -116,6 +125,9 @@ How the Relying Party obtains the Authorizing Party's public key is out of scope
 | [OID4VP]              | [OpenID for Verifiable Presentations 1.0](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html)             |
 | [JAR]                 | [RFC 9101 — JWT-Secured Authorization Request](https://www.rfc-editor.org/rfc/rfc9101.html)                                |
 | [JWE]                 | [RFC 7516 — JSON Web Encryption](https://www.rfc-editor.org/rfc/rfc7516.html)                                              |
+| [JWS]                 | [RFC 7515 — JSON Web Signature (JWS)](https://www.rfc-editor.org/rfc/rfc7515.html)                                         |
+| [JWT]                 | [RFC 7519 — JSON Web Token (JWT)](https://www.rfc-editor.org/rfc/rfc7519.html)                                             |
+| [RFC7518]             | [RFC 7518 — JSON Web Algorithms (JWA)](https://www.rfc-editor.org/rfc/rfc7518.html)                                        |
 | [SD-JWT-VC]           | [SD-JWT-based Verifiable Credentials](https://datatracker.ietf.org/doc/draft-ietf-oauth-sd-jwt-vc/)                        |
 | [mdoc]                | [ISO/IEC 18013-5:2021 — Mobile driving licence application](https://www.iso.org/standard/69084.html)                       |
 | [RFC2119]             | [RFC 2119 — Key words for use in RFCs](https://www.rfc-editor.org/rfc/rfc2119.html)                                        |

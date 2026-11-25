@@ -111,7 +111,7 @@ The sender **SHALL** sign the proof package and **SHOULD** encrypt it.
 
 1. If the body is a JWE (five compact segments), decrypt it and take the plaintext as the signed JWT. If decryption fails, respond `400`.
 2. Verify the signed JWT's signature with the key in the leaf certificate of `x5c`, verify that `typ` is `paso-proof-package+jwt`, and verify that it trusts the `x5c` certificate chain. If any of these fails, respond `401`.
-3. Perform the verification procedure of Section 3 on the proof package in the payload. If it fails, respond `400`.
+3. Perform the verification procedure of Section 3 on the proof package in the payload. If it fails, respond `400`, or `409` if the failure is a `jti` that has already been processed.
 
 ## 5 References
 

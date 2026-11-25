@@ -179,7 +179,7 @@ Otherwise, the Wallet **SHALL** use dynamic rendering.
 
 ### 5.2 Mode Selection
 
-The Wallet selects the rendering mode for each `transaction_data` entry it presents. Attestation Providers and Relying Parties cannot require or prohibit static rendering. In the advanced profile ([PaSO Core] Section 7.4), the mode applies to the entry presented for each credential and **MAY** differ between credentials. The Wallet **SHALL** report the mode used for the presented entry in the `render_mode` claim per [PaSO Core] Section 6.1.
+The Wallet selects the rendering mode for each `transaction_data` entry it presents. Attestation Providers and Relying Parties cannot require or prohibit static rendering. The mode applies to the entry presented with the selected PaSO Credential and **MAY** differ between the candidate credentials the user can choose from ([PaSO Core] Sections 7.3 and 7.4). The Wallet **SHALL** report the mode used for the presented entry in the `render_mode` claim per [PaSO Core] Section 6.1.
 
 Static rendering does not change how the credential metadata is obtained or which transaction data types a credential supports. The Wallet **SHALL** retrieve and verify the signed credential metadata per [PaSO Proof Metadata], and the `payload` **SHALL** conform both to the Transaction Data Type Rulebook and to the claims metadata of the matched transaction data type.
 

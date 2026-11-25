@@ -193,7 +193,7 @@ PaSO extends the [OID4VP] `transaction_data` entry with the following parameter:
 
 ### 7.2 Locale Selection
 
-For dynamic rendering, locale selection **SHALL** follow [PaSO View] Section 4. The Wallet renders all `display` and `ui_labels` entries from a single locale, selected with the Lookup matching scheme defined in [RFC4647] Section 3.4. If no locale in its priority list matches, it renders all of them from the default entries (entries without a `locale`). The selection **SHALL** be reported in the `display_locale` claim (Section 6.1): the selected metadata `locale` tag, or the string `default`. It reflects the entries actually rendered, not the priority-list locale that led to the selection. For static rendering, `display_locale` is determined per [PaSO View] Section 5.4.
+For dynamic rendering, locale selection **SHALL** follow [PaSO View] Section 4. The Wallet renders all `display` and `ui_labels` entries from a single locale, selected with the Lookup matching scheme defined in [RFC4647] Section 3.4. If no locale in its priority list matches, it renders all of them from the default entries (entries without a `locale`); if not every array has a default entry, the entry is not compatible with the credential ([PaSO View] Section 4). The selection **SHALL** be reported in the `display_locale` claim (Section 6.1): the selected metadata `locale` tag, or the string `default`. It reflects the entries actually rendered, not the priority-list locale that led to the selection. For static rendering, `display_locale` is determined per [PaSO View] Section 5.4.
 
 ### 7.3 Simple Profile
 
@@ -273,6 +273,12 @@ This section applies to both the simple and the advanced profile. A PaSO-targete
 A Wallet **SHALL** reject a request whose `transaction_data` entry contains an object with duplicate member names (compared after unescaping).
 
 Other PaSO specifications define further conditions under which an entry is not compatible with a credential.
+
+Failures during transaction data processing have one of three consequences:
+
+- **Request.** Where the presentation request itself is malformed or untrusted, whatever the credential, the Wallet rejects it: an unsigned request (Section 3), a request in a profile the Wallet does not support (Section 7.4), alternatives that are not transposable or do not form a single PaSO slot (Section 7.4.1), and duplicate member names (above).
+- **Credential.** Where the credential itself cannot be used, the Wallet excludes it from further processing: its signed credential metadata JWT is invalid ([PaSO Proof Metadata] Section 7).
+- **Entry.** Every other failure in processing a `transaction_data` entry for a credential, in this or any other PaSO specification, makes the entry not compatible with that credential. What follows is decided by Section 7.3 step 2 in the simple profile and by Section 7.4.2 steps 2 to 4 in the advanced profile.
 
 The following summary is informative. For each entry and candidate credential, the Wallet determines the definition of the type as follows:
 

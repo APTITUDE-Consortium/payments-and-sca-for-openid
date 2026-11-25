@@ -157,9 +157,9 @@ The Wallet **SHALL** select the locale as follows:
 
 1. For each locale in the priority list, in order, apply the Lookup matching scheme defined in [RFC4647] Section 3.4, using that locale as the language range and the available tags as the set of language tags to match against. On the first match, the matched tag is selected. The Wallet **SHALL** render every considered array from its entry with that tag and **SHALL NOT** continue.
 2. If no locale in the priority list produced a match, and every considered array has a default entry, the default entries are selected. The Wallet **SHALL** render every considered array from its default entry.
-3. Otherwise, the Wallet **SHALL** exclude the credential from further processing.
+3. Otherwise, the `transaction_data` entry is not compatible with the credential ([PaSO Core] Section 7.5).
 
-A locale-tagged match for any locale in the priority list takes precedence over the default entries. The Wallet **SHALL NOT** exclude a credential, or treat a `transaction_data` entry as not compatible, solely because the default entries were selected.
+A locale-tagged match for any locale in the priority list takes precedence over the default entries. The Wallet **SHALL NOT** treat a `transaction_data` entry as not compatible solely because the default entries were selected.
 
 The Wallet **SHALL** report the selection in the `display_locale` holder binding proof claim per [PaSO Core]. The reported value is the selected tag as it appears in the metadata `locale` values, or the string `default` if the default entries were selected. It is not the priority-list locale used as the language range.
 
@@ -258,4 +258,4 @@ The following examples apply Section 4 to the transaction data type of [PaSO Pro
 
 In the third row, German is shown although the first preference, `fr`, is unavailable: a locale-tagged match anywhere in the priority list takes precedence over the default entries. In the fourth row, the user sees the issuer's fallback text, and the proof says so: `display_locale` is `default`, not `fr`.
 
-If the same metadata carried no default entries, the fourth row would produce no selection, and the Wallet would exclude the credential.
+If the same metadata carried no default entries, the fourth row would produce no selection, and the `transaction_data` entry would not be compatible with the credential.

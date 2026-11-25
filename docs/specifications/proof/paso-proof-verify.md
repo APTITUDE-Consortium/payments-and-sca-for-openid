@@ -27,7 +27,7 @@ The Relying Party **SHALL NOT** modify either artefact. Section 4 proposes a sta
 
 ## 3 Verification Procedure
 
-Upon receiving the proof package, the Authorizing Party **SHALL** perform the following checks. Step 1 applies once. Steps 2 to 6 apply to each PaSO presentation, that is, each presentation in the `vp_token` under a credential query identifier listed in the `credential_ids` of a PaSO-targeted `transaction_data` entry ([PaSO Core] Section 7.3).
+Upon receiving the proof package, the Authorizing Party **SHALL** perform the following checks. Step 1 applies once. Steps 2 to 6 apply to the PaSO presentation, that is, the presentation in the `vp_token` under a credential query identifier listed in the `credential_ids` of a PaSO-targeted `transaction_data` entry ([PaSO Core] Section 7.3). If the `vp_token` contains no such presentation, or more than one, the check fails ([PaSO Core] Section 7.4.1).
 
 1. **Request verification**: Verify the signed Authorization Request JWT signature. Verify the Relying Party's identity from the request.
 

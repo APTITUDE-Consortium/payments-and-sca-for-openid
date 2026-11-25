@@ -134,7 +134,7 @@ Where neither source references a profile and neither enumerates a signal, the e
 
 A Wallet that does not implement the rulebook relies on the signed credential metadata, which the Attestation Provider keeps consistent with the rulebook per [PaSO Core] Section 5.5. When resolving the effective signal set for verification (Section 6), the Authorizing Party **SHALL** include the profiles and signals that the rulebook references or enumerates, regardless of what the Wallet implements.
 
-Where the `transaction_data` entry carries ad-hoc metadata valid per [PaSO Proof Metadata] Section 5.3, the `risk_signal_profiles`, `risk_signals`, and `encrypted` members that this section and Section 7.2 take from the signed credential metadata are taken from that `metadata` object instead, per [PaSO Proof Metadata] Section 5.4. The issuer encryption key is unaffected and is obtained per Section 7.3.
+Where the `transaction_data` entry carries ad-hoc metadata valid per [PaSO Proof Metadata] Section 5.3, the type is not listed in the signed credential metadata ([PaSO Proof Metadata] Section 5.1). The `risk_signal_profiles`, `risk_signals`, and `encrypted` members that this section and Section 7.2 take from the signed credential metadata are therefore taken from that `metadata` object, per [PaSO Proof Metadata] Section 5.4. The rulebook sources apply as for any other entry. The issuer encryption key is obtained from the signed credential metadata per Section 7.3.
 
 ### 4.2 Wallet Processing
 

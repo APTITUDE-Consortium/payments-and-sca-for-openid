@@ -6,6 +6,8 @@ This document is a conceptual introduction to **PaSO (Payments and SCA for OpenI
 
 It is deliberately non-normative. Where the specifications use precise requirement language ("MUST", "SHALL", etc.), this introduction paraphrases and simplifies. For exact rules, always refer to the specification documents.
 
+Changes between drafts, by role and by document, are listed in the [Changelog](changelog.md).
+
 ## 1 Background
 
 ### 1.1 Two worlds that need to meet

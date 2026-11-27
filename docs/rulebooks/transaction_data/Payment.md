@@ -17,6 +17,8 @@ Attestation Providers **SHALL** use the claims exactly as specified below. Attes
 | `["payee", "logo"]`           | false       | `image`               | yes       | Logo of the Payee. **MAY** be omitted in static rendering (Section 3).                                               |
 | `["payee", "logo#integrity"]` | false       | _(text)_              | no        | [W3C.SRI] hash of the logo content. **MUST** be present if `payee.logo` is a resolvable URL.                         |
 
+The `display` column states whether the claim carries a `display` array where an Attestation Provider supplies `claims` metadata. It does not govern what the Wallet shows: this type is rendered statically, and Section 3 defines which claims are displayed.
+
 ## 2 Authorizing Party Verification
 
 In addition to the verification procedure defined in [PaSO Proof Verify], the Authorizing Party verifies the following for this transaction data type:

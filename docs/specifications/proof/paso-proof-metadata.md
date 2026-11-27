@@ -38,9 +38,11 @@ The Attestation Provider **MAY** serve one or more locales per signed JWT. The A
 The credential metadata for a PaSO Credential **SHALL** include the following parameter:
 
 - **`transaction_data_types`**: **REQUIRED** (object). An object where each key is a transaction data type identifier following the `urn:paso:sca:<domain>:<suffix>:<version>` structure defined in [PaSO Core] Section 5.2, and each value is an object containing:
-  - **`claims`**: **REQUIRED**. Array of claim metadata objects per Section 3.1.
-  - **`ui_labels`**: **REQUIRED**. Object providing localised strings for the consent UI per Section 3.2.
+  - **`claims`**: **REQUIRED**, except as noted below. Array of claim metadata objects per Section 3.1.
+  - **`ui_labels`**: **REQUIRED**, except as noted below. Object providing localised strings for the consent UI per Section 3.2.
   - Additional parameters **MAY** be defined and used. The Wallet **MUST** ignore any unrecognised parameters.
+
+For a transaction data type whose Transaction Data Type Rulebook contains a Static Presentation section, `claims` and `ui_labels` are **OPTIONAL**, and the value **MAY** be an empty object. Such a type is always rendered statically from its rulebook; the Wallet ignores `claims` and `ui_labels` for it ([PaSO View] Section 5.2), and Sections 3.1 to 3.3 do not apply to it. Listing the type declares that the credential supports it.
 
 The `transaction_data_types` object **MAY** be empty and **MAY** omit transaction data types that the Attestation Provider uses. A transaction data type absent from the signed credential metadata is supported by the credential only for a `transaction_data` entry that carries ad-hoc metadata valid per Section 5.3; a `transaction_data` entry of such a type without a `metadata` parameter is not supported by the credential for the purposes of [PaSO Core] Section 7. Where `transaction_data_types` is empty, locale selection per [PaSO View] Section 4 for the credential metadata, as required in Sections 4 and 6, **SHALL** be treated as succeeding.
 
@@ -52,7 +54,7 @@ If, during issuance, the Wallet determines that a credential is a PaSO Credentia
 
 ### 3.1 Claims Metadata
 
-Each entry in `transaction_data_types` **MUST** supply metadata for each claim of the transaction data payload using the `claims` parameter. Each claim metadata object uses the structure defined in [OID4VCI] Appendix B.2, with the following differences:
+Each entry in `transaction_data_types` for a type rendered dynamically **MUST** supply metadata for each claim of the transaction data payload using the `claims` parameter. Each claim metadata object uses the structure defined in [OID4VCI] Appendix B.2, with the following differences:
 
 - The `path` parameter resolves against the `transaction_data` `payload` object, not against the credential itself.
 - A `value_type` parameter (string) **MAY** be added to claim objects that have a `display` array. It indicates how the Wallet **SHALL** format the claim value for display. If omitted, the value is treated as plain text and **MUST** be a string. The `value_type` parameter **MUST NOT** be used on claims without a `display` array. The set of supported value types is defined by the applicable Transaction Data Type Rulebook or by other PaSO specifications.
@@ -60,7 +62,7 @@ Each entry in `transaction_data_types` **MUST** supply metadata for each claim o
 
 Claims that are relevant to the user's consent **MUST** include a `display` array with entries for the locales served in that signed JWT. Claims without a `display` array **MUST** be internal values irrelevant to the user's consent.
 
-The `display` entries and `value_type` drive dynamic rendering per [PaSO View]. The applicable Transaction Data Type Rulebook defines the semantic meaning of each claim. In static rendering per [PaSO View] Section 5, the Wallet uses its own labels in place of the `display` entries, as constrained by the Static Presentation section of the rulebook.
+The `display` entries and `value_type` drive dynamic rendering per [PaSO View]. The applicable Transaction Data Type Rulebook defines the semantic meaning of each claim. In static rendering per [PaSO View] Section 5, the Wallet ignores the `display` entries and uses the strings of the Static Presentation section of the rulebook.
 
 ### 3.2 UI Labels
 
@@ -74,13 +76,13 @@ The following UI element identifiers are defined by this specification:
 - **`affirmative_action_label`**: Label for the confirmation action (e.g., "Confirm Payment").
 - **`denial_action_label`**: Label for the denial action. If absent, the Wallet **SHALL** provide its own.
 - **`transaction_title`**: Title for the consent screen. If absent, the Wallet **MAY** provide its own.
-- **`security_hint`**: A security hint displayed to the user. When present, the Wallet **SHALL** display it exactly as provided and **SHALL NOT** alter or remove it.
+- **`security_hint`**: A security hint displayed to the user. When present, the Wallet **SHALL** display it in dynamic rendering exactly as provided and **SHALL NOT** alter or remove it.
 
 All `ui_labels` values are subject to the label constraints defined in Section 3.3.
 
 Additional UI element identifiers **MAY** be defined by Transaction Data Type Rulebooks or other PaSO specifications. The Wallet **SHALL** ignore any unrecognised UI element identifiers.
 
-As with claims, the applicable Transaction Data Type Rulebook defines the semantic meaning of each UI element identifier. In static rendering per [PaSO View] Section 5, the Wallet uses its own labels in place of the `ui_labels` entries, as constrained by the Static Presentation section of the rulebook. The `security_hint` is an exception: it **SHALL** always be displayed exactly as provided, per [PaSO View] Section 5.3.
+As with claims, the applicable Transaction Data Type Rulebook defines the semantic meaning of each UI element identifier. In static rendering per [PaSO View] Section 5, the Wallet ignores the `ui_labels` entries, including the `security_hint`, and uses the strings of the Static Presentation section of the rulebook.
 
 ### 3.3 Label and Structural Constraints
 
@@ -292,6 +294,8 @@ A `credential_configurations_supported` entry with `credential_metadata_uri`:
 
 ### A.2 Signed Credential Metadata JWT Payload
 
+The credential supports two transaction data types. Payment is rendered statically from its rulebook, so its entry carries no display metadata ([PaSO View] Section 5.2). The issuer-defined transfer type is rendered dynamically from the metadata shown.
+
 ```json
 {
   "iss": "https://issuer.bank.example",
@@ -320,7 +324,8 @@ A `credential_configurations_supported` entry with `credential_metadata_uri`:
       }
     ],
     "transaction_data_types": {
-      "urn:paso:sca:global:payment:1": {
+      "urn:paso:sca:global:payment:1": {},
+      "urn:paso:sca:com.example.bank:transfer:1": {
         "claims": [
           {
             "path": ["transaction_id"],
@@ -350,12 +355,12 @@ A `credential_configurations_supported` entry with `credential_metadata_uri`:
         ],
         "ui_labels": {
           "transaction_title": [
-            { "locale": "en", "value": "Confirm Payment" },
-            { "locale": "de", "value": "Zahlung bestätigen" }
+            { "locale": "en", "value": "Confirm Transfer" },
+            { "locale": "de", "value": "Überweisung bestätigen" }
           ],
           "affirmative_action_label": [
-            { "locale": "en", "value": "Pay" },
-            { "locale": "de", "value": "Bezahlen" }
+            { "locale": "en", "value": "Transfer" },
+            { "locale": "de", "value": "Überweisen" }
           ]
         }
       }
@@ -379,7 +384,7 @@ A decoded `transaction_data` entry carrying ad-hoc metadata, in a signed Authori
 
 ```json
 {
-  "type": "urn:paso:sca:global:payment:1",
+  "type": "urn:paso:sca:com.example.bank:transfer:1",
   "credential_ids": ["bank_card"],
   "payload": {
     "transaction_id": "89d0a218-7f52-4dd0-b503-9b0146bfb0ef",
@@ -419,8 +424,8 @@ A decoded `transaction_data` entry carrying ad-hoc metadata, in a signed Authori
     ],
     "ui_labels": {
       "affirmative_action_label": [
-        { "locale": "en", "value": "Confirm Payment" },
-        { "locale": "de", "value": "Zahlung bestätigen" }
+        { "locale": "en", "value": "Confirm Transfer" },
+        { "locale": "de", "value": "Überweisung bestätigen" }
       ]
     }
   }
@@ -429,7 +434,7 @@ A decoded `transaction_data` entry carrying ad-hoc metadata, in a signed Authori
 
 ### A.5 Signed Credential Metadata JWT Payload with Authorised Ad-hoc Metadata Clients
 
-A signed credential metadata JWT payload for a PaSO Credential in `mso_mdoc` format that publishes one transaction data type and authorises two Relying Parties to supply ad-hoc metadata (Section 5.2). The first is identified by DNS name; the second pins a single request-signing certificate via `x509_hash`. The ad-hoc mechanism is format-independent: the same `adhoc_metadata_clients` parameter applies to [SD-JWT-VC] credentials. Because this JWT publishes `urn:paso:sca:global:payment:1`, the authorised Relying Parties may supply ad-hoc metadata only for other types (Section 5.1).
+A signed credential metadata JWT payload for a PaSO Credential in `mso_mdoc` format that publishes one transaction data type and authorises two Relying Parties to supply ad-hoc metadata (Section 5.2). The first is identified by DNS name; the second pins a single request-signing certificate via `x509_hash`. The ad-hoc mechanism is format-independent: the same `adhoc_metadata_clients` parameter applies to [SD-JWT-VC] credentials. Because this JWT publishes `urn:paso:sca:global:payment:1`, the authorised Relying Parties may supply ad-hoc metadata only for other types (Section 5.1). Payment is rendered statically from its rulebook, so its entry carries no display metadata ([PaSO View] Section 5.2).
 
 ```json
 {
@@ -445,41 +450,7 @@ A signed credential metadata JWT payload for a PaSO Credential in `mso_mdoc` for
       { "name": "Bank Zahlungskarte", "locale": "de" }
     ],
     "transaction_data_types": {
-      "urn:paso:sca:global:payment:1": {
-        "claims": [
-          {
-            "path": ["transaction_id"],
-            "mandatory": false
-          },
-          {
-            "path": ["amount"],
-            "mandatory": true,
-            "value_type": "iso_currency_amount",
-            "display": [
-              { "locale": "en", "name": "Amount" },
-              { "locale": "de", "name": "Betrag" }
-            ]
-          },
-          {
-            "path": ["payee", "name"],
-            "mandatory": true,
-            "display": [
-              { "locale": "en", "name": "Payee" },
-              { "locale": "de", "name": "Empfänger" }
-            ]
-          },
-          {
-            "path": ["payee", "id"],
-            "mandatory": true
-          }
-        ],
-        "ui_labels": {
-          "affirmative_action_label": [
-            { "locale": "en", "value": "Pay" },
-            { "locale": "de", "value": "Bezahlen" }
-          ]
-        }
-      }
+      "urn:paso:sca:global:payment:1": {}
     },
     "adhoc_metadata_clients": [
       "x509_san_dns:bank.example",
@@ -495,7 +466,7 @@ A `transaction_data_types` entry that serves `en`, `de`, and default entries. Ev
 
 ```json
 {
-  "urn:paso:sca:global:payment:1": {
+  "urn:paso:sca:com.example.bank:transfer:1": {
     "claims": [
       {
         "path": ["transaction_id"],
@@ -527,14 +498,14 @@ A `transaction_data_types` entry that serves `en`, `de`, and default entries. Ev
     ],
     "ui_labels": {
       "affirmative_action_label": [
-        { "locale": "en", "value": "Confirm Payment" },
-        { "locale": "de", "value": "Zahlung bestätigen" },
-        { "value": "Confirm Payment" }
+        { "locale": "en", "value": "Confirm Transfer" },
+        { "locale": "de", "value": "Überweisung bestätigen" },
+        { "value": "Confirm Transfer" }
       ],
       "security_hint": [
-        { "locale": "en", "value": "Your bank will never ask you to confirm a payment by phone." },
-        { "locale": "de", "value": "Ihre Bank fordert Sie niemals telefonisch zur Bestätigung einer Zahlung auf." },
-        { "value": "Your bank will never ask you to confirm a payment by phone." }
+        { "locale": "en", "value": "Your bank will never ask you to confirm a transfer by phone." },
+        { "locale": "de", "value": "Ihre Bank fordert Sie niemals telefonisch zur Bestätigung einer Überweisung auf." },
+        { "value": "Your bank will never ask you to confirm a transfer by phone." }
       ]
     }
   }

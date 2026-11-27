@@ -10,7 +10,7 @@ This document defines how Wallets render transaction data for user consent. It s
 
 [PaSO Proof Metadata] defines how credential metadata carries transaction data type definitions, including claims with `display` arrays and `value_type` hints. This document defines how the Wallet uses that metadata to render transaction data to the user.
 
-This document defines two rendering modes. In **dynamic rendering**, the Wallet renders any transaction data type generically using the metadata alone — no transaction-type-specific logic is required. The Wallet **SHALL** be able to render every transaction data type with dynamic rendering. For transaction data types whose Transaction Data Type Rulebook contains a Static Presentation section, the Wallet **MAY** instead use **static rendering**, a purpose-built consent screen with Wallet-defined layout and labels, as defined in Section 5.
+This document defines two rendering modes. In **dynamic rendering**, the Wallet renders any transaction data type generically using the metadata alone — no transaction-type-specific logic is required. In **static rendering**, the Wallet shows a purpose-built consent screen whose content, labels and languages are defined by the Transaction Data Type Rulebook, as defined in Section 5. A transaction data type whose rulebook contains a Static Presentation section is always rendered statically. Every other transaction data type is rendered dynamically, and the Wallet **SHALL** be able to render every such type with dynamic rendering.
 
 PaSO View applies to both the simple and the advanced profile defined in [PaSO Core] Section 7. Whenever the user's credential selection changes which credential or `transaction_data` entry applies, the Wallet renders the transaction data anew per this document.
 
@@ -145,7 +145,7 @@ The Wallet **SHOULD NOT** make the URL navigable directly from the consent scree
 
 ## 4 Locale Selection
 
-This section applies to dynamic rendering, and to static rendering where a `security_hint` is present (Section 5.4).
+This section applies to dynamic rendering. Language selection in static rendering is defined in Section 5.4.
 
 The Wallet **SHALL** maintain a locale priority list: an ordered sequence of [RFC5646] language tags representing the user's language preferences, in decreasing order of priority.
 
@@ -167,39 +167,34 @@ If the transaction data cannot be presented in the Wallet's current operating la
 
 ## 5 Static Rendering
 
-### 5.1 Eligibility
+### 5.1 Applicability
 
-The Wallet **MAY** render a `transaction_data` entry with static rendering only if all of the following hold:
+If the applicable Transaction Data Type Rulebook of a `transaction_data` entry contains a Static Presentation section per [PaSO Core] Section 5.3, the Wallet **SHALL** render the entry with static rendering and **SHALL NOT** render it with dynamic rendering. Such an entry is not compatible with the credential ([PaSO Core] Section 7.5) if:
 
-1. The applicable Transaction Data Type Rulebook contains a Static Presentation section per [PaSO Core] Section 5.3.
-2. The Wallet implements that rulebook for the exact transaction data type identifier of the entry, including its version.
-3. The entry does not carry an ad-hoc `metadata` parameter per [PaSO Proof Metadata] Section 5.
+1. the Wallet does not implement that rulebook for the exact transaction data type identifier of the entry, including its version; or
+2. the entry carries an ad-hoc `metadata` parameter per [PaSO Proof Metadata] Section 5.
 
-Otherwise, the Wallet **SHALL** use dynamic rendering.
+The Wallet renders every other `transaction_data` entry with dynamic rendering. Neither the Wallet, the Attestation Provider nor the Relying Party chooses the rendering mode: it follows from the transaction data type.
 
-### 5.2 Mode Selection
+### 5.2 Credential Metadata
 
-The Wallet selects the rendering mode for each `transaction_data` entry it presents. Attestation Providers and Relying Parties cannot require or prohibit static rendering. The mode applies to the entry presented with the selected PaSO Credential and **MAY** differ between the candidate credentials the user can choose from ([PaSO Core] Sections 7.3 and 7.4). The Wallet **SHALL** report the mode used for the presented entry in the `render_mode` claim per [PaSO Core] Section 6.1.
-
-Static rendering does not change how the credential metadata is obtained or which transaction data types a credential supports. The Wallet **SHALL** retrieve and verify the signed credential metadata per [PaSO Proof Metadata], and the `payload` **SHALL** conform both to the Transaction Data Type Rulebook and to the claims metadata of the matched transaction data type.
+Static rendering does not change how the credential metadata is obtained or which transaction data types a credential supports. The Wallet **SHALL** retrieve and verify the signed credential metadata per [PaSO Proof Metadata], and the transaction data type **SHALL** be listed in its `transaction_data_types`. The Wallet **SHALL** ignore the `claims` and `ui_labels` of that type, including any `security_hint`: static rendering uses no display data supplied by the Attestation Provider. The `payload` **SHALL** conform to the Transaction Data Type Rulebook.
 
 ### 5.3 Presentation Obligations
 
-In static rendering, the Wallet **SHALL** display the content that the Static Presentation section of the rulebook requires, in the manner it requires. The Wallet uses its own layout and its own localised labels in place of the `display` entries and `ui_labels` of the credential metadata, except for the `security_hint`. The Wallet's labels **SHALL** convey the meaning defined by the rulebook clearly and unmistakably.
+In static rendering, the Wallet **SHALL** display the content that the Static Presentation section of the rulebook requires, in the manner it requires. It **SHALL** title the consent screen, label the displayed claims, and label the affirmative and denial actions with the strings that the Static Presentation section defines for the language selected per Section 5.4, exactly as defined. If the Static Presentation section defines a security hint, the Wallet **SHALL** display it exactly as defined, in that language; otherwise, the Wallet displays no security hint. The Wallet uses its own layout within the display obligations of the rulebook.
 
 The following requirements of Section 2 apply to static rendering unchanged: all content required for display **SHALL** have been displayed before the confirmation action is enabled; the Wallet **MUST NOT** truncate, elide, or otherwise shorten any label or displayed claim value; displayed claim values **SHALL** be formatted according to their `value_type` per Section 3; a `transaction_data` entry whose formatted claim values contain prohibited directional formatting characters **SHALL** be excluded; and the limit on displayed claim values applies.
 
-When the matched transaction data type provides a `security_hint`, the Wallet **SHALL** display it exactly as provided, in the entry selected per Section 5.4.
+### 5.4 Language and `display_locale`
 
-### 5.4 Locale and `display_locale`
+A statically rendered consent screen **SHALL** use a single language, selected from the languages that the Static Presentation section defines.
 
-A statically rendered consent screen **SHALL** use a single language.
+The Wallet **SHALL** select the language as follows. For each locale in its locale priority list (Section 4), in order, it applies the Lookup matching scheme defined in [RFC4647] Section 3.4, using that locale as the language range and the language tags of the Static Presentation section as the set of language tags to match against. On the first match, the matched tag is selected. If no locale in the priority list produces a match, the fallback language of the Static Presentation section is selected. The language selection never makes a `transaction_data` entry not compatible.
 
-If the matched transaction data type provides a `security_hint`, the Wallet **SHALL** perform locale selection per Section 4. If that selects the default entries, or selects a tag in whose language the Wallet cannot render its static presentation, the Wallet **SHALL** use dynamic rendering instead. Otherwise, the Wallet **SHALL** render the static presentation in the language of the selected tag and **SHALL** report the selected tag in `display_locale`.
+The Wallet **SHALL** report the selected tag, as it appears in the rulebook, in the `display_locale` holder binding proof claim per [PaSO Core]. In static rendering, `display_locale` **SHALL NOT** be `default`.
 
-If no `security_hint` is provided, the Wallet **SHALL** report in `display_locale` the [RFC5646] language tag of the language in which it rendered the static presentation.
-
-In static rendering, `display_locale` **SHALL NOT** be `default`.
+If the static presentation is not in the Wallet's current operating language, the Wallet **MAY** switch its entire user interface to that language for the duration of the PaSO presentation flow.
 
 ## 6 Security Considerations
 

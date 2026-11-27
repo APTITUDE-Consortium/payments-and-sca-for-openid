@@ -38,8 +38,9 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 #### Relying Party
 
 - **Breaking** Build requests that allow exactly one PaSO Credential: every alternative contains exactly one PaSO-referenced credential query, the PaSO credential set is not optional, and no such query sets `multiple` to `true` ([Core §7.3, §7.4.1](specifications/paso-core.md)).
-- **Breaking** Stop sending issuer-signed ad-hoc metadata JWTs. To supply ad-hoc metadata, send a plain `metadata` object; you must be listed in `adhoc_metadata_clients`, and the type must not be published in the signed credential metadata. The object must follow the label and locale rules of Metadata §3.3 ([Metadata §5](specifications/proof/paso-proof-metadata.md)).
+- **Breaking** Stop sending issuer-signed ad-hoc metadata JWTs. To supply ad-hoc metadata, send a plain `metadata` object; you must be listed in `adhoc_metadata_clients`, the type must not be published in the signed credential metadata, and its rulebook must not have a Static Presentation section, as Payment's does. The object must follow the label and locale rules of Metadata §3.3 ([Metadata §5](specifications/proof/paso-proof-metadata.md)).
 - **Breaking** Keep every entry within 10 displayed claim values, and use only PNG or JPEG images ([View §2, §3](specifications/paso-view.md)).
+- **Breaking** Build a Payment `payload` with exactly the claims of the rulebook, without additional claims ([Payment §1](rulebooks/transaction_data/Payment.md)).
 - **Breaking** The Generic and Mandate transaction data types no longer exist. Use ad-hoc metadata or a rulebook of your own ([Metadata §5](specifications/proof/paso-proof-metadata.md)).
 - **Breaking** If you forward proof packages through the proposed endpoint, send a signed JWT (`typ` `paso-proof-package+jwt`, your chain in `x5c`), and preferably wrap it in a JWE. Plain JSON is no longer accepted. A payment scheme or rulebook may define its own forwarding mechanism instead ([Verify §4](specifications/proof/paso-proof-verify.md)).
 - **New** A type you use only with ad-hoc metadata needs no rulebook, and its ad-hoc metadata may carry risk signal configuration ([Core §5.1](specifications/paso-core.md), [Risk Signals §4.1](specifications/proof/paso-proof-risk-signals.md)).
@@ -50,6 +51,7 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 
 - **Breaking** Publish `ui_labels` for every transaction data type rendered dynamically ([Metadata §3, §3.2](specifications/proof/paso-proof-metadata.md)).
 - **Breaking** List a type whose rulebook has a Static Presentation section, such as Payment, as an empty object in `transaction_data_types`, without `claims` or `ui_labels`. A Wallet that does not implement the rulebook then treats the entry as not compatible ([Metadata §3](specifications/proof/paso-proof-metadata.md), [View §5.1](specifications/paso-view.md)).
+- **Breaking** A Payment `payload` contains exactly the claims of the rulebook. You can no longer add internal claims for Payment ([Payment §1](rulebooks/transaction_data/Payment.md)).
 - **Breaking** Give every `display` and `ui_labels` array of a type the same set of locales, with a default entry in all or none of them. Do not use `default` as a `locale` value. Declare at most 10 claims with a `display` array ([Metadata §3.3](specifications/proof/paso-proof-metadata.md)).
 - **Breaking** Remove `display_type`, `mini_markdown` and `template:*` from metadata, and SVG templates and images from display resources ([View §2, §3](specifications/paso-view.md)).
 - **Breaking** Issuer-signed ad-hoc metadata JWTs are no longer accepted. Authorise Relying Parties through `adhoc_metadata_clients` in the signed credential metadata instead ([Metadata §5.2](specifications/proof/paso-proof-metadata.md)).
@@ -95,7 +97,7 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 - **New** A type used only with ad-hoc metadata needs no rulebook ([Core §5.1](specifications/paso-core.md)).
 - **New** In the simple profile, several credentials may match the credential query; the user selects one, and the display follows the selection. The simple profile's boundary is stated exactly, and every other PaSO request is in the advanced profile ([Core §7.3, §7.4](specifications/paso-core.md)).
 - **Clarified** Strong Customer Authentication is established by holder binding as required by the Credential Rulebook. `amr` is an ordinary risk signal: its presence does not establish SCA and its absence does not negate it ([Core §4.2, §6.1](specifications/paso-core.md)).
-- **Clarified** `metadata_integrity` is always present. Where ad-hoc metadata is used, it identifies the signed credential metadata JWT that authorised the Relying Party ([Core §6.1](specifications/paso-core.md)).
+- **Clarified** `metadata_integrity` is always present. For a type rendered statically, it identifies the signed credential metadata JWT that lists the type. Where ad-hoc metadata is used, it identifies the signed credential metadata JWT that authorised the Relying Party ([Core §6.1](specifications/paso-core.md)).
 - **Clarified** `transaction_data_hash` is computed over the base64url string of the entry exactly as received, without decoding. `transaction_data_hash_alg` is `sha-256` unless the rulebook names another algorithm. These claims are PaSO's representation of transaction data under OpenID4VP §8.4; PaSO does not use `transaction_data_hashes` ([Core §6.1](specifications/paso-core.md)).
 - **Clarified** Rulebook obligations are stated by role. A Wallet applies the rulebooks it has built in and otherwise relies on the signed credential metadata, which the Attestation Provider keeps consistent with the rulebook ([Core §5.5](specifications/paso-core.md)).
 - **Clarified** Entry compatibility is defined once for both profiles, including when a `payload` conforms ([Core §7.5](specifications/paso-core.md)).
@@ -119,6 +121,7 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 - **New** `transaction_data_types` may be empty or omit types. A type the Attestation Provider does not publish is reserved for the Relying Parties it authorises ([Metadata §3](specifications/proof/paso-proof-metadata.md)).
 - **Clarified** If locale selection fails for ad-hoc metadata, the entry is not compatible ([Metadata §5.4](specifications/proof/paso-proof-metadata.md)).
 - **Clarified** The Wallet may refuse issuance if locale selection fails for the returned metadata ([Metadata §4](specifications/proof/paso-proof-metadata.md)).
+- **Clarified** The Annex examples list Payment as an empty object. The examples of dynamic rendering and of ad-hoc metadata use an issuer-defined transfer type, `urn:paso:sca:com.example.bank:transfer:1` ([Metadata Annex A](specifications/proof/paso-proof-metadata.md)).
 - **Clarified** Display metadata for SD-JWT VC credentials, previously in the SD-JWT VC and SVG module, is now here: integrity-verified Type Metadata may be used for display, in the priority order of OpenID4VCI §12.2.4 ([Metadata §9](specifications/proof/paso-proof-metadata.md)).
 
 #### Verify Module
@@ -146,7 +149,8 @@ Draft-3 is compared with the published draft-2. Changes made and then superseded
 
 #### Payment rulebook
 
-- **New** Static Presentation section: Payment is always rendered statically. `amount` and `payee.name` are shown on the same screen as the affirmative action, `payee.logo` may be shown, and the other claims are not shown. The strings are defined in English (fallback), German and French, without a security hint. The examples show static renderings in English and French. References move to §4 ([Payment §3](rulebooks/transaction_data/Payment.md)).
+- **Breaking** Payment is always rendered statically. A Wallet that does not implement this rulebook cannot process Payment entries. Attestation Providers list Payment as an empty object, without `claims` or `ui_labels`. The `payload` contains exactly the claims of §1; the permission to add internal claims is removed ([Payment §1, §3](rulebooks/transaction_data/Payment.md)).
+- **New** Static Presentation section: `amount` and `payee.name` are shown on the same screen as the affirmative action, `payee.logo` may be shown, and the other claims are not shown. The strings are defined in English (fallback), German and French, without a security hint. The examples show static renderings in English and French. References move to §4 ([Payment §3](rulebooks/transaction_data/Payment.md)).
 
 #### Default risk profile
 

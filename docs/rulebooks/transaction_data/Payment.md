@@ -4,7 +4,7 @@
 
 A single payment. The User authorizes a one-time transfer of a specific amount to a specific Payee.
 
-Attestation Providers **SHALL** use the claims exactly as specified below. Attestation Providers **MAY** add additional claims without a `display` array for internal processing purposes. The order of claims in the table defines the normative claim order; Attestation Providers **SHALL** list the claims in their `claims` arrays in this order. Value types are as defined in [PaSO View].
+Attestation Providers **SHALL** use the claims exactly as specified below. Attestation Providers **MAY** add additional claims without a `display` array for internal processing purposes. The order of claims in the table defines the normative claim order; Attestation Providers **SHALL** list the claims in their `claims` arrays in this order. Value types are as defined in [PaSO View]. Because this transaction data type is always rendered statically (Section 3), its entry in the credential metadata **MAY** be an empty object; where `claims` are provided, the requirements of this paragraph apply.
 
 ## 1 Transaction Data Claims
 
@@ -27,7 +27,7 @@ In addition to the verification procedure defined in [PaSO Proof Verify], the Au
 
 ## 3 Static Presentation
 
-This transaction data type supports static rendering per [PaSO View] Section 5. This section is the Static Presentation section required by [PaSO Core] Section 5.3.
+This transaction data type is always rendered with static rendering per [PaSO View] Section 5. This section is its Static Presentation section per [PaSO Core] Section 5.3. The Wallet uses no display data from the credential metadata.
 
 ### 3.1 Displayed Claims
 
@@ -44,8 +44,23 @@ The `amount` and `payee.name` **SHALL** be visible on the same screen as the aff
 
 ### 3.2 Actions
 
-- **Affirmative action**: the User authorises a one-time payment of `amount` to the Payee identified by `payee.name`. The Wallet's label for this action **SHALL** convey that a payment is being made (e.g., "Pay").
-- **Denial action**: the User declines the payment.
+- **Affirmative action**: the User authorises a one-time payment of `amount` to the Payee identified by `payee.name`. The Wallet labels this action with the affirmative action label of Section 3.3.
+- **Denial action**: the User declines the payment. The Wallet labels this action with the denial action label of Section 3.3.
+
+### 3.3 Strings
+
+The static presentation is available in the languages `en`, `de` and `fr`. The fallback language is `en`. The Wallet **SHALL** use the following strings exactly, in the language selected per [PaSO View] Section 5.4:
+
+| Element                     | `en`            | `de`                        | `fr`                  |
+|-----------------------------|-----------------|-----------------------------|-----------------------|
+| Title of the consent screen | Confirm Payment | Zahlung bestätigen          | Confirmer le paiement |
+| Label of `amount`           | Amount          | Betrag                      | Montant               |
+| Label of `payee.name`       | Payee           | Zahlungsempfänger           | Bénéficiaire          |
+| Label of `payee.logo`       | Payee logo      | Logo des Zahlungsempfängers | Logo du bénéficiaire  |
+| Affirmative action label    | Pay             | Bezahlen                    | Payer                 |
+| Denial action label         | Cancel          | Abbrechen                   | Annuler               |
+
+No security hint is defined for this transaction data type.
 
 ## 4 References
 
@@ -81,56 +96,15 @@ Transaction data for a single payment of €49.99 to an online retailer named "A
 }
 ```
 
-Corresponding `transaction_data_types` entry in the signed credential metadata:
+Corresponding `transaction_data_types` entry in the signed credential metadata. Because this type is rendered statically, the entry needs no display metadata ([PaSO View] Section 5.2):
 
 ```json
 {
-  "urn:paso:sca:global:payment:1": {
-    "claims": [
-      { "path": ["transaction_id"] },
-      {
-        "path": ["amount"],
-        "mandatory": true,
-        "value_type": "iso_currency_amount",
-        "display": [
-          { "locale": "en", "name": "Amount" },
-          { "locale": "de", "name": "Betrag" }
-        ]
-      },
-      {
-        "path": ["payee", "name"],
-        "mandatory": true,
-        "display": [
-          { "locale": "en", "name": "Payee" },
-          { "locale": "de", "name": "Empfänger" }
-        ]
-      },
-      { "path": ["payee", "id"], "mandatory": true },
-      {
-        "path": ["payee", "logo"],
-        "value_type": "image",
-        "display": [
-          { "locale": "en", "name": "Payee logo" },
-          { "locale": "de", "name": "Logo des Empfängers" }
-        ]
-      },
-      { "path": ["payee", "logo#integrity"] }
-    ],
-    "ui_labels": {
-      "transaction_title": [
-        { "locale": "en", "value": "Confirm Payment" },
-        { "locale": "de", "value": "Zahlung bestätigen" }
-      ],
-      "affirmative_action_label": [
-        { "locale": "en", "value": "Pay" },
-        { "locale": "de", "value": "Bezahlen" }
-      ]
-    }
-  }
+  "urn:paso:sca:global:payment:1": {}
 }
 ```
 
-The Wallet renders, in claim order: **Amount** — €49.99, **Payee** — Acme Store, **Payee logo** — (resolved + SRI-verified image).
+A Wallet whose locale priority list starts with `en` renders the static presentation in English, using the strings of Section 3.3. This Wallet's layout includes the optional logo:
 
 ```text
 ┌────────────────────────────────────────────┐
@@ -158,18 +132,20 @@ The Wallet renders, in claim order: **Amount** — €49.99, **Payee** — Acme 
 └────────────────────────────────────────────┘
 ```
 
-### A.2 Static Rendering
+### A.2 Static Rendering in French
 
-The same transaction as in A.1, rendered by a Wallet that implements this rulebook and uses static rendering per [PaSO View] Section 5. The Wallet's user interface language is French, which the credential metadata does not serve. Because the metadata of A.1 provides no `security_hint`, the Wallet uses its own French labels and layout and omits the optional logo:
+The same transaction as in A.1, rendered for a User whose locale priority list is `fr`. The Lookup per [PaSO View] Section 5.4 selects `fr`, so the Wallet uses the French strings of Section 3.3. This Wallet's layout omits the optional logo:
 
 ```text
 ┌────────────────────────────────────────────┐
 │                                            │
-│            Confirmer le paiement           │
+│           Confirmer le paiement            │
 │                                            │
-│                 49,99 €                    │
+│  Montant                                   │
+│    49,99 €                                 │
 │                                            │
-│      à  Acme Store                         │
+│  Bénéficiaire                              │
+│    Acme Store                              │
 │                                            │
 ├────────────────────────────────────────────┤
 │                                            │
@@ -182,7 +158,6 @@ The corresponding SCA response claims include, among others:
 
 ```json
 {
-  "display_locale": "fr",
-  "render_mode": "static"
+  "display_locale": "fr"
 }
 ```

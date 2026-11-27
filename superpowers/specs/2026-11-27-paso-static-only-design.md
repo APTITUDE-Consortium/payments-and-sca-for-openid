@@ -100,3 +100,6 @@ Simplify by separating the sources cleanly:
 - Exact Payment strings in en/de/fr within the §3.3 limits.
 - Whether the strings live as a table in Payment §3 or a subsection §3.3 "Strings".
 - Arrangement of Payment Annex A examples.
+## Amendment (2026-11-27, after implementation)
+
+Call 3 is replaced at the user's direction: for a type whose rulebook contains a Static Presentation section, the credential metadata entry **SHALL** be an empty object (`claims` and `ui_labels` **MUST NOT** be present). The issuer does not compensate for Wallets that lack the rulebook; such a Wallet finds no claims metadata, so the entry is not compatible (Core §7.5 condition 3). This makes the strict rule enforceable without the Wallet knowing rulebooks it does not implement. Consequence for Payment: Attestation Providers can no longer add internal payload claims; the `payload` contains exactly the rulebook's claims.

@@ -174,11 +174,13 @@ If the applicable Transaction Data Type Rulebook of a `transaction_data` entry c
 1. the Wallet does not implement that rulebook for the exact transaction data type identifier of the entry, including its version; or
 2. the entry carries an ad-hoc `metadata` parameter per [PaSO Proof Metadata] Section 5.
 
+Condition 1 needs no knowledge of rulebooks the Wallet does not implement: the Attestation Provider lists such a type in the credential metadata as an empty object, without claims metadata ([PaSO Proof Metadata] Section 3), so a Wallet that does not implement the rulebook cannot render the entry and finds it not compatible ([PaSO Core] Section 7.5).
+
 The Wallet renders every other `transaction_data` entry with dynamic rendering. Neither the Wallet, the Attestation Provider nor the Relying Party chooses the rendering mode: it follows from the transaction data type.
 
 ### 5.2 Credential Metadata
 
-Static rendering does not change how the credential metadata is obtained or which transaction data types a credential supports. The Wallet **SHALL** retrieve and verify the signed credential metadata per [PaSO Proof Metadata], and the transaction data type **SHALL** be listed in its `transaction_data_types`. The Wallet **SHALL** ignore the `claims` and `ui_labels` of that type, including any `security_hint`: static rendering uses no display data supplied by the Attestation Provider. The `payload` **SHALL** conform to the Transaction Data Type Rulebook.
+Static rendering does not change how the credential metadata is obtained or which transaction data types a credential supports. The Wallet **SHALL** retrieve and verify the signed credential metadata per [PaSO Proof Metadata], and the transaction data type **SHALL** be listed in its `transaction_data_types`. The entry for that type carries no display data ([PaSO Proof Metadata] Section 3), and the Wallet **SHALL** ignore any that is present: static rendering uses no display data supplied by the Attestation Provider, including any `security_hint`. The `payload` **SHALL** conform to the Transaction Data Type Rulebook.
 
 ### 5.3 Presentation Obligations
 

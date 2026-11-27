@@ -4,7 +4,7 @@
 
 A single payment. The User authorizes a one-time transfer of a specific amount to a specific Payee.
 
-Attestation Providers **SHALL** use the claims exactly as specified below. Attestation Providers **MAY** add additional claims without a `display` array for internal processing purposes. The order of claims in the table defines the normative claim order; Attestation Providers **SHALL** list the claims in their `claims` arrays in this order. Value types are as defined in [PaSO View]. Because this transaction data type is always rendered statically (Section 3), its entry in the credential metadata **MAY** be an empty object; where `claims` are provided, the requirements of this paragraph apply.
+The `payload` **SHALL** contain the claims exactly as specified below and no others. Value types are as defined in [PaSO View]. Because this transaction data type is always rendered statically (Section 3), Attestation Providers list it in the signed credential metadata as an empty object, without `claims` or `ui_labels` ([PaSO Proof Metadata] Section 3).
 
 ## 1 Transaction Data Claims
 
@@ -17,7 +17,7 @@ Attestation Providers **SHALL** use the claims exactly as specified below. Attes
 | `["payee", "logo"]`           | false       | `image`               | yes       | Logo of the Payee. **MAY** be omitted in static rendering (Section 3).                                               |
 | `["payee", "logo#integrity"]` | false       | _(text)_              | no        | [W3C.SRI] hash of the logo content. **MUST** be present if `payee.logo` is a resolvable URL.                         |
 
-The `display` column states whether the claim carries a `display` array where an Attestation Provider supplies `claims` metadata. It does not govern what the Wallet shows: this type is rendered statically, and Section 3 defines which claims are displayed.
+The `display` column states whether a claim is relevant to the User's consent. Section 3 defines which of these claims the Wallet displays in static rendering.
 
 ## 2 Authorizing Party Verification
 
@@ -69,6 +69,7 @@ No security hint is defined for this transaction data type.
 | Reference           | Description                                                         |
 |---------------------|---------------------------------------------------------------------|
 | [PaSO Core]         | [PaSO Core](../../specifications/paso-core.md)                               |
+| [PaSO Proof Metadata] | [PaSO Proof: Metadata Module](../../specifications/proof/paso-proof-metadata.md) |
 | [PaSO Proof Verify] | [PaSO Proof: Verify Module](../../specifications/proof/paso-proof-verify.md) |
 | [PaSO View]         | [PaSO View](../../specifications/paso-view.md)                               |
 | [W3C.SRI]           | [Subresource Integrity](https://www.w3.org/TR/SRI/)                 |

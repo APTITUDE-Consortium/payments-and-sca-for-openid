@@ -115,13 +115,18 @@ A Transaction Data Type Rulebook **SHALL** define, for each claim in the transac
 - whether the claim must be displayed to the user,
 - how the claim value is to be rendered when displayed.
 
-A Transaction Data Type Rulebook **MAY** also define the localised UI labels for the consent screen, including at minimum a label for the confirmation action.
+A Transaction Data Type Rulebook without a Static Presentation section **MAY** also define the localised UI labels for the consent screen, including at minimum a label for the confirmation action.
 
-A Transaction Data Type Rulebook **MAY** include a **Static Presentation** section, which enables static rendering of the transaction data type per [PaSO View] Section 5. A Static Presentation section **SHALL** define:
+A Transaction Data Type Rulebook **MAY** include a **Static Presentation** section. A transaction data type whose rulebook contains a Static Presentation section is always rendered with static rendering, from the rulebook alone, per [PaSO View] Section 5. A Static Presentation section **SHALL** define:
 
 - which claims **SHALL** be displayed in static rendering, and which claims **MAY** be omitted,
 - the display obligations for each displayed claim, such as prominence and completeness,
-- the meaning of the affirmative action and of the denial action.
+- the meaning of the affirmative action and of the denial action,
+- the languages in which the static presentation is available, as [RFC5646] language tags, and which of them is the fallback language,
+- for each of these languages, the title of the consent screen, the label of each displayed claim, and the labels of the affirmative and denial actions,
+- optionally, for each of these languages, a security hint.
+
+These strings are labels in the sense of [PaSO Proof Metadata] Section 3.3 and **SHALL** conform to its constraints. The title, the action labels and the security hint are subject to the maximum lengths of `transaction_title`, `affirmative_action_label`, `denial_action_label` and `security_hint` respectively; a claim label is subject to the maximum length of a claim `display` entry `name`.
 
 These definitions, including any Static Presentation section, constitute the **semantic structure** of the transaction data type. For any given type identifier, the semantic structure **SHALL** be immutable once published. Changes to the semantic structure **SHALL** require a new version of the type identifier.
 
@@ -150,8 +155,7 @@ The Wallet **SHALL** include the following claims in every PaSO Credential prese
 | Claim                       | Required    | Description                                                                                                                                                                                                                                   |
 |-----------------------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `jti`                       | yes         | A fresh, cryptographically random value with sufficient entropy per [RFC7519] Section 4.1.7. Unique per presentation. When used for SCA, serves as the Authentication Code per [PSD2].                                                        |
-| `display_locale`            | yes         | The locale of the consent screen shown to the user. For dynamic rendering, per [PaSO View] Section 4: the [RFC5646] language tag of the selected `display` and `ui_labels` entries as it appears in the metadata, or the string `default` if the default entries (entries without a `locale`) were shown. For static rendering, per [PaSO View] Section 5.4: an [RFC5646] language tag, never `default`. Enables deterministic reconstruction of which text was shown. |
-| `render_mode`               | yes         | The rendering mode used for the transaction data shown during consent: `dynamic` or `static`, per [PaSO View] Section 5.2.                                                                                                                       |
+| `display_locale`            | yes         | The locale of the consent screen shown to the user. For dynamic rendering, per [PaSO View] Section 4: the [RFC5646] language tag of the selected `display` and `ui_labels` entries as it appears in the metadata, or the string `default` if the default entries (entries without a `locale`) were shown. For static rendering, per [PaSO View] Section 5.4: the selected language tag of the Static Presentation section of the rulebook, never `default`. Enables deterministic reconstruction of which text was shown. |
 | `transaction_data_hash`     | yes         | Hash, computed with `transaction_data_hash_alg`, of the `transaction_data` entry selected for the PaSO Credential, taken over its base64url-encoded string exactly as it appears in the `transaction_data` request parameter. No base64url decoding is performed before hashing.                                                                                                                                                      |
 | `transaction_data_hash_alg` | yes         | Hash algorithm identifier, a "Hash Name String" from the IANA "Named Information Hash Algorithm" registry. **SHALL** be `sha-256`, unless the applicable Transaction Data Type Rulebook names another algorithm.                                                                                                                                                                                                |
 | `metadata_integrity`        | yes         | The [W3C.SRI] integrity value of the signed credential metadata JWT (per [PaSO Proof Metadata]) relied on during this presentation: the JWT used to display the transaction data or, where ad-hoc metadata was used, the JWT that authorised the Relying Party to supply it per [PaSO Proof Metadata] Section 5.4. |
@@ -175,7 +179,6 @@ For PaSO Credentials in [mdoc] format, the Wallet **SHALL** include device authe
 |-----------------------------|---------------|
 | `jti`                       | tstr          |
 | `display_locale`            | tstr          |
-| `render_mode`               | tstr          |
 | `transaction_data_hash`     | bstr          |
 | `transaction_data_hash_alg` | tstr          |
 | `metadata_integrity`        | tstr          |
@@ -267,7 +270,7 @@ This section applies to both the simple and the advanced profile. A PaSO-targete
 
 1. The credential matches a credential query whose identifier is listed in the entry's `credential_ids`.
 2. The entry's `type` is among the transaction data types supported by the credential.
-3. The `payload` conforms to the definition of that type. A `payload` conforms if it does not contain fields not covered by a claim `path` in the applicable claims metadata (companion `#integrity` fields are covered by the `path` of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting. Where the Wallet implements the rulebook of the `type` (Section 5.5), the `payload` conforms only if, in addition, every field it contains is declared or permitted by the rulebook.
+3. The `payload` conforms to the definition of that type. A `payload` conforms if it does not contain fields not covered by a claim `path` in the applicable claims metadata (companion `#integrity` fields are covered by the `path` of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting. Where the Wallet implements the rulebook of the `type` (Section 5.5), the `payload` conforms only if, in addition, every field it contains is declared or permitted by the rulebook. Where the rulebook of the `type` contains a Static Presentation section, the rulebook takes the place of the claims metadata in this condition: the `payload` conforms if it conforms to the rulebook ([PaSO View] Section 5.2).
 4. Every claim of the `payload` that requires resolution of an external resource with integrity verification has been resolved, and its content verified.
 
 A Wallet **SHALL** reject a request whose `transaction_data` entry contains an object with duplicate member names (compared after unescaping).
@@ -282,9 +285,9 @@ Failures during transaction data processing have one of three consequences:
 
 The following summary is informative. For each entry and candidate credential, the Wallet determines the definition of the type as follows:
 
-1. If the entry carries a `metadata` parameter, the Wallet verifies it per [PaSO Proof Metadata] Section 5.3. Invalid ad-hoc metadata makes the entry incompatible, without fallback to the stored credential metadata. Valid ad-hoc metadata is the definition of the type for this transaction: the `payload` is checked against it and, where the Wallet implements a rulebook for the `type`, also against that rulebook (condition 3). The entry is rendered dynamically ([PaSO View] Section 5.1).
-2. Otherwise, the type is supported only if the signed credential metadata lists it (condition 2). The `payload` is checked against that metadata and, where the Wallet implements it, against the rulebook (condition 3).
-3. The Wallet then selects the rendering mode: static rendering where [PaSO View] Section 5.1 permits it, and dynamic rendering from the metadata otherwise.
+1. If the entry carries a `metadata` parameter, the Wallet verifies it per [PaSO Proof Metadata] Section 5.3. Invalid ad-hoc metadata makes the entry incompatible, without fallback to the stored credential metadata. Valid ad-hoc metadata is the definition of the type for this transaction: the `payload` is checked against it and, where the Wallet implements a rulebook for the `type`, also against that rulebook (condition 3). The entry is rendered dynamically. If the rulebook of the `type` contains a Static Presentation section, the entry is not compatible ([PaSO View] Section 5.1).
+2. Otherwise, the type is supported only if the signed credential metadata lists it (condition 2). The `payload` is checked against that metadata and, where the Wallet implements it, against the rulebook (condition 3). Where the rulebook contains a Static Presentation section, the Wallet must implement that rulebook, and the `payload` is checked against the rulebook alone.
+3. The rendering mode follows from the type: static rendering where the rulebook contains a Static Presentation section, and dynamic rendering from the metadata otherwise ([PaSO View] Section 5.1).
 
 ## 8 References
 
@@ -365,7 +368,6 @@ This example assumes a risk signal profile requiring the `response_mode` and aut
   "sd_hash": "Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY",
   "jti": "deeec2b0-3bea-4477-bd5d-e3462a709481",
   "display_locale": "de",
-  "render_mode": "dynamic",
   "transaction_data_hash": "OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q",
   "transaction_data_hash_alg": "sha-256",
   "metadata_integrity": "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
@@ -396,7 +398,6 @@ CBOR diagnostic notation:
 "urn:paso:sca:1" : {
   "jti" : "deeec2b0-3bea-4477-bd5d-e3462a709481",
   "display_locale" : "de",
-  "render_mode" : "dynamic",
   "transaction_data_hash" : h'3897274100F2BD5D624D8C624104310431E75C76EF...',
   "transaction_data_hash_alg" : "sha-256",
   "metadata_integrity" : "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
@@ -421,11 +422,11 @@ CBOR diagnostic notation:
 
 ### A.4 Consent Screen
 
-How a Wallet might display the transaction from Annex A.1 with locale `en`:
+How a Wallet renders the transaction from Annex A.1 with static rendering in `en`, using the strings of the Payment Transaction Data Type Rulebook ([PaSO View] Section 5). The layout is the Wallet's own:
 
 ```
 ┌──────────────────────────────────────────┐
-│  Payment Confirmation                    │
+│  Confirm Payment                         │
 │                                          │
 │  Amount            49.99 EUR             │
 │  Payee             Shop Inc.             │

@@ -2,46 +2,46 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/changelog/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/rulebooks/risk_profiles/Default/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/rulebooks/transaction_data/Payment/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/specifications/paso-core/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/specifications/paso-view/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/specifications/proof/paso-proof-log/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/specifications/proof/paso-proof-metadata/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/specifications/proof/paso-proof-risk-signal-registry/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/specifications/proof/paso-proof-risk-signals/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
     <url>
          <loc>https://aptitude-consortium.github.io/payments-and-sca-for-openid/draft-3/specifications/proof/paso-proof-verify/</loc>
-         <lastmod>2026-11-25</lastmod>
+         <lastmod>2026-11-27</lastmod>
     </url>
 </urlset>

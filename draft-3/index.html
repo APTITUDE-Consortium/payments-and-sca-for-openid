@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1798,7 +1798,7 @@
 <li>a hash of the exact transaction data the user consented to;</li>
 <li>an integrity value over the signed request the wallet received;</li>
 <li>an integrity value over the signed credential metadata relied on — the metadata used to display the transaction or, where a Relying Party supplied ad-hoc metadata, the metadata that authorised it to do so;</li>
-<li>the locale that was actually shown to the user, whether the transaction was rendered statically or dynamically, and the wallet's version.</li>
+<li>the locale that was actually shown to the user, and the wallet's version.</li>
 </ul>
 <p>These claims are carried in the format-appropriate structure — a Key Binding JWT for SD-JWT-VC credentials, or device-signed data elements for mdoc credentials.</p>
 <p>The intent is that the proof captures not just <em>that</em> the user signed, but <em>what they were shown</em> and <em>exactly which request they acted on</em> — the elements regulation actually cares about.</p>
@@ -1814,10 +1814,10 @@
 <p>The central ideas are:</p>
 <ul>
 <li>
-<p><strong>Generic, metadata-driven rendering.</strong> Each displayable claim carries a value type (for example, a currency amount, a date, an image, a frequency code, or a URL). The wallet knows how to render each value type. Every wallet must be able to render any type this way. For highly standardised types whose rulebook allows it, such as payments, a wallet may instead use <strong>static rendering</strong> — its own purpose-built screen within the rulebook's obligations — as an optional optimisation (see Section 6).</p>
+<p><strong>Generic, metadata-driven rendering.</strong> Each displayable claim carries a value type (for example, a currency amount, a date, an image, a frequency code, or a URL). The wallet knows how to render each value type. Every wallet must be able to render any type this way. Highly standardised types whose rulebook defines a Static Presentation, such as payments, are instead always rendered with <strong>static rendering</strong> — a purpose-built screen whose content and wording the rulebook fixes (see Section 6).</p>
 </li>
 <li>
-<p><strong>Display is mandatory and faithful.</strong> Everything designated for display must be shown before the user can confirm. Parties may not use labels or hints to obscure information relevant to consent. Security hints, when provided, must be shown exactly.</p>
+<p><strong>Display is mandatory and faithful.</strong> Everything designated for display must be shown before the user can confirm. Parties may not use labels or hints to obscure information relevant to consent. Security hints are shown exactly as provided: by the issuer in dynamic rendering, by the rulebook in static rendering.</p>
 </li>
 <li>
 <p><strong>Locale selection is deterministic.</strong> The wallet selects a display locale according to defined matching rules, and records the locale it used in the proof — so it can later be shown precisely which text the user saw.</p>
@@ -1828,14 +1828,14 @@
 </ul>
 <p>This is how PaSO turns "the user consented" into "the user demonstrably saw, in their language, exactly these details, and confirmed them."</p>
 <h2 id="6-two-rendering-modes">6 Two rendering modes</h2>
-<p>A wallet provider adopting PaSO needs to know <em>how the wallet learns to render a given transaction type</em>. PaSO defines two rendering modes. Every wallet supports <strong>dynamic rendering</strong>, which the <strong>PaSO Proof: Metadata Module</strong> makes possible; <strong>static rendering</strong> is an optional optimisation on top of it for highly standardised transaction types.</p>
+<p>A wallet provider adopting PaSO needs to know <em>how the wallet learns to render a given transaction type</em>. PaSO defines two rendering modes, and the transaction type determines which one applies. Highly standardised types whose rulebook defines a Static Presentation, such as payments, are always rendered with <strong>static rendering</strong>. Every other type is rendered with <strong>dynamic rendering</strong>, which the <strong>PaSO Proof: Metadata Module</strong> makes possible and which every wallet supports.</p>
 <h3 id="61-static-rendering-optimised-ux-for-standardised-types">6.1 Static rendering: optimised UX for standardised types</h3>
-<p>For highly standardised transaction types such as payments, a wallet may show a purpose-built consent screen instead of the generic one. A Transaction Data Type Rulebook opts in with a <strong>Static Presentation</strong> section that fixes what must be shown — for a payment, the amount and the payee, in full and prominently — and what the confirmation means. Within those obligations, the wallet chooses its own layout, wording and translations.</p>
+<p>For highly standardised transaction types such as payments, the wallet shows a purpose-built consent screen instead of the generic one. A Transaction Data Type Rulebook opts in with a <strong>Static Presentation</strong> section that fixes what must be shown — for a payment, the amount and the payee, in full and prominently — what the confirmation means, and the exact wording in each language it supports, with a fallback language. Within those obligations, the wallet chooses its own layout. Nothing on the screen comes from the issuer's metadata.</p>
 <ul>
-<li><strong>Advantage:</strong> the best possible experience for the transactions users perform most often, consistent with the rest of the wallet and available in every language the wallet supports.</li>
-<li><strong>Limits:</strong> static rendering applies only to types whose rulebook defines a Static Presentation and which the wallet has implemented; transactions carrying ad-hoc metadata are always rendered dynamically.</li>
+<li><strong>Advantage:</strong> the best possible experience for the transactions users perform most often, consistent with the rest of the wallet, with the same wording in every wallet and no dependency on issuer-supplied labels.</li>
+<li><strong>Limits:</strong> a wallet must implement the rulebook to process such a type at all; such a type cannot be supplied with ad-hoc metadata; and the screen is available only in the rulebook's languages.</li>
 </ul>
-<p>Static rendering is an optimisation on top of dynamic rendering, not a replacement for it. The wallet still retrieves and verifies the signed credential metadata, still applies PaSO View's safeguards — everything required must be shown before confirmation, nothing may be truncated — and records in the proof that it rendered statically (<code>render_mode</code>), so the screen can be reconstructed later.</p>
+<p>Static rendering does not bypass the metadata or the safeguards. The wallet still retrieves and verifies the signed credential metadata, which declares that the credential supports the type, still applies PaSO View's safeguards — everything required must be shown before confirmation, nothing may be truncated — and records the language shown in the proof, so the screen can be reconstructed later.</p>
 <h3 id="62-dynamic-rendering-metadata-driven">6.2 Dynamic rendering: metadata-driven</h3>
 <p>In dynamic rendering, the wallet does not hard-code any transaction type. Instead, it relies on the mechanisms of the <strong>PaSO Proof: Metadata Module</strong> together with <strong>PaSO View</strong>:</p>
 <ul>
@@ -2091,10 +2091,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.footer", "navigation.sections"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.footer", "navigation.sections"], "search": "assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>

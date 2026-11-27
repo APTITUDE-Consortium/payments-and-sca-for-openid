@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -780,10 +780,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#51-eligibility" class="md-nav__link">
+  <a href="#51-applicability" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5.1 Eligibility
+        5.1 Applicability
       
     </span>
   </a>
@@ -791,10 +791,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#52-mode-selection" class="md-nav__link">
+  <a href="#52-credential-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5.2 Mode Selection
+        5.2 Credential Metadata
       
     </span>
   </a>
@@ -813,10 +813,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#54-locale-and-display_locale" class="md-nav__link">
+  <a href="#54-language-and-display_locale" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5.4 Locale and display_locale
+        5.4 Language and display_locale
       
     </span>
   </a>
@@ -1274,10 +1274,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#51-eligibility" class="md-nav__link">
+  <a href="#51-applicability" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5.1 Eligibility
+        5.1 Applicability
       
     </span>
   </a>
@@ -1285,10 +1285,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#52-mode-selection" class="md-nav__link">
+  <a href="#52-credential-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5.2 Mode Selection
+        5.2 Credential Metadata
       
     </span>
   </a>
@@ -1307,10 +1307,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#54-locale-and-display_locale" class="md-nav__link">
+  <a href="#54-language-and-display_locale" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5.4 Locale and display_locale
+        5.4 Language and display_locale
       
     </span>
   </a>
@@ -1459,7 +1459,7 @@
 <h2 id="1-introduction">1 Introduction</h2>
 <h3 id="11-overview">1.1 Overview</h3>
 <p>[PaSO Proof Metadata] defines how credential metadata carries transaction data type definitions, including claims with <code>display</code> arrays and <code>value_type</code> hints. This document defines how the Wallet uses that metadata to render transaction data to the user.</p>
-<p>This document defines two rendering modes. In <strong>dynamic rendering</strong>, the Wallet renders any transaction data type generically using the metadata alone — no transaction-type-specific logic is required. The Wallet <strong>SHALL</strong> be able to render every transaction data type with dynamic rendering. For transaction data types whose Transaction Data Type Rulebook contains a Static Presentation section, the Wallet <strong>MAY</strong> instead use <strong>static rendering</strong>, a purpose-built consent screen with Wallet-defined layout and labels, as defined in Section 5.</p>
+<p>This document defines two rendering modes. In <strong>dynamic rendering</strong>, the Wallet renders any transaction data type generically using the metadata alone — no transaction-type-specific logic is required. In <strong>static rendering</strong>, the Wallet shows a purpose-built consent screen whose content, labels and languages are defined by the Transaction Data Type Rulebook, as defined in Section 5. A transaction data type whose rulebook contains a Static Presentation section is always rendered statically. Every other transaction data type is rendered dynamically, and the Wallet <strong>SHALL</strong> be able to render every such type with dynamic rendering.</p>
 <p>PaSO View applies to both the simple and the advanced profile defined in [PaSO Core] Section 7. Whenever the user's credential selection changes which credential or <code>transaction_data</code> entry applies, the Wallet renders the transaction data anew per this document.</p>
 <h3 id="12-requirements-notation">1.2 Requirements Notation</h3>
 <p>The key words "<strong>MUST</strong>", "<strong>MUST NOT</strong>", "<strong>REQUIRED</strong>", "<strong>SHALL</strong>", "<strong>SHALL NOT</strong>", "<strong>SHOULD</strong>", "<strong>SHOULD NOT</strong>", "<strong>RECOMMENDED</strong>", "<strong>MAY</strong>", and "<strong>OPTIONAL</strong>" in this document are to be interpreted as described in [RFC2119] and [RFC8174] when, and only when, they are written in all capital letters.</p>
@@ -1573,7 +1573,7 @@ The Wallet **SHOULD NOT** make the URL navigable directly from the consent scree
 </table>
 
 <h2 id="4-locale-selection">4 Locale Selection</h2>
-<p>This section applies to dynamic rendering, and to static rendering where a <code>security_hint</code> is present (Section 5.4).</p>
+<p>This section applies to dynamic rendering. Language selection in static rendering is defined in Section 5.4.</p>
 <p>The Wallet <strong>SHALL</strong> maintain a locale priority list: an ordered sequence of [RFC5646] language tags representing the user's language preferences, in decreasing order of priority.</p>
 <p>The Wallet <strong>SHALL</strong> render all <code>display</code> entries and <code>ui_labels</code> entries of a transaction either from a single locale or entirely from default entries (entries without a <code>locale</code>). It <strong>SHALL NOT</strong> combine entries of different locales, or locale-tagged and default entries, on one consent screen.</p>
 <p>The arrays considered are the <code>display</code> arrays of all <code>claims</code> metadata objects that have one, together with all <code>ui_labels</code> entry arrays, for the matching transaction data type. The available tags are the <code>locale</code> values for which every considered array has an entry, compared case-insensitively.</p>
@@ -1587,26 +1587,24 @@ The Wallet **SHOULD NOT** make the URL navigable directly from the consent scree
 <p>The Wallet <strong>SHALL</strong> report the selection in the <code>display_locale</code> holder binding proof claim per [PaSO Core]. The reported value is the selected tag as it appears in the metadata <code>locale</code> values, or the string <code>default</code> if the default entries were selected. It is not the priority-list locale used as the language range.</p>
 <p>If the transaction data cannot be presented in the Wallet's current operating language, the Wallet <strong>MAY</strong> switch its entire user interface to another language the user understands for the duration of the PaSO presentation flow.</p>
 <h2 id="5-static-rendering">5 Static Rendering</h2>
-<h3 id="51-eligibility">5.1 Eligibility</h3>
-<p>The Wallet <strong>MAY</strong> render a <code>transaction_data</code> entry with static rendering only if all of the following hold:</p>
+<h3 id="51-applicability">5.1 Applicability</h3>
+<p>If the applicable Transaction Data Type Rulebook of a <code>transaction_data</code> entry contains a Static Presentation section per [PaSO Core] Section 5.3, the Wallet <strong>SHALL</strong> render the entry with static rendering and <strong>SHALL NOT</strong> render it with dynamic rendering. Such an entry is not compatible with the credential ([PaSO Core] Section 7.5) if:</p>
 <ol>
-<li>The applicable Transaction Data Type Rulebook contains a Static Presentation section per [PaSO Core] Section 5.3.</li>
-<li>The Wallet implements that rulebook for the exact transaction data type identifier of the entry, including its version.</li>
-<li>The entry does not carry an ad-hoc <code>metadata</code> parameter per [PaSO Proof Metadata] Section 5.</li>
+<li>the Wallet does not implement that rulebook for the exact transaction data type identifier of the entry, including its version; or</li>
+<li>the entry carries an ad-hoc <code>metadata</code> parameter per [PaSO Proof Metadata] Section 5.</li>
 </ol>
-<p>Otherwise, the Wallet <strong>SHALL</strong> use dynamic rendering.</p>
-<h3 id="52-mode-selection">5.2 Mode Selection</h3>
-<p>The Wallet selects the rendering mode for each <code>transaction_data</code> entry it presents. Attestation Providers and Relying Parties cannot require or prohibit static rendering. The mode applies to the entry presented with the selected PaSO Credential and <strong>MAY</strong> differ between the candidate credentials the user can choose from ([PaSO Core] Sections 7.3 and 7.4). The Wallet <strong>SHALL</strong> report the mode used for the presented entry in the <code>render_mode</code> claim per [PaSO Core] Section 6.1.</p>
-<p>Static rendering does not change how the credential metadata is obtained or which transaction data types a credential supports. The Wallet <strong>SHALL</strong> retrieve and verify the signed credential metadata per [PaSO Proof Metadata], and the <code>payload</code> <strong>SHALL</strong> conform both to the Transaction Data Type Rulebook and to the claims metadata of the matched transaction data type.</p>
+<p>Condition 1 needs no knowledge of rulebooks the Wallet does not implement: the Attestation Provider lists such a type in the credential metadata as an empty object, without claims metadata ([PaSO Proof Metadata] Section 3), so a Wallet that does not implement the rulebook cannot render the entry and finds it not compatible ([PaSO Core] Section 7.5).</p>
+<p>The Wallet renders every other <code>transaction_data</code> entry with dynamic rendering. Neither the Wallet, the Attestation Provider nor the Relying Party chooses the rendering mode: it follows from the transaction data type.</p>
+<h3 id="52-credential-metadata">5.2 Credential Metadata</h3>
+<p>Static rendering does not change how the credential metadata is obtained or which transaction data types a credential supports. The Wallet <strong>SHALL</strong> retrieve and verify the signed credential metadata per [PaSO Proof Metadata], and the transaction data type <strong>SHALL</strong> be listed in its <code>transaction_data_types</code>. The entry for that type carries no display data ([PaSO Proof Metadata] Section 3), and the Wallet <strong>SHALL</strong> ignore any that is present: static rendering uses no display data supplied by the Attestation Provider, including any <code>security_hint</code>. The <code>payload</code> <strong>SHALL</strong> conform to the Transaction Data Type Rulebook.</p>
 <h3 id="53-presentation-obligations">5.3 Presentation Obligations</h3>
-<p>In static rendering, the Wallet <strong>SHALL</strong> display the content that the Static Presentation section of the rulebook requires, in the manner it requires. The Wallet uses its own layout and its own localised labels in place of the <code>display</code> entries and <code>ui_labels</code> of the credential metadata, except for the <code>security_hint</code>. The Wallet's labels <strong>SHALL</strong> convey the meaning defined by the rulebook clearly and unmistakably.</p>
+<p>In static rendering, the Wallet <strong>SHALL</strong> display the content that the Static Presentation section of the rulebook requires, in the manner it requires. It <strong>SHALL</strong> title the consent screen, label the displayed claims, and label the affirmative and denial actions with the strings that the Static Presentation section defines for the language selected per Section 5.4, exactly as defined. If the Static Presentation section defines a security hint, the Wallet <strong>SHALL</strong> display it exactly as defined, in that language; otherwise, the Wallet displays no security hint. The Wallet uses its own layout within the display obligations of the rulebook.</p>
 <p>The following requirements of Section 2 apply to static rendering unchanged: all content required for display <strong>SHALL</strong> have been displayed before the confirmation action is enabled; the Wallet <strong>MUST NOT</strong> truncate, elide, or otherwise shorten any label or displayed claim value; displayed claim values <strong>SHALL</strong> be formatted according to their <code>value_type</code> per Section 3; a <code>transaction_data</code> entry whose formatted claim values contain prohibited directional formatting characters <strong>SHALL</strong> be excluded; and the limit on displayed claim values applies.</p>
-<p>When the matched transaction data type provides a <code>security_hint</code>, the Wallet <strong>SHALL</strong> display it exactly as provided, in the entry selected per Section 5.4.</p>
-<h3 id="54-locale-and-display_locale">5.4 Locale and <code>display_locale</code></h3>
-<p>A statically rendered consent screen <strong>SHALL</strong> use a single language.</p>
-<p>If the matched transaction data type provides a <code>security_hint</code>, the Wallet <strong>SHALL</strong> perform locale selection per Section 4. If that selects the default entries, or selects a tag in whose language the Wallet cannot render its static presentation, the Wallet <strong>SHALL</strong> use dynamic rendering instead. Otherwise, the Wallet <strong>SHALL</strong> render the static presentation in the language of the selected tag and <strong>SHALL</strong> report the selected tag in <code>display_locale</code>.</p>
-<p>If no <code>security_hint</code> is provided, the Wallet <strong>SHALL</strong> report in <code>display_locale</code> the [RFC5646] language tag of the language in which it rendered the static presentation.</p>
-<p>In static rendering, <code>display_locale</code> <strong>SHALL NOT</strong> be <code>default</code>.</p>
+<h3 id="54-language-and-display_locale">5.4 Language and <code>display_locale</code></h3>
+<p>A statically rendered consent screen <strong>SHALL</strong> use a single language, selected from the languages that the Static Presentation section defines.</p>
+<p>The Wallet <strong>SHALL</strong> select the language as follows. For each locale in its locale priority list (Section 4), in order, it applies the Lookup matching scheme defined in [RFC4647] Section 3.4, using that locale as the language range and the language tags of the Static Presentation section as the set of language tags to match against. On the first match, the matched tag is selected. If no locale in the priority list produces a match, the fallback language of the Static Presentation section is selected. The language selection never makes a <code>transaction_data</code> entry not compatible.</p>
+<p>The Wallet <strong>SHALL</strong> report the selected tag, as it appears in the rulebook, in the <code>display_locale</code> holder binding proof claim per [PaSO Core]. In static rendering, <code>display_locale</code> <strong>SHALL NOT</strong> be <code>default</code>.</p>
+<p>If the static presentation is not in the Wallet's current operating language, the Wallet <strong>MAY</strong> switch its entire user interface to that language for the duration of the PaSO presentation flow.</p>
 <h2 id="6-security-considerations">6 Security Considerations</h2>
 <p><em><strong>Note</strong>: This section is <strong>informative</strong>.</em></p>
 <h3 id="61-metadata-as-an-injection-channel">6.1 Metadata as an Injection Channel</h3>
@@ -1825,10 +1823,10 @@ The Wallet **SHOULD NOT** make the URL navigable directly from the consent scree
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>

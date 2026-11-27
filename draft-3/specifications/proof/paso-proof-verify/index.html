@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1249,9 +1249,9 @@
 <li><code>transaction_data_hash_alg</code>: verify that it is <code>sha-256</code>, or the algorithm named by the applicable Transaction Data Type Rulebook.</li>
 <li><code>request_integrity</code>: recompute the [W3C.SRI] integrity value of the signed Authorization Request JWT and verify it matches.</li>
 <li><code>metadata_integrity</code>: verify it matches the [W3C.SRI] integrity value of the Attestation Provider's current signed credential metadata JWT for this credential.</li>
-<li><code>render_mode</code>: verify that it is either <code>dynamic</code> or <code>static</code>. If it is <code>static</code>, verify that the applicable Transaction Data Type Rulebook contains a Static Presentation section per [PaSO Core] Section 5.3, and that the <code>transaction_data</code> entry does not carry a <code>metadata</code> parameter, per [PaSO View] Section 5.1.</li>
-<li><code>display_locale</code>, if <code>render_mode</code> is <code>dynamic</code>: verify that it is either the string <code>default</code> or a [RFC5646] language tag. If it is <code>default</code>, verify that every claim <code>display</code> array and every <code>ui_labels</code> entry array of the matched transaction data type in the credential metadata contains a default entry (an entry without a <code>locale</code>). Otherwise, verify that every such array contains an entry whose <code>locale</code> equals <code>display_locale</code>, compared case-insensitively.</li>
-<li><code>display_locale</code>, if <code>render_mode</code> is <code>static</code>: verify that it is a [RFC5646] language tag and not the string <code>default</code>. If the matched transaction data type in the credential metadata has a <code>security_hint</code>, verify that its entry array contains an entry whose <code>locale</code> equals <code>display_locale</code>, compared case-insensitively, per [PaSO View] Section 5.4.</li>
+<li>Static rendering: if the applicable Transaction Data Type Rulebook contains a Static Presentation section per [PaSO Core] Section 5.3, the entry was rendered statically. Verify that the <code>transaction_data</code> entry does not carry a <code>metadata</code> parameter, per [PaSO View] Section 5.1.</li>
+<li><code>display_locale</code>, if the entry was rendered dynamically: verify that it is either the string <code>default</code> or a [RFC5646] language tag. If it is <code>default</code>, verify that every claim <code>display</code> array and every <code>ui_labels</code> entry array of the matched transaction data type in the credential metadata contains a default entry (an entry without a <code>locale</code>). Otherwise, verify that every such array contains an entry whose <code>locale</code> equals <code>display_locale</code>, compared case-insensitively.</li>
+<li><code>display_locale</code>, if the entry was rendered statically: verify that it equals one of the language tags defined by the Static Presentation section of the rulebook, compared case-insensitively, per [PaSO View] Section 5.4. The credential metadata is not consulted for this check.</li>
 <li><code>jti</code>: verify uniqueness (the Authorizing Party <strong>SHOULD</strong> maintain a replay cache).</li>
 <li>
 <p>Ad-hoc metadata: where this step refers to the credential metadata of the matched transaction data type and the <code>transaction_data</code> entry in the Authorization Request carries a <code>metadata</code> parameter, the Authorizing Party <strong>SHALL</strong> instead use that <code>metadata</code> object. Before doing so, it <strong>SHALL</strong> verify, per [PaSO Proof Metadata] Section 5.3, that the <code>client_id</code> of the Authorization Request is listed in <code>adhoc_metadata_clients</code> of the signed credential metadata JWT identified by <code>metadata_integrity</code>, that the entry's <code>type</code> is not listed in <code>transaction_data_types</code> of that JWT, and that the <code>metadata</code> object conforms to [PaSO Proof Metadata] Sections 3.1 to 3.3.</p>
@@ -1484,10 +1484,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>

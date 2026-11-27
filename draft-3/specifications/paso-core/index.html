@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -29,10 +29,10 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
       
       
 
@@ -1980,13 +1980,17 @@
 <li>whether the claim must be displayed to the user,</li>
 <li>how the claim value is to be rendered when displayed.</li>
 </ul>
-<p>A Transaction Data Type Rulebook <strong>MAY</strong> also define the localised UI labels for the consent screen, including at minimum a label for the confirmation action.</p>
-<p>A Transaction Data Type Rulebook <strong>MAY</strong> include a <strong>Static Presentation</strong> section, which enables static rendering of the transaction data type per [PaSO View] Section 5. A Static Presentation section <strong>SHALL</strong> define:</p>
+<p>A Transaction Data Type Rulebook without a Static Presentation section <strong>MAY</strong> also define the localised UI labels for the consent screen, including at minimum a label for the confirmation action.</p>
+<p>A Transaction Data Type Rulebook <strong>MAY</strong> include a <strong>Static Presentation</strong> section. A transaction data type whose rulebook contains a Static Presentation section is always rendered with static rendering, from the rulebook alone, per [PaSO View] Section 5. A Static Presentation section <strong>SHALL</strong> define:</p>
 <ul>
 <li>which claims <strong>SHALL</strong> be displayed in static rendering, and which claims <strong>MAY</strong> be omitted,</li>
 <li>the display obligations for each displayed claim, such as prominence and completeness,</li>
-<li>the meaning of the affirmative action and of the denial action.</li>
+<li>the meaning of the affirmative action and of the denial action,</li>
+<li>the languages in which the static presentation is available, as [RFC5646] language tags, and which of them is the fallback language,</li>
+<li>for each of these languages, the title of the consent screen, the label of each displayed claim, and the labels of the affirmative and denial actions,</li>
+<li>optionally, for each of these languages, a security hint.</li>
 </ul>
+<p>These strings are labels in the sense of [PaSO Proof Metadata] Section 3.3 and <strong>SHALL</strong> conform to its constraints. The title, the action labels and the security hint are subject to the maximum lengths of <code>transaction_title</code>, <code>affirmative_action_label</code>, <code>denial_action_label</code> and <code>security_hint</code> respectively; a claim label is subject to the maximum length of a claim <code>display</code> entry <code>name</code>.</p>
 <p>These definitions, including any Static Presentation section, constitute the <strong>semantic structure</strong> of the transaction data type. For any given type identifier, the semantic structure <strong>SHALL</strong> be immutable once published. Changes to the semantic structure <strong>SHALL</strong> require a new version of the type identifier.</p>
 <p>The Wallet <strong>SHALL</strong> ensure that all claims designated for display — in static rendering, those that the Static Presentation section requires — have been shown to the user before enabling the confirmation action.</p>
 <h3 id="54-content-quality">5.4 Content Quality</h3>
@@ -2019,12 +2023,7 @@
 <tr>
 <td><code>display_locale</code></td>
 <td>yes</td>
-<td>The locale of the consent screen shown to the user. For dynamic rendering, per [PaSO View] Section 4: the [RFC5646] language tag of the selected <code>display</code> and <code>ui_labels</code> entries as it appears in the metadata, or the string <code>default</code> if the default entries (entries without a <code>locale</code>) were shown. For static rendering, per [PaSO View] Section 5.4: an [RFC5646] language tag, never <code>default</code>. Enables deterministic reconstruction of which text was shown.</td>
-</tr>
-<tr>
-<td><code>render_mode</code></td>
-<td>yes</td>
-<td>The rendering mode used for the transaction data shown during consent: <code>dynamic</code> or <code>static</code>, per [PaSO View] Section 5.2.</td>
+<td>The locale of the consent screen shown to the user. For dynamic rendering, per [PaSO View] Section 4: the [RFC5646] language tag of the selected <code>display</code> and <code>ui_labels</code> entries as it appears in the metadata, or the string <code>default</code> if the default entries (entries without a <code>locale</code>) were shown. For static rendering, per [PaSO View] Section 5.4: the selected language tag of the Static Presentation section of the rulebook, never <code>default</code>. Enables deterministic reconstruction of which text was shown.</td>
 </tr>
 <tr>
 <td><code>transaction_data_hash</code></td>
@@ -2039,7 +2038,7 @@
 <tr>
 <td><code>metadata_integrity</code></td>
 <td>yes</td>
-<td>The [W3C.SRI] integrity value of the signed credential metadata JWT (per [PaSO Proof Metadata]) relied on during this presentation: the JWT used to display the transaction data or, where ad-hoc metadata was used, the JWT that authorised the Relying Party to supply it per [PaSO Proof Metadata] Section 5.4.</td>
+<td>The [W3C.SRI] integrity value of the signed credential metadata JWT (per [PaSO Proof Metadata]) relied on during this presentation: the JWT that lists the transaction data type and, in dynamic rendering, is used to display the transaction data, or, where ad-hoc metadata was used, the JWT that authorised the Relying Party to supply it per [PaSO Proof Metadata] Section 5.4.</td>
 </tr>
 <tr>
 <td><code>request_integrity</code></td>
@@ -2078,10 +2077,6 @@
 </tr>
 <tr>
 <td><code>display_locale</code></td>
-<td>tstr</td>
-</tr>
-<tr>
-<td><code>render_mode</code></td>
 <td>tstr</td>
 </tr>
 <tr>
@@ -2168,7 +2163,7 @@
 <ol>
 <li>The credential matches a credential query whose identifier is listed in the entry's <code>credential_ids</code>.</li>
 <li>The entry's <code>type</code> is among the transaction data types supported by the credential.</li>
-<li>The <code>payload</code> conforms to the definition of that type. A <code>payload</code> conforms if it does not contain fields not covered by a claim <code>path</code> in the applicable claims metadata (companion <code>#integrity</code> fields are covered by the <code>path</code> of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting. Where the Wallet implements the rulebook of the <code>type</code> (Section 5.5), the <code>payload</code> conforms only if, in addition, every field it contains is declared or permitted by the rulebook.</li>
+<li>The <code>payload</code> conforms to the definition of that type. A <code>payload</code> conforms if it does not contain fields not covered by a claim <code>path</code> in the applicable claims metadata (companion <code>#integrity</code> fields are covered by the <code>path</code> of the claim they accompany), all fields declared as required are present, all display formatting directives are supported by the Wallet, and all values conform to their declared formatting. Where the Wallet implements the rulebook of the <code>type</code> (Section 5.5), the <code>payload</code> conforms only if, in addition, every field it contains is declared or permitted by the rulebook. Where the rulebook of the <code>type</code> contains a Static Presentation section, the rulebook takes the place of the claims metadata in this condition: the <code>payload</code> conforms if it conforms to the rulebook ([PaSO View] Section 5.2).</li>
 <li>Every claim of the <code>payload</code> that requires resolution of an external resource with integrity verification has been resolved, and its content verified.</li>
 </ol>
 <p>A Wallet <strong>SHALL</strong> reject a request whose <code>transaction_data</code> entry contains an object with duplicate member names (compared after unescaping).</p>
@@ -2181,9 +2176,9 @@
 </ul>
 <p>The following summary is informative. For each entry and candidate credential, the Wallet determines the definition of the type as follows:</p>
 <ol>
-<li>If the entry carries a <code>metadata</code> parameter, the Wallet verifies it per [PaSO Proof Metadata] Section 5.3. Invalid ad-hoc metadata makes the entry incompatible, without fallback to the stored credential metadata. Valid ad-hoc metadata is the definition of the type for this transaction: the <code>payload</code> is checked against it and, where the Wallet implements a rulebook for the <code>type</code>, also against that rulebook (condition 3). The entry is rendered dynamically ([PaSO View] Section 5.1).</li>
-<li>Otherwise, the type is supported only if the signed credential metadata lists it (condition 2). The <code>payload</code> is checked against that metadata and, where the Wallet implements it, against the rulebook (condition 3).</li>
-<li>The Wallet then selects the rendering mode: static rendering where [PaSO View] Section 5.1 permits it, and dynamic rendering from the metadata otherwise.</li>
+<li>If the entry carries a <code>metadata</code> parameter, the Wallet verifies it per [PaSO Proof Metadata] Section 5.3. Invalid ad-hoc metadata makes the entry incompatible, without fallback to the stored credential metadata. Valid ad-hoc metadata is the definition of the type for this transaction: the <code>payload</code> is checked against it and, where the Wallet implements a rulebook for the <code>type</code>, also against that rulebook (condition 3). The entry is rendered dynamically. If the rulebook of the <code>type</code> contains a Static Presentation section, the entry is not compatible ([PaSO View] Section 5.1).</li>
+<li>Otherwise, the type is supported only if the signed credential metadata lists it (condition 2). The <code>payload</code> is checked against that metadata and, where the Wallet implements it, against the rulebook (condition 3). Where the rulebook contains a Static Presentation section, the Wallet must implement that rulebook, and the <code>payload</code> is checked against the rulebook alone.</li>
+<li>The rendering mode follows from the type: static rendering where the rulebook contains a Static Presentation section, and dynamic rendering from the metadata otherwise ([PaSO View] Section 5.1).</li>
 </ol>
 <h2 id="8-references">8 References</h2>
 <table>
@@ -2308,59 +2303,57 @@
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">"sd_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Re-CtLZfjGLErKy3eSriZ4bBx3AtUH5Q5wsWiiWKIwY"</span><span class="p">,</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">"jti"</span><span class="p">:</span><span class="w"> </span><span class="s2">"deeec2b0-3bea-4477-bd5d-e3462a709481"</span><span class="p">,</span>
 </span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">"display_locale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">"render_mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dynamic"</span><span class="p">,</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">"transaction_data_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q"</span><span class="p">,</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="nt">"transaction_data_hash_alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha-256"</span><span class="p">,</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="nt">"metadata_integrity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk="</span><span class="p">,</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="nt">"request_integrity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg="</span><span class="p">,</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="nt">"wallet_instance_version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"android:com.example.wallet:4.1.2"</span><span class="p">,</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">  </span><span class="nt">"risk_signals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:response_mode:1"</span><span class="p">,</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">      </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct_post.jwt"</span>
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:amr:1"</span><span class="p">,</span>
-</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">      </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
-</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
-</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"pin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"hwk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bio_strong"</span><span class="p">,</span><span class="w"> </span><span class="s2">"face"</span><span class="p">]</span>
-</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">  </span><span class="p">]</span>
-</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="p">}</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">"transaction_data_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OJcnQQByvV1iTYxiQQQx4dact-TNnSG-Ku_cs_6g55Q"</span><span class="p">,</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">"transaction_data_hash_alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha-256"</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="nt">"metadata_integrity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk="</span><span class="p">,</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="nt">"request_integrity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg="</span><span class="p">,</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="nt">"wallet_instance_version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"android:com.example.wallet:4.1.2"</span><span class="p">,</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="nt">"risk_signals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:response_mode:1"</span><span class="p">,</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">      </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"direct_post.jwt"</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"urn:paso:risk:global:amr:1"</span><span class="p">,</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">      </span><span class="nt">"collected_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2026-07-24T10:15:30Z"</span><span class="p">,</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="p">,</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"pin"</span><span class="p">,</span><span class="w"> </span><span class="s2">"hwk"</span><span class="p">,</span><span class="w"> </span><span class="s2">"bio_strong"</span><span class="p">,</span><span class="w"> </span><span class="s2">"face"</span><span class="p">]</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="a3-mdoc-devicesigned-namespace">A.3 mdoc DeviceSigned Namespace</h3>
 <p>CBOR diagnostic notation:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>"urn:paso:sca:1" : {
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  "jti" : "deeec2b0-3bea-4477-bd5d-e3462a709481",
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  "display_locale" : "de",
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  "render_mode" : "dynamic",
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  "transaction_data_hash" : h'3897274100F2BD5D624D8C624104310431E75C76EF...',
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  "transaction_data_hash_alg" : "sha-256",
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  "metadata_integrity" : "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>  "request_integrity" : "sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg=",
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  "wallet_instance_version" : "android:com.example.wallet:4.1.2",
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>  "risk_signals" : [
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    {
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>      "type" : "urn:paso:risk:global:response_mode:1",
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>      "collected_at" : "2026-07-24T10:15:30Z",
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>      "status" : "ok",
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>      "value" : "direct_post.jwt"
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    },
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    {
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>      "type" : "urn:paso:risk:global:amr:1",
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>      "collected_at" : "2026-07-24T10:15:30Z",
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>      "status" : "ok",
-</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>      "value" : ["pin", "hwk", "bio_strong", "face"]
-</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>    }
-</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>  ]
-</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>}
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  "transaction_data_hash" : h'3897274100F2BD5D624D8C624104310431E75C76EF...',
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  "transaction_data_hash_alg" : "sha-256",
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  "metadata_integrity" : "sha256-K3L5x7nMqYdP2fR8vQwJ1bHgT9sUcA4eZpXo6yD0mEk=",
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  "request_integrity" : "sha256-7Hn3B4x9f2kLmNpQrStUvWxYz0123456789abcdefg=",
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>  "wallet_instance_version" : "android:com.example.wallet:4.1.2",
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  "risk_signals" : [
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    {
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>      "type" : "urn:paso:risk:global:response_mode:1",
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>      "collected_at" : "2026-07-24T10:15:30Z",
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>      "status" : "ok",
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>      "value" : "direct_post.jwt"
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    },
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    {
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>      "type" : "urn:paso:risk:global:amr:1",
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>      "collected_at" : "2026-07-24T10:15:30Z",
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>      "status" : "ok",
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>      "value" : ["pin", "hwk", "bio_strong", "face"]
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    }
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>  ]
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>}
 </span></code></pre></div>
 <h3 id="a4-consent-screen">A.4 Consent Screen</h3>
-<p>How a Wallet might display the transaction from Annex A.1 with locale <code>en</code>:</p>
+<p>How a Wallet renders the transaction from Annex A.1 with static rendering in <code>en</code>, using the strings of the Payment Transaction Data Type Rulebook ([PaSO View] Section 5). The layout is the Wallet's own:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>┌──────────────────────────────────────────┐
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>│  Payment Confirmation                    │
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>│  Confirm Payment                         │
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>│                                          │
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>│  Amount            49.99 EUR             │
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│  Payee             Shop Inc.             │
@@ -2599,10 +2592,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.footer", "navigation.sections"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>

@@ -104,7 +104,7 @@ When a wallet presents a PaSO credential together with transaction data, it prod
 - a hash of the exact transaction data the user consented to;
 - an integrity value over the signed request the wallet received;
 - an integrity value over the signed credential metadata relied on — the metadata used to display the transaction or, where a Relying Party supplied ad-hoc metadata, the metadata that authorised it to do so;
-- the locale that was actually shown to the user, whether the transaction was rendered statically or dynamically, and the wallet's version.
+- the locale that was actually shown to the user, and the wallet's version.
 
 These claims are carried in the format-appropriate structure — a Key Binding JWT for SD-JWT-VC credentials, or device-signed data elements for mdoc credentials.
 
@@ -130,9 +130,9 @@ Informed consent depends entirely on what the user actually sees. PaSO View defi
 
 The central ideas are:
 
-- **Generic, metadata-driven rendering.** Each displayable claim carries a value type (for example, a currency amount, a date, an image, a frequency code, or a URL). The wallet knows how to render each value type. Every wallet must be able to render any type this way. For highly standardised types whose rulebook allows it, such as payments, a wallet may instead use **static rendering** — its own purpose-built screen within the rulebook's obligations — as an optional optimisation (see Section 6).
+- **Generic, metadata-driven rendering.** Each displayable claim carries a value type (for example, a currency amount, a date, an image, a frequency code, or a URL). The wallet knows how to render each value type. Every wallet must be able to render any type this way. Highly standardised types whose rulebook defines a Static Presentation, such as payments, are instead always rendered with **static rendering** — a purpose-built screen whose content and wording the rulebook fixes (see Section 6).
 
-- **Display is mandatory and faithful.** Everything designated for display must be shown before the user can confirm. Parties may not use labels or hints to obscure information relevant to consent. Security hints, when provided, must be shown exactly.
+- **Display is mandatory and faithful.** Everything designated for display must be shown before the user can confirm. Parties may not use labels or hints to obscure information relevant to consent. Security hints are shown exactly as provided: by the issuer in dynamic rendering, by the rulebook in static rendering.
 
 - **Locale selection is deterministic.** The wallet selects a display locale according to defined matching rules, and records the locale it used in the proof — so it can later be shown precisely which text the user saw.
 
@@ -142,16 +142,16 @@ This is how PaSO turns "the user consented" into "the user demonstrably saw, in 
 
 ## 6 Two rendering modes
 
-A wallet provider adopting PaSO needs to know *how the wallet learns to render a given transaction type*. PaSO defines two rendering modes. Every wallet supports **dynamic rendering**, which the **PaSO Proof: Metadata Module** makes possible; **static rendering** is an optional optimisation on top of it for highly standardised transaction types.
+A wallet provider adopting PaSO needs to know *how the wallet learns to render a given transaction type*. PaSO defines two rendering modes, and the transaction type determines which one applies. Highly standardised types whose rulebook defines a Static Presentation, such as payments, are always rendered with **static rendering**. Every other type is rendered with **dynamic rendering**, which the **PaSO Proof: Metadata Module** makes possible and which every wallet supports.
 
 ### 6.1 Static rendering: optimised UX for standardised types
 
-For highly standardised transaction types such as payments, a wallet may show a purpose-built consent screen instead of the generic one. A Transaction Data Type Rulebook opts in with a **Static Presentation** section that fixes what must be shown — for a payment, the amount and the payee, in full and prominently — and what the confirmation means. Within those obligations, the wallet chooses its own layout, wording and translations.
+For highly standardised transaction types such as payments, the wallet shows a purpose-built consent screen instead of the generic one. A Transaction Data Type Rulebook opts in with a **Static Presentation** section that fixes what must be shown — for a payment, the amount and the payee, in full and prominently — what the confirmation means, and the exact wording in each language it supports, with a fallback language. Within those obligations, the wallet chooses its own layout. Nothing on the screen comes from the issuer's metadata.
 
-- **Advantage:** the best possible experience for the transactions users perform most often, consistent with the rest of the wallet and available in every language the wallet supports.
-- **Limits:** static rendering applies only to types whose rulebook defines a Static Presentation and which the wallet has implemented; transactions carrying ad-hoc metadata are always rendered dynamically.
+- **Advantage:** the best possible experience for the transactions users perform most often, consistent with the rest of the wallet, with the same wording in every wallet and no dependency on issuer-supplied labels.
+- **Limits:** a wallet must implement the rulebook to process such a type at all; such a type cannot be supplied with ad-hoc metadata; and the screen is available only in the rulebook's languages.
 
-Static rendering is an optimisation on top of dynamic rendering, not a replacement for it. The wallet still retrieves and verifies the signed credential metadata, still applies PaSO View's safeguards — everything required must be shown before confirmation, nothing may be truncated — and records in the proof that it rendered statically (`render_mode`), so the screen can be reconstructed later.
+Static rendering does not bypass the metadata or the safeguards. The wallet still retrieves and verifies the signed credential metadata, which declares that the credential supports the type, still applies PaSO View's safeguards — everything required must be shown before confirmation, nothing may be truncated — and records the language shown in the proof, so the screen can be reconstructed later.
 
 ### 6.2 Dynamic rendering: metadata-driven
 

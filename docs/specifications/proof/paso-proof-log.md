@@ -48,7 +48,7 @@ The Wallet **MAY** support exporting the transaction log and credential artefact
 
 ## 5 Replayability
 
-The Wallet **SHOULD** provide a mechanism to replay the full presentation request exactly as it happened at that time, with the credential choices set to the ones that were chosen at that time. Where the presentation was rendered with static rendering (`render_mode` `static`, per [PaSO View] Section 5), the replay **SHALL** reproduce the static presentation of the Wallet version identified by `wallet_instance_version`.
+The Wallet **SHOULD** provide a mechanism to replay the full presentation request exactly as it happened at that time, with the credential choices set to the ones that were chosen at that time. Where the transaction data type was rendered with static rendering, because its rulebook contains a Static Presentation section ([PaSO View] Section 5), the replay **SHALL** reproduce the static presentation of the Wallet version identified by `wallet_instance_version`, in the language reported in `display_locale`.
 
 ## 6 References
 
